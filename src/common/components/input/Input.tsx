@@ -31,6 +31,8 @@ const Input = ({
     return num.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const displayValue = isNumber && value ? formatNumber(String(value)) : value;
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (isNumber) {
       const formattedValue = formatNumber(e.target.value);
@@ -75,7 +77,7 @@ const Input = ({
         <input
           {...props}
           id={inputId}
-          value={value}
+          value={displayValue}
           onChange={handleChange}
           placeholder={placeholder}
           type={isNumber ? "text" : type || "text"}
