@@ -32,7 +32,7 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   const baseStyles =
-    "flex items-center justify-center rounded-[20px] transition-all leading-none font-medium shrink-0";
+    "flex items-center justify-center rounded-[20px] leading-none font-medium shrink-0";
 
   const sizeStyles = {
     L: "h-[60px] text-[20px] w-full",

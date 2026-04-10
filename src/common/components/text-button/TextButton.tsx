@@ -23,7 +23,7 @@ const TextButton = ({
   return (
     <button
       type="button"
-      className={`flex items-center justify-center border-b pb-px transition-all w-fit leading-none ${variantStyles[variant]} ${className}`}
+      className={`flex items-center justify-center border-b pb-px w-fit leading-none ${variantStyles[variant]} ${className}`}
       {...props}
     >
       {children}
