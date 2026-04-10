@@ -17,7 +17,7 @@ const TextButton = ({
 }: TextButtonProps) => {
   const variantStyles = {
     gray: "border-[#8D839D] text-[#8D839D] text-[16px]",
-    purple: "border-[#9C6FFE] text-[#9C6FFE] text-[18px] font-bold",
+    purple: "border-[#9C6FFE] text-[#9C6FFE] text-[18px]",
   };
 
   return (

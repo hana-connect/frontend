@@ -1,3 +1,7 @@
+"use client";
+
+import type React from "react";
+
 type ButtonSize = "L" | "M" | "S";
 type ButtonVariant =
   | "outline"
@@ -23,6 +27,8 @@ const Button = ({
   icon,
   children,
   className = "",
+  type = "button",
+  disabled: disabledProp,
   ...props
 }: ButtonProps) => {
   const baseStyles =
@@ -35,8 +41,7 @@ const Button = ({
   };
 
   const variantStyles = {
-    outline:
-      "bg-white border border-[#ECECEC] text-[16px] text-[#777777] gap-[20px]",
+    outline: "bg-white border border-[#ECECEC] text-[16px] text-[#777777]",
     disabled: "bg-[#DEDEDE] text-white",
     active: "bg-[#9C6FFE] text-white",
     purpleOutline: "bg-white border-[2px] border-[#9C6FFE] text-[#9C6FFE]",
@@ -51,11 +56,14 @@ const Button = ({
 
   return (
     <button
+      type={type}
       className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}
-      disabled={variant === "disabled"}
+      disabled={variant === "disabled" || disabledProp}
       {...props}
     >
-      <div className="flex items-center gap-1">
+      <div
+        className={`flex items-center ${variant === "outline" ? "gap-5" : "gap-0"}`}
+      >
         {icon && <span className="flex items-center">{icon}</span>}
         {children}
       </div>
