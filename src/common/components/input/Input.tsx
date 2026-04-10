@@ -20,6 +20,7 @@ const Input = ({
   placeholder,
   className = "",
   type,
+  inputMode,
   ...props
 }: InputProps) => {
   const generatedId = useId();
@@ -53,15 +54,20 @@ const Input = ({
             <div />
           )}
 
-          {rightLabel && (
-            <button
-              type="button"
-              onClick={onRightLabelClick}
-              className="text-[16px] text-[#8D839D] border-b border-[#8D839D] pb-px leading-none"
-            >
-              [{rightLabel}]
-            </button>
-          )}
+          {rightLabel &&
+            (onRightLabelClick ? (
+              <button
+                type="button"
+                onClick={onRightLabelClick}
+                className="text-[16px] text-[#8D839D] border-b border-[#8D839D] pb-px leading-none"
+              >
+                [{rightLabel}]
+              </button>
+            ) : (
+              <span className="text-[16px] text-[#8D839D] leading-none">
+                [{rightLabel}]
+              </span>
+            ))}
         </div>
       )}
 
@@ -73,7 +79,7 @@ const Input = ({
           onChange={handleChange}
           placeholder={placeholder}
           type={isNumber ? "text" : type || "text"}
-          inputMode={isNumber ? "numeric" : "text"}
+          inputMode={isNumber ? "numeric" : inputMode}
           className={`w-full text-[20px] text-black placeholder:text-[#CCCCCC] outline-none border-b border-[#CCCCCC] pb-3 font-bold ${className}`}
         />
       </div>
