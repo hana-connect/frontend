@@ -1,16 +1,16 @@
 {
-	"eslint.workingDirectories": [
-		{
-			"mode": "auto"
-		}
-	],
-	"[css][javascript][typescript][javascriptreact][typescriptreact][json]": {
-		"editor.codeActionsOnSave": {
-			"source.fixAll.biome": "explicit",
-			"source.fixAll": "explicit",
-			"source.organizeImports.biome": "explicit"
-		},
-		"editor.defaultFormatter": "biomejs.biome",
-		"editor.formatOnSave": true
-	}
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "[css][javascript][typescript][javascriptreact][typescriptreact][json]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.biome": "explicit",
+      "source.fixAll": "explicit",
+      "source.organizeImports.biome": "explicit"
+    },
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true
+  }
 }
