@@ -13,13 +13,13 @@ export const useAssetAnalysis = (accounts: Account[]) => {
         else if (cur.account_type === "예금" || cur.account_type === "적금")
           acc.savings += cur.balance;
         else if (cur.account_type === "청약")
-          acc.subscription += cur.balance; // 청약 추가
+          acc.investment += cur.balance; // 청약 추가
         else if (cur.account_type === "연금") acc.pension += cur.balance; // 연금 추가
 
         acc.total += cur.balance;
         return acc;
       },
-      { savings: 0, checking: 0, subscription: 0, pension: 0, total: 0 }, // 초기값 세분화
+      { savings: 0, checking: 0, investment: 0, pension: 0, total: 0 }, // 초기값 세분화
     );
 
     setAssetData({ ...summary, changeRate: 8 });
