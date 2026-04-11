@@ -39,6 +39,11 @@ export default function AllowanceSliderSection({
             max="100"
             value={ratio}
             onChange={(e) => handleRatioChange(Number(e.target.value))}
+            aria-label="아이와 나의 비율 조절"
+            aria-valuenow={ratio}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuetext={`아이 ${ratio} : 나 ${100 - ratio}`}
             className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-violet-500"
           />
           <span className="mt-4 text-gray-300 font-light text-xl">:</span>
