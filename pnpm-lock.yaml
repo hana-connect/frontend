@@ -14,9 +14,6 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^20.0.0
         version: 20.5.0
-      '@commitlint/cz-commitlint':
-        specifier: ^20.1.0
-        version: 20.5.1(@types/node@20.19.39)(commitizen@4.3.1(@types/node@20.19.39)(typescript@5.9.3))(inquirer@9.3.8(@types/node@20.19.39))(typescript@5.9.3)
       '@commitlint/prompt':
         specifier: ^20.1.0
         version: 20.5.0(@types/node@20.19.39)(typescript@5.9.3)
@@ -26,6 +23,9 @@ importers:
       commitlint:
         specifier: ^20.1.0
         version: 20.5.0(@types/node@20.19.39)(conventional-commits-parser@6.4.0)(typescript@5.9.3)
+      git-cz:
+        specifier: ^4.9.0
+        version: 4.9.0
       lint-staged:
         specifier: ^16.2.3
         version: 16.4.0
@@ -51,6 +51,9 @@ importers:
       '@biomejs/biome':
         specifier: 2.2.0
         version: 2.2.0
+      '@commitlint/cz-commitlint':
+        specifier: ^20.1.0
+        version: 20.5.1(@types/node@20.19.39)(commitizen@4.3.1(@types/node@20.19.39)(typescript@5.9.3))(inquirer@9.3.8(@types/node@20.19.39))(typescript@5.9.3)
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.2.2
@@ -66,6 +69,9 @@ importers:
       babel-plugin-react-compiler:
         specifier: 1.0.0
         version: 1.0.0
+      commitizen:
+        specifier: ^4.3.1
+        version: 4.3.1(@types/node@20.19.39)(typescript@5.9.3)
       tailwindcss:
         specifier: ^4
         version: 4.2.2
@@ -891,6 +897,10 @@ packages:
   get-east-asian-width@1.5.0:
     resolution: {integrity: sha512-CQ+bEO+Tva/qlmw24dCejulK5pMzVnUOFOijVogd3KQs07HnRIgp8TGipvCCRT06xeYEbpbgwaCxglFyiuIcmA==}
     engines: {node: '>=18'}
+
+  git-cz@4.9.0:
+    resolution: {integrity: sha512-cSRL8IIOXU7UFLdbziCYqg8f8InwLwqHezkiRHNSph7oZqGv0togId1kMTfKil6gzK0VaSXeVBb4oDl0fQCHiw==}
+    hasBin: true
 
   git-hooks-list@4.2.1:
     resolution: {integrity: sha512-WNvqJjOxxs/8ZP9+DWdwWJ7cDsd60NHf39XnD82pDVrKO5q7xfPqpkK6hwEAmBa/ZSEE4IOoR75EzbbIuwGlMw==}
@@ -2294,6 +2304,8 @@ snapshots:
   get-caller-file@2.0.5: {}
 
   get-east-asian-width@1.5.0: {}
+
+  git-cz@4.9.0: {}
 
   git-hooks-list@4.2.1: {}
 

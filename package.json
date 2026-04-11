@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "commit": "git-cz",
+    "commit": "cz",
     "dev": "next dev",
     "format": "biome format --write",
     "lint": "biome check --write --unsafe --no-errors-on-unmatched --files-ignore-unknown=true",
@@ -27,10 +27,10 @@
   "dependencies": {
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@commitlint/cz-commitlint": "^20.1.0",
     "@commitlint/prompt": "^20.1.0",
     "@commitlint/types": "^20.0.0",
     "commitlint": "^20.1.0",
+    "git-cz": "^4.9.0",
     "lint-staged": "^16.2.3",
     "lucide-react": "^1.8.0",
     "next": "16.2.2",
@@ -41,11 +41,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
+    "@commitlint/cz-commitlint": "^20.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "commitizen": "^4.3.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
