@@ -28,7 +28,7 @@ export default function CurrentAsset({ assetData }: Props) {
         </div>
         <div className="flex justify-between">
           <span>투자</span>
-          <span>{formatCurrency(assetData?.subscription || 0)}원</span>
+          <span>{formatCurrency(assetData?.investment || 0)}원</span>
         </div>
         <div className="flex justify-between">
           <span>연금</span>
