@@ -12,6 +12,7 @@ export default function HanatheNextBanner() {
           window.open(
             "https://www.hana1qm.com/web/sub/tlist.do?topyn=Y&pcatid=46",
             "_blank",
+            "noopener,noreferrer",
           )
         }
         className="text-violet-600 font-bold text-sm border border-violet-200 px-6 py-2 rounded-full bg-white"
