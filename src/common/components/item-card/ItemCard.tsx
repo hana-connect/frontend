@@ -57,13 +57,7 @@ const ItemCard = ({
       <div className="flex items-center gap-2 text-[16px] text-[#000000] font-medium">
         {rightContent}
 
-        {hasRadio && value && (
-          <RadioGroupItem
-            value={value}
-            id={value}
-            className="w-6 h-6 border-[#ECECEC] text-[#9C6FFE] focus-visible:ring-[#9C6FFE]"
-          />
-        )}
+        {hasRadio && value && <RadioGroupItem value={value} id={value} />}
       </div>
     </Component>
   );
