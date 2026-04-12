@@ -1,13 +1,13 @@
 "use client";
 import Image from "next/image";
 
-interface BubbleProps {
+type BubbleProps = {
   message: string;
   parentProfile: {
     src: string;
     alt: string;
   };
-}
+};
 
 const Bubble = ({ message, parentProfile }: BubbleProps) => {
   return (
