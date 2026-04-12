@@ -39,8 +39,14 @@ interface AlertOptions {
   render?: ReactNode | ((api: AlertRenderApi) => ReactNode);
   closeOnAction?: boolean;
   contentClassName?: string;
-  actionProps?: React.ComponentProps<typeof AlertDialogAction>;
-  cancelProps?: React.ComponentProps<typeof AlertDialogCancel>;
+  actionProps?: Omit<
+    React.ComponentProps<typeof AlertDialogAction>,
+    "onClick" | "disabled"
+  >;
+  cancelProps?: Omit<
+    React.ComponentProps<typeof AlertDialogCancel>,
+    "disabled"
+  >;
 }
 
 interface AlertDialogContextType {
@@ -84,13 +90,15 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
     try {
       await options.onAction?.();
       if (options.closeOnAction !== false) close();
+    } catch (error) {
+      console.error("Alert Action Error:", error);
     } finally {
-      if (options.closeOnAction === false) {
+      if (options.closeOnAction === false || !isOpen) {
         actingRef.current = false;
         setIsActing(false);
       }
     }
-  }, [close, options]);
+  }, [close, options, isOpen]);
 
   const renderFooter = () => {
     if (options.footer) {
@@ -109,8 +117,8 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
           </AlertDialogCancel>
         )}
         <AlertDialogAction
-          onClick={handleAction}
           {...options.actionProps}
+          onClick={handleAction}
           disabled={isActing}
         >
           {options.actionLabel || "확인"}
