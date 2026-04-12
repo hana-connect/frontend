@@ -6,6 +6,7 @@ import type { KeypadItem } from "@/common/types/keypad.types";
 
 type UsePasswordInputParams = {
   maxLength?: number;
+  maxFailedCount?: number;
   onComplete?: (value: string) => Promise<boolean> | boolean;
 };
 
@@ -21,10 +22,12 @@ type UsePasswordInputReturn = {
 
 export function usePasswordInput({
   maxLength = 4,
+  maxFailedCount = 5,
   onComplete,
 }: UsePasswordInputParams = {}): UsePasswordInputReturn {
   const [value, setValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [failedCount, setFailedCount] = useState(0);
   const [keypadItems, setKeypadItems] = useState<KeypadItem[]>([]);
   const [isReady, setIsReady] = useState(false);
 
@@ -36,6 +39,7 @@ export function usePasswordInput({
   const reset = () => {
     setValue("");
     setErrorMessage("");
+    setFailedCount(0);
   };
 
   const handleBackspacePress = () => {
@@ -44,9 +48,7 @@ export function usePasswordInput({
   };
 
   const handleDigitPress = async (digit: string) => {
-    if (value.length >= maxLength) {
-      return;
-    }
+    if (value.length >= maxLength) return;
 
     const nextValue = `${value}${digit}`;
     setErrorMessage("");
@@ -56,10 +58,21 @@ export function usePasswordInput({
       const isValid = await onComplete(nextValue);
 
       if (!isValid) {
+        const nextFailedCount = failedCount + 1;
+        setFailedCount(nextFailedCount);
+
         setTimeout(() => {
           setValue("");
-          setErrorMessage("비밀번호를 잘못 입력했습니다. (n/5)");
+          setErrorMessage(
+            `비밀번호를 잘못 입력했습니다. (${nextFailedCount}/${maxFailedCount})`,
+          );
         }, 120);
+
+        if (nextFailedCount >= maxFailedCount) {
+          // TODO: 최대 허용 횟수 초과 시 추가 조치 (예: 계정 잠금, 관리자 알림 등)
+        }
+      } else {
+        setFailedCount(0);
       }
     }
   };
