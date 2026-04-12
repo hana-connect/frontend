@@ -33,7 +33,7 @@ function LogoPlaceholder() {
     <Image
       width={23}
       height={28}
-      src="/svg/logo.svg"
+      src="/svg/ic_logo.svg"
       alt="Logo"
       className="grayscale opacity-20"
     />

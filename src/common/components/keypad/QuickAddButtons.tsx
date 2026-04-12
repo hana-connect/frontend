@@ -15,7 +15,7 @@ export function QuickAddButtons({ onQuickAdd }: QuickAddButtonsProps) {
         <button
           key={btn.label}
           type="button"
-          className="flex-1 whitespace-nowrap rounded-xl border border-grey-4 py-1 text-[#555] text-grey-1 transition-colors"
+          className="px-6 whitespace-nowrap rounded-xl border border-grey-4 py-1 text-[#555] transition-colors"
           onClick={() => onQuickAdd(btn.value)}
         >
           {btn.label}

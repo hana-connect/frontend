@@ -23,7 +23,7 @@ export default function AmountHeader({
   onQuickAdd,
 }: AmountHeaderProps) {
   return (
-    <section className="pt-2">
+    <section className="flex flex-1 flex-col pt-2">
       <div className="flex flex-col items-center">
         <Image
           width={50}
@@ -41,13 +41,14 @@ export default function AmountHeader({
           {amount === "" ? "0" : amount}
           <span className="ml-1">원</span>
         </div>
-
-        <div className="mt-14 rounded-xl bg-grey-7 px-4 py-2 text-body-16-m text-grey-6">
-          지갑 잔액 {formatCurrency(balance)}원
-        </div>
       </div>
 
-      <QuickAddButtons onQuickAdd={onQuickAdd} />
+      <div className="mt-auto mb-6 flex flex-col items-center">
+        <div className="rounded-xl bg-grey-7 px-4 py-2 text-body-16-m text-grey-6">
+          지갑 잔액 {formatCurrency(balance)}원
+        </div>
+        <QuickAddButtons onQuickAdd={onQuickAdd} />
+      </div>
     </section>
   );
 }

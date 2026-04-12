@@ -25,7 +25,7 @@ export default function TransferAmountPage() {
       top={
         <AmountHeader
           accountHolder="김채현(김채*)"
-          accountNickname="채현이 입금금 (용돈)"
+          accountNickname="채현이 입출금 (용돈)"
           balance={800000}
           amount={formattedValue}
           onQuickAdd={handleQuickAdd}

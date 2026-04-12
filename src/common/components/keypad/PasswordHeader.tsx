@@ -47,7 +47,7 @@ export default function PasswordHeader({
   return (
     <section className="pt-2">
       <div className="mt-12 flex flex-col items-center">
-        <Image width={52} height={61} src="/svg/logo.svg" alt="Logo" />
+        <Image width={52} height={61} src="/svg/ic_logo.svg" alt="Logo" />
 
         <h1 className="mt-13 text-center text-heading-20-b text-black">
           {title}
