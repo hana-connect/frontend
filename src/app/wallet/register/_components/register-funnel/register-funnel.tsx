@@ -13,7 +13,7 @@ const RegisterFunnel = () => {
     <>
       {currentStep === "register-intro" && <RegisterIntro onNext={nextStep} />}
       {currentStep === "register-account" && (
-        <RegisterAccount onNext={nextStep} onBack={prevStep} />
+        <RegisterAccount onNext={nextStep} />
       )}
       {currentStep === "account-password" && (
         <AccountPassword onNext={nextStep} onBack={prevStep} />

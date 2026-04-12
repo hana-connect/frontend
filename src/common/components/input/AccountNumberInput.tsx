@@ -3,7 +3,7 @@
 import type React from "react";
 import { type ChangeEvent, useId } from "react";
 
-type Props = Omit<
+type AccountNumberInputProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "size" | "value" | "onChange"
 > & {
@@ -26,7 +26,7 @@ const AccountNumberInput = ({
   className = "",
   disabled = false,
   ...props
-}: Props) => {
+}: AccountNumberInputProps) => {
   const generatedId = useId();
   const inputId = props.id || generatedId;
 
