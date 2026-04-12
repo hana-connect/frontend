@@ -84,21 +84,24 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
 
   const handleAction = useCallback(async () => {
     if (actingRef.current) return;
+
     actingRef.current = true;
     setIsActing(true);
 
     try {
       await options.onAction?.();
-      if (options.closeOnAction !== false) close();
+
+      if (options.closeOnAction !== false) {
+        close();
+        return;
+      }
     } catch (error) {
       console.error("Alert Action Error:", error);
     } finally {
-      if (options.closeOnAction === false || !isOpen) {
-        actingRef.current = false;
-        setIsActing(false);
-      }
+      actingRef.current = false;
+      setIsActing(false);
     }
-  }, [close, options, isOpen]);
+  }, [close, options]);
 
   const renderFooter = () => {
     if (options.footer) {
