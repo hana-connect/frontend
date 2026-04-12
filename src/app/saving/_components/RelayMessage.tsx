@@ -20,7 +20,7 @@ export default function RelayMessage({
   ];
 
   return (
-    <section className="mt-10 w-full">
+    <section className="mt-10 px-6">
       {/* 제목 첫 줄 + 버튼 섹션 */}
       <div className="flex justify-between items-center mb-1">
         <h2 className="text-black text-xl font-bold leading-8">

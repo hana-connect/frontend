@@ -123,7 +123,7 @@ export default function AmountInput({
 
   // --- [Case 2] 메인 화면 기본 금액 표시 (isPadOpen === false) ---
   return (
-    <section className="mt-6 mb-14 w-full">
+    <section className="mt-6 mb-14 px-6">
       {" "}
       {/* px-6 제거: 이제 섹션이 375px 끝까지 붙습니다 */}
       {/* 텍스트 줄만 양옆 24px 여백 */}
@@ -150,7 +150,7 @@ export default function AmountInput({
         </span>
       </button>
       {/* 하단 퀵 버튼들도 양옆 24px 여백 */}
-      <div className="flex gap-2 px-6">
+      <div className="flex gap-2">
         {[10000, 30000, 50000].map((val) => (
           <button
             key={val}

@@ -29,6 +29,7 @@
     "@commitlint/config-conventional": "^20.0.0",
     "@commitlint/prompt": "^20.1.0",
     "@commitlint/types": "^20.0.0",
+    "Button": "^0.0.1",
     "commitlint": "^20.1.0",
     "git-cz": "^4.9.0",
     "lint-staged": "^16.2.3",
