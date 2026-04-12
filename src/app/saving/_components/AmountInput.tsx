@@ -40,7 +40,7 @@ export default function AmountInput({
   if (isPadOpen) {
     return (
       <div className="absolute inset-0 z-50 bg-white flex flex-col font-['Pretendard']">
-        <header className="sticky top-0 z-50 flex h-[60px] w-full items-center justify-center bg-white px-4 text-black shrink-0">
+        <header className="sticky top-0 z-50 flex h-15 w-full items-center justify-center bg-white px-4 text-black shrink-0">
           <button
             type="button"
             onClick={() => setIsPadOpen(false)}
@@ -72,14 +72,15 @@ export default function AmountInput({
         </div>
 
         {/* 2. 퀵 버튼: 공통 Button (S size, gray variant) 적용 */}
-        <div className="flex justify-center gap-3 mt-40 px-6">
+        <div className="flex justify-center gap-3 mt-42 px-8">
           {[10000, 30000, 50000].map((val) => (
             <Button
               key={val}
               size="S"
               variant="gray" // 기본 틀은 유지하되 아래 className으로 덮어씁니다
               onClick={() => onAmountChange(Math.min(500000, amount + val))}
-              className="flex-1 !h-8 !rounded-lg !bg-white !border-[#DEDEDE] !text-neutral-600 !text-base !font-medium !leading-6 !px-0 outline outline-[1.18px] outline-offset-[-1.18px] outline-gray-300"
+              className="flex-1 rounded-lg bg-white text-neutral-600 text-base font-medium leading-6 px-0 outline-[1.18px] outline-offset-[-1.18px] outline-gray-300"
+              style={{ height: "34px" }}
             >
               + {val / 10000}만
             </Button>
