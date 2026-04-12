@@ -20,7 +20,7 @@ const RegisterAccount = ({ onNext }: Props) => {
     <>
       <Header type="sub" title="계좌 등록하기" />
       <div className="flex flex-1 flex-col px-6 pt-7 pb-9">
-        <h1 className="text-left text-[24px] leading-7.5 font-bold tracking-[-1.2px] text-black">
+        <h1 className="text-left text-[24px] leading-7.5 font-bold tracking-[-1.2px] text-brand-black">
           하나은행 계좌번호를
           <br />
           입력해 주세요.
