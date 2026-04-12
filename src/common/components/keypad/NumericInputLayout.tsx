@@ -13,9 +13,9 @@ export default function NumericInputLayout({
     <main className="mx-auto flex min-h-screen w-full max-w-[375px] flex-col bg-white px-5 pb-8 pt-6">
       <div className="flex-1">{top}</div>
 
-      {bottom ? <div className="mb-6">{bottom}</div> : null}
-
       <div className="pb-2">{keypad}</div>
+
+      {bottom && <div className="mt-5 mb-6">{bottom}</div>}
     </main>
   );
 }

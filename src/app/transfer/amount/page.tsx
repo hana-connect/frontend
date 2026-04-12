@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/common/components/button/Button";
 import AmountHeader from "@/common/components/keypad/AmountHeader";
 import NumericInputLayout from "@/common/components/keypad/NumericInputLayout";
 import NumericKeypad from "@/common/components/keypad/NumericKeypad";
@@ -17,25 +18,18 @@ export default function TransferAmountPage() {
     maxAmount: 800000,
   });
 
+  const isEnabled = numericValue > 0;
+
   return (
     <NumericInputLayout
       top={
         <AmountHeader
-          accountName="김채현(김채*)"
-          accountNumber="채현이 입금금 (용돈)"
+          accountHolder="김채현(김채*)"
+          accountNickname="채현이 입금금 (용돈)"
           balance={800000}
           amount={formattedValue}
           onQuickAdd={handleQuickAdd}
         />
-      }
-      bottom={
-        <button
-          type="button"
-          disabled={numericValue <= 0}
-          className="w-full rounded-xl bg-violet-500 py-4 text-[14px] font-semibold text-white disabled:bg-violet-200"
-        >
-          다음
-        </button>
       }
       keypad={
         <NumericKeypad
@@ -44,6 +38,20 @@ export default function TransferAmountPage() {
           onDigitPress={handleDigitPress}
           onBackspacePress={handleBackspacePress}
         />
+      }
+      bottom={
+        <Button
+          size="L"
+          variant={isEnabled ? "active" : "disabled"}
+          disabled={!isEnabled}
+          onClick={() => {
+            if (isEnabled) {
+              console.log("다음 단계로 이동:", numericValue);
+            }
+          }}
+        >
+          다음
+        </Button>
       }
     />
   );

@@ -87,7 +87,7 @@ export default function NumericKeypad({
   const gridClassName =
     columns === 4
       ? "grid-cols-4 gap-x-6 gap-y-9"
-      : "grid-cols-3 gap-x-8 gap-y-5";
+      : "grid-cols-3 gap-x-8 gap-y-9";
 
   return (
     <div className={`grid ${gridClassName} place-items-center ${className}`}>
