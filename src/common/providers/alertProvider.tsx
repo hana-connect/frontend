@@ -21,7 +21,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@/common/components/alert-dialog/AlertDialog";
 
 type AlertRenderApi = {
   close: () => void;
