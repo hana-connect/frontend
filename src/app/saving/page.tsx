@@ -56,9 +56,8 @@ export default function SavingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-start sm:py-10">
-      <main className="w-[375px] min-h-[812px] bg-white shadow-2xl relative flex flex-col font-['Pretendard'] overflow-hidden">
-        {/* --- STEP 1: 송금하기 메인 --- */}
+    <div className="min-h-screen bg-white flex justify-center">
+      <main className="w-full max-w-[375px] min-h-screen bg-white relative flex flex-col font-['Pretendard'] overflow-hidden">
         {step === "input" && (
           <div className="flex flex-col h-full relative">
             {/* [수정] 패드가 열리지 않았을 때만 메인 헤더 표시 */}
@@ -78,7 +77,7 @@ export default function SavingPage() {
             )}
 
             <div
-              className={`flex-1 overflow-y-auto ${!isPadOpen ? "px-6 pb-40" : ""}`}
+              className={`flex-1 overflow-y-auto ${!isPadOpen ? "pb-40" : ""}`}
             >
               {/* 금액 입력 섹션 */}
               <AmountInput

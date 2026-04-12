@@ -20,13 +20,11 @@ export default function RelayMessage({
   ];
 
   return (
-    <section className="mt-10">
-      {/* 제목 및 지난 내역 버튼 (정책 1-1.2) */}
-      <div className="flex justify-between items-start mb-4">
+    <section className="mt-10 w-full">
+      {/* 제목 첫 줄 + 버튼 섹션 */}
+      <div className="flex justify-between items-center mb-1">
         <h2 className="text-black text-xl font-bold leading-8">
           미래의 아이가 볼
-          <br />
-          감동의 릴레이 메시지를 작성해 주세요.
         </h2>
         <button
           type="button"
@@ -35,6 +33,13 @@ export default function RelayMessage({
         >
           [지난 작성 내역]
         </button>
+      </div>
+
+      {/* 제목 두 번째 줄 섹션 */}
+      <div className="mb-10">
+        <h2 className="text-black text-xl font-bold leading-8">
+          감동의 릴레이 메시지를 작성해 주세요.
+        </h2>
       </div>
 
       {/* 최근 메시지 내역 (정책 2) */}
@@ -69,13 +74,21 @@ export default function RelayMessage({
         <div className="relative">
           <textarea
             value={message}
-            onChange={(e) => onMessageChange(e.target.value)}
-            placeholder="메세지를 입력해주세요." // 기본 안내 문구
-            maxLength={10}
+            onChange={(e) => {
+              // 10자까지만 자르기 (한글 조합 에러 방지)
+              const val = e.target.value;
+              if (val.length <= 10) {
+                onMessageChange(val);
+              } else {
+                onMessageChange(val.slice(0, 10));
+              }
+            }}
+            placeholder="메세지를 입력해주세요."
+            // maxLength={10} 은 보조용으로 남겨두거나 제거해도 무방합니다.
             className="w-full h-14 bg-[#F9F9F9] rounded-[20px] px-6 py-4 text-neutral-900 text-base font-medium leading-6 outline-none border-none resize-none placeholder:text-neutral-400"
           />
           {/* 글자 수 표시 (정책 3) */}
-          <div className="absolute right-4 bottom-[-24px] text-[11px] text-[#CCCCCC]">
+          <div className="absolute right-4 bottom-[-24px] text-[17px] text-[#CCCCCC]">
             {message.length}/10
           </div>
         </div>

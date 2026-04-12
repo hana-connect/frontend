@@ -17,12 +17,9 @@ export default function AmountInput({
   isPadOpen,
   setIsPadOpen,
 }: Props) {
-  // 숫자 패드 클릭 로직
   const handleNumberClick = (val: string) => {
     const strAmount = amount === 0 ? "" : amount.toString();
     const newAmount = parseInt(strAmount + val, 10);
-
-    // 50만원 한도 제한 (입력 단계에서 차단)
     if (newAmount <= 500000) {
       onAmountChange(newAmount);
     }
@@ -37,11 +34,10 @@ export default function AmountInput({
     }
   };
 
-  // --- [Case 1] 전체 화면 숫자 패드 모드 (isPadOpen === true) ---
+  // --- [Case 1] 전체 화면 숫자 패드 모드 ---
   if (isPadOpen) {
     return (
       <div className="absolute inset-0 z-50 bg-white flex flex-col font-['Pretendard']">
-        {/* 헤더 */}
         <header className="h-14 flex items-center px-4 shrink-0">
           <button
             type="button"
@@ -55,8 +51,9 @@ export default function AmountInput({
           </h1>
         </header>
 
-        {/* 프로필 및 금액 표시 */}
-        <div className="flex flex-col items-center mt-12">
+        <div className="flex flex-col items-center mt-12 px-6">
+          {" "}
+          {/* 중앙 정렬이지만 여백 확보 */}
           <div className="w-12 h-12 bg-violet-100 rounded-full border border-zinc-300 flex items-center justify-center overflow-hidden mb-4">
             <img src="https://placehold.co/29x43" alt="profile" />
           </div>
@@ -68,31 +65,29 @@ export default function AmountInput({
               채현이 적금 (용돈)
             </p>
           </div>
-
           <div className="text-black text-4xl font-medium leading-8 mb-4">
             {amount.toLocaleString()} <span className="text-2xl">원</span>
           </div>
-
           <div className="bg-neutral-100 px-5 py-2 rounded-2xl text-neutral-500 text-base font-medium">
             지갑 잔액 800,000원
           </div>
         </div>
 
-        {/* 퀵 금액 버튼 */}
-        <div className="flex justify-center gap-3 mt-10 px-10">
+        {/* 퀵 버튼: 디자인상 양옆 24px 여백(px-6) */}
+        <div className="flex justify-center gap-3 mt-10 px-6">
           {[10000, 30000, 50000].map((val) => (
             <button
               key={val}
               type="button"
               onClick={() => onAmountChange(Math.min(500000, amount + val))}
-              className="flex-1 h-8 bg-white border border-gray-300 rounded-lg text-[#555555] text-base font-medium"
+              className="flex-1 h-8 bg-white border border-gray-300 rounded-lg text-[#555555] text-sm font-medium"
             >
               +{val / 10000}만
             </button>
           ))}
         </div>
 
-        {/* 숫자 키패드 */}
+        {/* 숫자 키패드: 양옆 24px 여백 */}
         <div className="mt-auto grid grid-cols-3 gap-y-2 w-full px-6 mb-4">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, "00", 0].map((n) => (
             <button
@@ -113,7 +108,6 @@ export default function AmountInput({
           </button>
         </div>
 
-        {/* 확인(다음) 버튼 */}
         <div className="px-6 pb-10">
           <button
             type="button"
@@ -127,9 +121,12 @@ export default function AmountInput({
     );
   }
 
-  // --- [Case 2] 메인 화면에 포함된 기본 금액 표시 (isPadOpen === false) ---
+  // --- [Case 2] 메인 화면 기본 금액 표시 (isPadOpen === false) ---
   return (
-    <section className="mt-6 mb-10">
+    <section className="mt-6 mb-14 w-full">
+      {" "}
+      {/* px-6 제거: 이제 섹션이 375px 끝까지 붙습니다 */}
+      {/* 텍스트 줄만 양옆 24px 여백 */}
       <div className="flex justify-between items-end mb-4">
         <h2 className="text-black text-xl font-bold leading-8">송금 금액</h2>
         <button
@@ -140,11 +137,11 @@ export default function AmountInput({
           [최근 송금 금액]
         </button>
       </div>
-
+      {/* 구분선(border-b)은 375px 끝까지, 텍스트만 px-6 */}
       <button
         type="button"
         onClick={() => setIsPadOpen(true)}
-        className="w-full border-b border-stone-300 py-3 text-left mb-6"
+        className="w-full border-b border-stone-300 py-3 text-left mb-6 ㅡx-6"
       >
         <span
           className={`text-xl font-bold ${amount > 0 ? "text-black" : "text-stone-300"}`}
@@ -152,8 +149,8 @@ export default function AmountInput({
           {amount > 0 ? `${amount.toLocaleString()}원` : "송금 금액"}
         </span>
       </button>
-
-      <div className="flex gap-2">
+      {/* 하단 퀵 버튼들도 양옆 24px 여백 */}
+      <div className="flex gap-2 px-6">
         {[10000, 30000, 50000].map((val) => (
           <button
             key={val}
