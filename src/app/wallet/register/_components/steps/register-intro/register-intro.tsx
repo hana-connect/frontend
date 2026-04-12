@@ -25,7 +25,7 @@ const introViewContent: Record<
 };
 
 const RegisterIntro = ({ onNext }: Props) => {
-  const viewType: ViewType = "child";
+  const viewType: ViewType = "parent";
 
   const { bannerTitle, showIrpCard } = introViewContent[viewType];
 

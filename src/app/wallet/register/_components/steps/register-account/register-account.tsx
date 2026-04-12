@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import Button from "@/common/components/button/Button";
-import Header from "@/common/components/header/Header";
 import AccountNumberInput from "@/common/components/input/AccountNumberInput";
+import RegisterStepHeader from "../../register-step-header/register-step-header";
 
 interface Props {
   onNext: () => void;
+  onBack: () => void;
 }
 
-const RegisterAccount = ({ onNext }: Props) => {
+const RegisterAccount = ({ onNext, onBack }: Props) => {
   const [accountNumber, setAccountNumber] = useState("");
 
   const handleVerifyAccount = () => {
@@ -18,7 +19,7 @@ const RegisterAccount = ({ onNext }: Props) => {
 
   return (
     <>
-      <Header type="sub" title="계좌 등록하기" />
+      <RegisterStepHeader title="계좌 등록하기" onBack={onBack} />
       <div className="flex flex-1 flex-col pb-9">
         <div className="px-6 py-7">
           <h1 className="text-left text-[24px] leading-7.5 font-bold tracking-[-1.2px] text-brand-black">
