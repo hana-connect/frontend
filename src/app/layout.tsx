@@ -13,7 +13,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col items-center">
+        <div className="w-full max-w-[375px] min-h-screen bg-white black shadow-lg overflow-x-hidden">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
