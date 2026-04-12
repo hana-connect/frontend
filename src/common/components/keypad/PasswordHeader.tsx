@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
+
 type PasswordHeaderProps = {
-  pageTitle: string;
   title: string;
   enteredLength: number;
   maxLength: number;
@@ -14,14 +15,25 @@ type DotItem = {
 };
 
 function Dot({ active }: { active: boolean }) {
-  const baseClassName = "h-4 w-4 rounded-full";
-  const colorClassName = active ? "bg-violet-500" : "bg-gray-300";
+  return (
+    <div
+      className={`h-4 w-4 rounded-full ${
+        active ? "bg-brand-purple-1" : "bg-grey-4"
+      }`}
+    />
+  );
+}
 
-  return <div className={`${baseClassName} ${colorClassName}`} />;
+function ErrorTooltip({ message }: { message: string }) {
+  return (
+    <div className="relative inline-flex items-center justify-center whitespace-nowrap rounded-full bg-error px-4 py-2 text-body-16-m text-white">
+      <span>{message}</span>
+      <div className="absolute -top-1 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 bg-error" />
+    </div>
+  );
 }
 
 export default function PasswordHeader({
-  pageTitle,
   title,
   enteredLength,
   maxLength,
@@ -34,23 +46,19 @@ export default function PasswordHeader({
 
   return (
     <section className="pt-2">
-      <p className="text-[16px] font-semibold text-gray-300">{pageTitle}</p>
-
       <div className="mt-12 flex flex-col items-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-violet-50 text-[48px] font-bold text-violet-500">
-          B
-        </div>
+        <Image width={52} height={61} src="/svg/logo.svg" alt="Logo" />
 
-        <h1 className="mt-6 text-center text-[18px] font-bold text-black">
+        <h1 className="mt-13 text-center text-heading-20-b text-black">
           {title}
         </h1>
 
-        <div className="mt-6 flex min-h-9 items-center justify-center">
-          {errorMessage ? (
-            <div className="rounded-full bg-red-500 px-4 py-2 text-[12px] font-medium text-white">
-              {errorMessage}
+        <div className="relative mt-6 h-12 w-full">
+          {errorMessage && errorMessage.length > 0 && (
+            <div className="absolute left-1/2 top-0 -translate-x-1/2">
+              <ErrorTooltip message={errorMessage} />
             </div>
-          ) : null}
+          )}
         </div>
 
         <div className="mt-6 flex items-center gap-4">
@@ -61,7 +69,7 @@ export default function PasswordHeader({
 
         <button
           type="button"
-          className="mt-28 text-[14px] font-medium text-gray-400 underline-offset-2 hover:underline"
+          className="mt-4 text-body-16-m text-grey-6 underline-offset-2 hover:underline"
         >
           비밀번호를 잊으셨나요?
         </button>

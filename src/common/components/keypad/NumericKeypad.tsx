@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import type {
   KeypadItem,
   NumericKeypadProps,
@@ -19,7 +21,7 @@ function KeypadButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="flex h-14 w-14 items-center justify-center rounded-full text-[24px] font-medium text-black transition active:scale-95 disabled:opacity-30"
+      className="flex h-8 w-14 items-center justify-center rounded-full text-title-32-sb text-black transition disabled:opacity-30"
     >
       {children}
     </button>
@@ -28,9 +30,13 @@ function KeypadButton({
 
 function LogoPlaceholder() {
   return (
-    <div className="flex h-14 w-14 items-center justify-center">
-      <div className="text-[28px] font-bold text-violet-300">B</div>
-    </div>
+    <Image
+      width={23}
+      height={28}
+      src="/svg/logo.svg"
+      alt="Logo"
+      className="grayscale opacity-20"
+    />
   );
 }
 
@@ -61,11 +67,11 @@ function renderItem(
   }
 
   if (item.type === "blank") {
-    if (item.variant === "logo") {
-      return <LogoPlaceholder key={index} />;
-    }
-
-    return <HiddenPlaceholder key={index} />;
+    return item.variant === "logo" ? (
+      <LogoPlaceholder key={index} />
+    ) : (
+      <HiddenPlaceholder key={index} />
+    );
   }
 
   return <HiddenPlaceholder key={index} />;
@@ -80,11 +86,11 @@ export default function NumericKeypad({
 }: NumericKeypadProps) {
   const gridClassName =
     columns === 4
-      ? "grid-cols-4 gap-x-6 gap-y-7"
+      ? "grid-cols-4 gap-x-6 gap-y-9"
       : "grid-cols-3 gap-x-8 gap-y-5";
 
   return (
-    <div className={`grid ${gridClassName} justify-items-center ${className}`}>
+    <div className={`grid ${gridClassName} place-items-center ${className}`}>
       {items.map((item, index) =>
         renderItem(item, index, onDigitPress, onBackspacePress),
       )}

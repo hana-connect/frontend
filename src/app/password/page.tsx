@@ -25,7 +25,6 @@ export default function PasswordPage() {
     <NumericInputLayout
       top={
         <PasswordHeader
-          pageTitle="계좌 비밀번호 입력"
           title="계좌 비밀번호를 입력해 주세요"
           enteredLength={value.length}
           maxLength={4}
