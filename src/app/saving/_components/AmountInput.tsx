@@ -1,6 +1,9 @@
 "use client";
 
+import { ChevronLeft } from "lucide-react";
 import type { Dispatch, SetStateAction } from "react";
+// 1. 공통 Button 컴포넌트 임포트 (경로 확인 필수!)
+import Button from "@/common/components/button/Button";
 
 interface Props {
   amount: number;
@@ -34,26 +37,21 @@ export default function AmountInput({
     }
   };
 
-  // --- [Case 1] 전체 화면 숫자 패드 모드 ---
   if (isPadOpen) {
     return (
       <div className="absolute inset-0 z-50 bg-white flex flex-col font-['Pretendard']">
-        <header className="h-14 flex items-center px-4 shrink-0">
+        <header className="sticky top-0 z-50 flex h-[60px] w-full items-center justify-center bg-white px-4 text-black shrink-0">
           <button
             type="button"
             onClick={() => setIsPadOpen(false)}
-            className="text-xl"
+            className="absolute left-4 p-1"
           >
-            {"<"}
+            <ChevronLeft size={24} />
           </button>
-          <h1 className="flex-1 text-center text-base font-medium text-black mr-6">
-            송금하기
-          </h1>
+          <h1 className="text-[18px] font-semibold leading-none">송금하기</h1>
         </header>
 
         <div className="flex flex-col items-center mt-12 px-6">
-          {" "}
-          {/* 중앙 정렬이지만 여백 확보 */}
           <div className="w-12 h-12 bg-violet-100 rounded-full border border-zinc-300 flex items-center justify-center overflow-hidden mb-4">
             <img src="https://placehold.co/29x43" alt="profile" />
           </div>
@@ -66,28 +64,29 @@ export default function AmountInput({
             </p>
           </div>
           <div className="text-black text-4xl font-medium leading-8 mb-4">
-            {amount.toLocaleString()} <span className="text-2xl">원</span>
+            {amount.toLocaleString()} <span className="text-4xl">원</span>
           </div>
-          <div className="bg-neutral-100 px-5 py-2 rounded-2xl text-neutral-500 text-base font-medium">
+          <div className="bg-neutral-100 my-2 px-5 py-2 rounded-2xl text-neutral-500 text-base font-medium whitespace-nowrap">
             지갑 잔액 800,000원
           </div>
         </div>
 
-        {/* 퀵 버튼: 디자인상 양옆 24px 여백(px-6) */}
-        <div className="flex justify-center gap-3 mt-10 px-6">
+        {/* 2. 퀵 버튼: 공통 Button (S size, gray variant) 적용 */}
+        <div className="flex justify-center gap-3 mt-40 px-6">
           {[10000, 30000, 50000].map((val) => (
-            <button
+            <Button
               key={val}
-              type="button"
+              size="S"
+              variant="gray" // 기본 틀은 유지하되 아래 className으로 덮어씁니다
               onClick={() => onAmountChange(Math.min(500000, amount + val))}
-              className="flex-1 h-8 bg-white border border-gray-300 rounded-lg text-[#555555] text-sm font-medium"
+              className="flex-1 !h-8 !rounded-lg !bg-white !border-[#DEDEDE] !text-neutral-600 !text-base !font-medium !leading-6 !px-0 outline outline-[1.18px] outline-offset-[-1.18px] outline-gray-300"
             >
-              +{val / 10000}만
-            </button>
+              + {val / 10000}만
+            </Button>
           ))}
         </div>
 
-        {/* 숫자 키패드: 양옆 24px 여백 */}
+        {/* 키패드 */}
         <div className="mt-auto grid grid-cols-3 gap-y-2 w-full px-6 mb-4">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, "00", 0].map((n) => (
             <button
@@ -108,25 +107,22 @@ export default function AmountInput({
           </button>
         </div>
 
+        {/* 3. 하단 다음 버튼: 공통 Button (L size) 적용 */}
         <div className="px-6 pb-10">
-          <button
-            type="button"
+          <Button
+            size="L"
+            variant={amount > 0 ? "active" : "disabled"} // 금액 유무에 따라 스타일 자동 변경
             onClick={() => setIsPadOpen(false)}
-            className="w-full h-14 bg-violet-500 text-white rounded-[20px] text-xl font-semibold shadow-lg"
           >
             다음
-          </button>
+          </Button>
         </div>
       </div>
     );
   }
 
-  // --- [Case 2] 메인 화면 기본 금액 표시 (isPadOpen === false) ---
   return (
     <section className="mt-6 mb-14 px-6">
-      {" "}
-      {/* px-6 제거: 이제 섹션이 375px 끝까지 붙습니다 */}
-      {/* 텍스트 줄만 양옆 24px 여백 */}
       <div className="flex justify-between items-end mb-4">
         <h2 className="text-black text-xl font-bold leading-8">송금 금액</h2>
         <button
@@ -137,11 +133,10 @@ export default function AmountInput({
           [최근 송금 금액]
         </button>
       </div>
-      {/* 구분선(border-b)은 375px 끝까지, 텍스트만 px-6 */}
       <button
         type="button"
         onClick={() => setIsPadOpen(true)}
-        className="w-full border-b border-stone-300 py-3 text-left mb-6 ㅡx-6"
+        className="w-full border-b border-stone-300 py-3 text-left mb-6"
       >
         <span
           className={`text-xl font-bold ${amount > 0 ? "text-black" : "text-stone-300"}`}
@@ -149,19 +144,6 @@ export default function AmountInput({
           {amount > 0 ? `${amount.toLocaleString()}원` : "송금 금액"}
         </span>
       </button>
-      {/* 하단 퀵 버튼들도 양옆 24px 여백 */}
-      <div className="flex gap-2">
-        {[10000, 30000, 50000].map((val) => (
-          <button
-            key={val}
-            type="button"
-            onClick={() => onAmountChange(Math.min(500000, amount + val))}
-            className="px-4 py-2 bg-[#F9F9F9] border border-[#DEDEDE] rounded-full text-sm font-medium text-neutral-600"
-          >
-            +{val / 10000}만
-          </button>
-        ))}
-      </div>
     </section>
   );
 }
