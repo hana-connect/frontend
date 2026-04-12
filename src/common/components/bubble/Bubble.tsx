@@ -22,15 +22,18 @@ const Bubble = ({ message, parentProfile }: BubbleProps) => {
           <p className="text-[16px] text-[#555555] font-medium leading-[1.4] text-left break-all">
             {message}
           </p>
-
-          <div
-            className="absolute top-0 -right-3.5 w-0 h-0"
-            style={{
-              borderTop: "15px solid #E5D7FF",
-              borderRight: "15px solid transparent",
-              borderLeft: "0px solid transparent",
-            }}
-          />
+          <div className="absolute top-0 -right-[12.5px] w-4 h-4">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path d="M0 0H10.5C12 0 13 1 12 2L0 13V0Z" fill="#E5D7FF" />
+            </svg>
+          </div>
         </div>
 
         <div className="relative w-13 h-13 shrink-0">
