@@ -29,7 +29,7 @@ export default function TransferAmount({
     handleQuickAdd,
     numericValue,
   } = useAmountInput({
-    maxAmount: 800000,
+    maxAmount,
   });
 
   const isEnabled = numericValue > 0;

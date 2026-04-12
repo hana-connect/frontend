@@ -37,7 +37,14 @@ export default function AmountHeader({
           <span>{accountNickname}</span>
         </div>
 
-        <div className="mt-7 text-heading-40-b text-black">
+        {/** biome-ignore lint/a11y/useSemanticElements: 폰트 설정으로 div를 사용하고, role="status"로 접근성 보강 */}
+        <div
+          className="mt-7 text-heading-40-b text-black"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          aria-label={`입력 금액 ${amount === "" ? "0" : amount}원`}
+        >
           {amount === "" ? "0" : amount}
           <span className="ml-1">원</span>
         </div>

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Password from "@/common/components/keypad/Password";
 
-function page() {
+function Page() {
   const router = useRouter();
 
   const handleAuthSuccess = () => {
@@ -19,4 +19,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

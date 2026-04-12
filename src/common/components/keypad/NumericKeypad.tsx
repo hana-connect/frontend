@@ -11,10 +11,12 @@ function KeypadButton({
   children,
   onClick,
   disabled = false,
+  ariaLabel,
 }: {
   children: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  ariaLabel?: string;
 }) {
   return (
     <button
@@ -22,6 +24,7 @@ function KeypadButton({
       onClick={onClick}
       disabled={disabled}
       className="flex h-8 w-14 items-center justify-center rounded-full text-title-32-sb text-black transition disabled:opacity-30"
+      aria-label={ariaLabel}
     >
       {children}
     </button>
@@ -34,7 +37,8 @@ function LogoPlaceholder() {
       width={23}
       height={28}
       src="/svg/ic_logo.svg"
-      alt="Logo"
+      alt=""
+      aria-hidden="true"
       className="grayscale opacity-20"
     />
   );
@@ -60,7 +64,7 @@ function renderItem(
 
   if (item.type === "backspace") {
     return (
-      <KeypadButton key={index} onClick={onBackspacePress}>
+      <KeypadButton key={index} onClick={onBackspacePress} ariaLabel="지우기">
         ←
       </KeypadButton>
     );

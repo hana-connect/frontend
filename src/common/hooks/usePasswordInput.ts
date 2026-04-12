@@ -48,6 +48,7 @@ export function usePasswordInput({
   };
 
   const handleDigitPress = async (digit: string) => {
+    if (!/^\d$/.test(digit)) return;
     if (value.length >= maxLength) return;
 
     const nextValue = `${value}${digit}`;
