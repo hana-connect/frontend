@@ -39,24 +39,22 @@ const ItemCard = ({
       onClick={handleCardClick}
       className={`
         w-full h-19 flex items-center justify-between
-        py-3 px-6 border border-[#ECECEC] rounded-3xl text-left
-        ${isPurple ? "bg-[#F5F1FB]" : "bg-[#F9F9F9]"}
-        ${hasRadio || onClickCard ? "cursor-pointer" : ""}
+        py-3 px-6 border border-grey-5 rounded-3xl text-left
+        ${isPurple ? "bg-brand-purple-3" : "bg-grey-9"}
         ${className}
       `}
     >
       <div className="flex flex-col gap-1 pointer-events-none">
-        <span className="text-[16px] text-[#000000] font-medium leading-none">
+        <span className="text-body-16-m text-(--color-foreground) leading-none">
           {title}
         </span>
-        <span className="text-[16px] text-[#777777] leading-none">
+        <span className="text-body-16-m text-grey-6 leading-none">
           {subTitle}
         </span>
       </div>
 
-      <div className="flex items-center gap-2 text-[16px] text-[#000000] font-medium">
+      <div className="flex items-center gap-2 text-body-16-m text-(--color-foreground)">
         {rightContent}
-
         {hasRadio && value && <RadioGroupItem value={value} id={value} />}
       </div>
     </Component>

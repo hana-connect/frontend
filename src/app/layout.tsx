@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
-
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "HANA CONNECT",
@@ -16,10 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="ko"
-      className={cn("h-full antialiased", "font-sans", geist.variable)}
-    >
+    <html lang="ko" className="h-full antialiased">
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
