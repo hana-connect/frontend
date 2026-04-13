@@ -7,7 +7,7 @@ import { useState } from "react";
 import Bubble from "@/common/components/bubble/Bubble";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
-import { cn } from "@/common/lib/utils";
+import { cn, getTodayDateKST } from "@/common/lib/utils";
 
 const DUMMY_PARENTS = [
   { id: 1, name: "한수정", img: "/svg/ic_mom1.svg" },
@@ -25,19 +25,6 @@ const RequestPage = () => {
 
   const handleSend = () => {
     if (isEnabled) setStep(2);
-  };
-
-  const getTodayDateKST = () => {
-    const now = new Date();
-    return new Intl.DateTimeFormat("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      timeZone: "Asia/Seoul",
-    })
-      .format(now)
-      .replace(/\s/g, "")
-      .replace(/\.$/, "");
   };
 
   // 요청
