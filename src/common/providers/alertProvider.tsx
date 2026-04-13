@@ -121,7 +121,10 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
         )}
         <AlertDialogAction
           {...options.actionProps}
-          onClick={handleAction}
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            handleAction();
+          }}
           disabled={isActing}
         >
           {options.actionLabel || "확인"}
