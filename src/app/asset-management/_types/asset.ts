@@ -13,10 +13,10 @@ export type Account = {
 };
 
 export type AssetData = {
-  savings: number; // 예적금 합계
-  checking: number; // 입출금 합계
-  investment: number; // 투자/청약 합계 (투자 항목 추가 반영)
-  pension: number; // 연금 합계 (추가됨!)
-  total: number; // 전체 자산 합계
-  changeRate: number; // 자산 변화율 (%)
+  savings: number;
+  checking: number;
+  investment: number;
+  pension: number;
+  total: number;
+  changeRate: number;
 };

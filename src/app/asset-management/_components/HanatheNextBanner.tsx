@@ -5,12 +5,14 @@ export default function HanatheNextBanner() {
     <div className="bg-violet-50 p-6 rounded-2xl text-center mt-10 border border-violet-100 text-black">
       <p className="text-xs mb-3 text-gray-600">
         더 자세한 자산관리가 필요하신가요?
+        <br />
+        하나더넥스트에서 자산관리를 도와드려요!
       </p>
       <button
         type="button"
         onClick={() =>
           window.open(
-            "https://www.hana1qm.com/web/sub/tlist.do?topyn=Y&pcatid=46",
+            "https://m.kebhana.com/m/oqs/livingCounselSenior.do",
             "_blank",
             "noopener,noreferrer",
           )
