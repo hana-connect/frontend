@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -124,13 +125,10 @@ export default function QuizPlayPage() {
                 </span>
               </div>
 
-              <Image
-                src="/svg/ic_down_vector.svg"
-                alt="화살표"
-                width={10}
-                height={6}
+              <ChevronDown
+                aria-hidden="true"
                 className={cn(
-                  "h-[6px] w-[10px] transition-transform",
+                  "h-4 w-4 text-grey-2 transition-transform duration-200",
                   showHint ? "rotate-0" : "rotate-180",
                 )}
               />

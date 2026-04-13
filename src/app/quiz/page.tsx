@@ -35,7 +35,7 @@ export default function QuizStartPage() {
 
             <div className="mt-2">
               <Image
-                src="/svg/quizestart.svg"
+                src="/svg/ic_quizestart.svg"
                 alt="아이 캐릭터"
                 width={157}
                 height={137}
