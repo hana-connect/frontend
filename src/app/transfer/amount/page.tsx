@@ -3,9 +3,7 @@
 import TransferAmount from "@/common/components/keypad/TransferAmount";
 
 export default function Page() {
-  const handleNextStep = (amount: number) => {
-    console.log(`${amount}원을 보냅니다.`);
-  };
+  const handleNextStep = (_amount: number) => {};
 
   return (
     <TransferAmount
