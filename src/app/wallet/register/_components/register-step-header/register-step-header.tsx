@@ -2,12 +2,12 @@
 
 import { ChevronLeft } from "lucide-react";
 
-interface Props {
+interface RegisterStepHeaderProps {
   title: string;
   onBack: () => void;
 }
 
-const RegisterStepHeader = ({ title, onBack }: Props) => {
+const RegisterStepHeader = ({ title, onBack }: RegisterStepHeaderProps) => {
   return (
     <header className="sticky top-0 z-50 flex h-15 w-full items-center justify-center bg-white px-4 text-black">
       <button
