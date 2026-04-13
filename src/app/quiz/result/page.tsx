@@ -140,7 +140,7 @@ export default function QuizResultPage() {
             {/* 다음 버튼 */}
             <div className="mt-auto pt-6">
               <Button
-                size="M"
+                size="L"
                 variant="active"
                 onClick={() => setOpen(true)}
                 className="h-14 rounded-[20px] text-[20px] font-semibold leading-6"
@@ -164,7 +164,7 @@ export default function QuizResultPage() {
             <div className="mt-6 flex items-center gap-3">
               <div className="w-[86px] shrink-0">
                 <Button
-                  size="M"
+                  size="L"
                   variant="disabled"
                   onClick={() => setOpen(false)}
                   className="h-12 w-full text-[18px] font-medium"
@@ -175,7 +175,7 @@ export default function QuizResultPage() {
 
               <div className="min-w-0 flex-1">
                 <Button
-                  size="M"
+                  size="L"
                   variant="active"
                   onClick={() => {
                     setOpen(false);
