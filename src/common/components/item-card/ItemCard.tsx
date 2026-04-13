@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import { cn } from "@/common/lib/utils";
 import { RadioGroupItem } from "../radio-group/RadioGroup";
 
 type ItemCardProps = {
@@ -24,36 +25,29 @@ const ItemCard = ({
   rightContent,
   onClickCard,
 }: ItemCardProps) => {
-  const handleCardClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.closest("button") || target.closest("input")) {
-      return;
-    }
-    onClickCard?.();
-  };
-
-  const Component = "div";
-
   return (
-    <Component
-      onClick={handleCardClick}
-      className={`
-        w-full h-19 flex items-center justify-between
-        py-3 px-6 border border-grey-5 rounded-3xl text-left text-body-16-m
-        ${isPurple ? "bg-brand-purple-3" : "bg-grey-9"}
-        ${className}
-      `}
+    <div
+      className={cn(
+        "flex w-full h-19 items-center justify-between",
+        "py-3 px-6 border border-grey-5 rounded-3xl text-left text-body-16-m",
+        isPurple ? "bg-brand-purple-3" : "bg-grey-9",
+        className,
+      )}
     >
-      <div className="flex flex-col gap-1 pointer-events-none">
+      <button
+        type="button"
+        onClick={onClickCard}
+        className="flex flex-1 flex-col gap-1 text-left"
+      >
         <span className="text-black leading-none">{title}</span>
         <span className="text-grey-6 leading-none">{subTitle}</span>
-      </div>
+      </button>
 
-      <div className="flex items-center gap-2 text-black">
+      <div className="flex items-center gap-2 text-black ml-2">
         {rightContent}
         {hasRadio && value && <RadioGroupItem value={value} id={value} />}
       </div>
-    </Component>
+    </div>
   );
 };
 
