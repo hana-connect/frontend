@@ -63,27 +63,38 @@ const RequestPage = () => {
                 type="button"
                 key={parent.id}
                 onClick={() => setSelectedParent(parent.id)}
+                aria-pressed={selectedParent === parent.id}
+                aria-label={`${parent.name} 선택`}
                 className={cn(
-                  "flex flex-col items-center gap-3 px-1 py-4 rounded-[20px] bg-grey-9 transition-all shrink-0 w-35 border-grey-5 border",
+                  "flex flex-col items-center gap-3 px-1 py-4 rounded-[20px] bg-grey-9 transition-all shrink-0 w-35 border-grey-5 border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-purple-3/50",
                 )}
               >
-                <div className="relative size-20 rounded-full overflow-hidden bg-white">
-                  <Image
-                    src={parent.img}
-                    alt={parent.name}
-                    fill
-                    className="object-cover"
-                  />
-                  {selectedParent === parent.id && (
-                    <div className="absolute inset-0 bg-brand-purple-background/90 flex items-center justify-center">
-                      <Check
-                        size={40}
-                        className="text-white"
-                        strokeWidth={2.5}
-                      />
-                    </div>
-                  )}
+                <div className="relative size-20 shrink-0">
+                  <div className="relative w-full h-full rounded-full overflow-hidden bg-white">
+                    <Image
+                      src={parent.img}
+                      alt={parent.name}
+                      fill
+                      className="object-cover"
+                    />
+                    {selectedParent === parent.id && (
+                      <div className="absolute inset-0 bg-brand-purple-background/90 flex items-center justify-center z-10">
+                        <Check
+                          size={40}
+                          className="text-white"
+                          strokeWidth={2.5}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="absolute -bottom-1 -right-1 size-6.25 rounded-full bg-[#2F195A] flex items-center justify-center z-10">
+                    <span className="text-[12px] font-semibold text-white leading-none">
+                      부모
+                    </span>
+                  </div>
                 </div>
+
                 <span className="text-body-14-m text-black">{parent.name}</span>
               </button>
             ))}
@@ -92,12 +103,18 @@ const RequestPage = () => {
 
         <section className="mt-14 px-6">
           <div className="flex items-center gap-1">
-            <h2 className="text-title-20-sb text-black">요청 메시지 보내기</h2>
+            <h2
+              id="request-message-title"
+              className="text-title-20-sb text-black"
+            >
+              요청 메시지 보내기
+            </h2>
             <span className="text-body-16-m-2 text-grey-6">(50자 이내)</span>
           </div>
           <textarea
             id="request-message"
             name="message"
+            aria-labelledby="request-message-title"
             className="mt-4 block h-32 w-full rounded-[20px] bg-grey-9 border-none p-4 font-body-16-m text-black placeholder:text-grey-6 focus:ring-1 focus:ring-brand-purple-1 outline-none resize-none"
             placeholder="메시지를 입력해주세요."
             maxLength={50}
