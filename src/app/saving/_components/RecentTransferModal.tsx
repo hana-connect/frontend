@@ -1,33 +1,41 @@
 "use client";
 
-interface Props {
+import Button from "@/common/components/button/Button";
+
+type RecentTransferModalProps = {
   isOpen: boolean;
   onClose: () => void;
-}
+};
 
-export default function RecentTransferModal({ isOpen, onClose }: Props) {
+export default function RecentTransferModal({
+  isOpen,
+  onClose,
+}: RecentTransferModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
-      <div className="bg-white w-full max-w-[300px] rounded-[32px] p-8 flex flex-col items-center shadow-2xl animate-in fade-in zoom-in duration-200">
-        <h3 className="text-base font-bold text-gray-800 mb-6 w-full text-left">
-          최근 송금 내역
-        </h3>
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50">
+      <div className="w-72 h-52 relative bg-white rounded-[20px] overflow-hidden shadow-xl animate-in fade-in zoom-in duration-200">
+        <div className="w-64 left-4 top-7 absolute text-left">
+          <h3 className="text-black text-lg font-medium font-['Pretendard'] leading-6">
+            최근 송금 내역
+          </h3>
+          <p className="text-neutral-500 text-base font-medium font-['Pretendard'] leading-5 mt-4">
+            2026년 4월 10일에 <br />
+            50,000원을 송금하셨어요.
+          </p>
+        </div>
 
-        <p className="text-sm text-gray-600 mb-8 leading-relaxed w-full text-left">
-          <span className="font-bold">2026년 4월 10일</span>에 <br />
-          <span className="text-violet-600 font-bold">50,000원</span>을
-          송금하셨어요.
-        </p>
-
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-full py-4 bg-violet-500 text-white rounded-2xl font-bold text-base hover:bg-violet-600 transition-colors"
-        >
-          확인
-        </button>
+        <div className="absolute left-4 top-33 w-64">
+          <Button
+            size="L"
+            variant="active"
+            onClick={onClose}
+            className="h-14 rounded-[20px] text-xl font-bold"
+          >
+            확인
+          </Button>
+        </div>
       </div>
     </div>
   );

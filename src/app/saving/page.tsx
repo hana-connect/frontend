@@ -12,25 +12,23 @@ import RelayHistory from "./_components/RelayHistory";
 import RelayMessage from "./_components/RelayMessage";
 import TransferComplete from "./_components/TransferComplete";
 
+type TransferStep = "input" | "password" | "complete" | "history";
+type LimitModalState = { isOpen: boolean; type: "daily" | "saving" };
+
 export default function SavingPage() {
   const router = useRouter();
 
-  const [step, setStep] = useState<
-    "input" | "password" | "complete" | "history"
-  >("input");
-  const [isPadOpen, setIsPadOpen] = useState(false);
+  const [step, setStep] = useState<TransferStep>("input");
+  const [isKeypadVisible, setIsKeypadVisible] = useState(false);
   const [amount, setAmount] = useState(0);
   const [message, setMessage] = useState("");
   const [isRecentModalOpen, setIsRecentModalOpen] = useState(false);
-  const [limitModal, setLimitModal] = useState<{
-    isOpen: boolean;
-    type: "daily" | "saving";
-  }>({
+  const [limitModal, setLimitModal] = useState<LimitModalState>({
     isOpen: false,
     type: "daily",
   });
 
-  const isSubmitDisabled = amount <= 0 || message.trim().length === 0;
+  const isTransferReady = amount > 0 && message.trim().length > 0;
 
   const handleTransferSubmit = () => {
     const currentSaving = 250000;
@@ -49,24 +47,24 @@ export default function SavingPage() {
 
   return (
     <div className="min-h-screen bg-white flex justify-center">
-      <main className="w-full max-w-[375px] min-h-screen bg-white relative flex flex-col font-['Pretendard'] overflow-hidden">
+      <main className="w-full max-w-93.75 min-h-screen bg-white relative flex flex-col font-['Pretendard'] overflow-hidden">
         {step === "input" && (
           <div className="flex flex-col h-full relative">
-            {/* 공컴 헤더 적용 */}
-            {!isPadOpen && <Header type="sub" title="송금하기" />}
+            {!isKeypadVisible && <Header type="sub" title="송금하기" />}
 
             <div
-              className={`flex-1 overflow-y-auto ${!isPadOpen ? "pb-40" : ""}`}
+              className={`flex-1 overflow-y-auto ${!isKeypadVisible ? "pb-40" : ""}`}
             >
               <AmountInput
-                amount={amount}
-                onAmountChange={setAmount}
-                onShowModal={() => setIsRecentModalOpen(true)}
-                isPadOpen={isPadOpen}
-                setIsPadOpen={setIsPadOpen}
+                currentAmount={amount}
+                onAmountUpdate={setAmount}
+                onShowRecentModal={() => setIsRecentModalOpen(true)}
+                isKeypadVisible={isKeypadVisible}
+                setIsKeypadVisible={setIsKeypadVisible}
+                onConfirmTransfer={() => setIsKeypadVisible(false)}
               />
 
-              {!isPadOpen && (
+              {!isKeypadVisible && (
                 <RelayMessage
                   message={message}
                   onMessageChange={setMessage}
@@ -75,16 +73,15 @@ export default function SavingPage() {
               )}
             </div>
 
-            {/* 하단 송금하기 버튼 섹션 */}
-            {!isPadOpen && (
+            {!isKeypadVisible && (
               <div className="absolute bottom-10 left-0 w-full px-6 bg-white py-4 z-10">
                 <Button
                   size="L"
-                  variant={isSubmitDisabled ? "disabled" : "active"}
+                  variant={isTransferReady ? "active" : "disabled"}
                   onClick={handleTransferSubmit}
-                  disabled={isSubmitDisabled}
+                  disabled={!isTransferReady}
                   className={
-                    !isSubmitDisabled
+                    isTransferReady
                       ? "shadow-lg active:scale-[0.98] transition-all"
                       : ""
                   }
@@ -96,7 +93,6 @@ export default function SavingPage() {
           </div>
         )}
 
-        {/* 나머지 단계 처리 */}
         {step === "history" && <RelayHistory onBack={() => setStep("input")} />}
         {step === "password" && (
           <PasswordInput
@@ -112,7 +108,6 @@ export default function SavingPage() {
           />
         )}
 
-        {/* 모달들 */}
         <RecentTransferModal
           isOpen={isRecentModalOpen}
           onClose={() => setIsRecentModalOpen(false)}

@@ -1,39 +1,39 @@
 "use client";
 
 import { ChevronLeft } from "lucide-react";
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react"; // useState, useEffect 추가
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import Button from "@/common/components/button/Button";
 
-interface Props {
-  amount: number;
-  onAmountChange: (value: number) => void;
-  onShowModal: () => void;
-  isPadOpen: boolean;
-  setIsPadOpen: Dispatch<SetStateAction<boolean>>;
-}
+type AmountInputProps = {
+  currentAmount: number;
+  onAmountUpdate: (value: number) => void;
+  onShowRecentModal: () => void;
+  isKeypadVisible: boolean;
+  setIsKeypadVisible: Dispatch<SetStateAction<boolean>>;
+  onConfirmTransfer: () => void;
+};
 
 export default function AmountInput({
-  amount,
-  onAmountChange,
-  onShowModal,
-  isPadOpen,
-  setIsPadOpen,
-}: Props) {
-  // 1. 패드 안에서만 사용할 임시 금액 상태
-  const [tempAmount, setTempAmount] = useState(amount);
+  currentAmount,
+  onAmountUpdate,
+  onShowRecentModal,
+  isKeypadVisible,
+  setIsKeypadVisible,
+  onConfirmTransfer,
+}: AmountInputProps) {
+  const [tempAmount, setTempAmount] = useState(currentAmount);
 
-  // 패드가 열릴 때마다 부모의 현재 금액으로 임시 금액을 초기화
   useEffect(() => {
-    if (isPadOpen) {
-      setTempAmount(amount);
+    if (isKeypadVisible) {
+      setTempAmount(currentAmount);
     }
-  }, [isPadOpen, amount]);
+  }, [isKeypadVisible, currentAmount]);
 
   const handleNumberClick = (val: string) => {
     const strAmount = tempAmount === 0 ? "" : tempAmount.toString();
     const newAmount = parseInt(strAmount + val, 10);
     if (newAmount <= 500000) {
-      setTempAmount(newAmount); // tempAmount 수정
+      setTempAmount(newAmount);
     }
   };
 
@@ -46,24 +46,22 @@ export default function AmountInput({
     }
   };
 
-  // 2. '다음' 버튼 클릭 시에만 부모 상태(amount) 업데이트
   const handleConfirm = () => {
-    onAmountChange(tempAmount);
-    setIsPadOpen(false);
+    onAmountUpdate(tempAmount);
+    onConfirmTransfer();
   };
 
-  // 3. 뒤로가기 클릭 시에는 아무것도 안 하고 닫기만 함
   const handleCancel = () => {
-    setIsPadOpen(false);
+    setIsKeypadVisible(false);
   };
 
-  if (isPadOpen) {
+  if (isKeypadVisible) {
     return (
       <div className="absolute inset-0 z-50 bg-white flex flex-col font-['Pretendard']">
         <header className="sticky top-0 z-50 flex h-15 w-full items-center justify-center bg-white px-4 text-black shrink-0">
           <button
             type="button"
-            onClick={handleCancel} // 수정: handleCancel 연결
+            onClick={handleCancel}
             className="absolute left-4 p-1"
           >
             <ChevronLeft size={24} />
@@ -83,7 +81,6 @@ export default function AmountInput({
               채현이 적금 (용돈)
             </p>
           </div>
-          {/* tempAmount 표시 */}
           <div className="text-black text-4xl font-medium leading-8 mb-4">
             {tempAmount.toLocaleString()} <span className="text-4xl">원</span>
           </div>
@@ -92,7 +89,6 @@ export default function AmountInput({
           </div>
         </div>
 
-        {/* 퀵 버튼 */}
         <div className="flex justify-center gap-3 mt-42 px-8">
           {[10000, 30000, 50000].map((val) => (
             <Button
@@ -108,7 +104,6 @@ export default function AmountInput({
           ))}
         </div>
 
-        {/* 키패드 (tempAmount 수정하도록 변경) */}
         <div className="mt-auto grid grid-cols-3 gap-y-2 w-full px-6 mb-4">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, "00", 0].map((n) => (
             <button
@@ -129,12 +124,11 @@ export default function AmountInput({
           </button>
         </div>
 
-        {/* 하단 버튼 */}
         <div className="px-6 pb-10">
           <Button
             size="L"
             variant={tempAmount > 0 ? "active" : "disabled"}
-            onClick={handleConfirm} // 수정: handleConfirm 연결
+            onClick={handleConfirm}
           >
             다음
           </Button>
@@ -143,14 +137,13 @@ export default function AmountInput({
     );
   }
 
-  // 패드가 닫혀있을 때의 기본 뷰
   return (
     <section className="mt-6 mb-14 px-6">
       <div className="flex justify-between items-end mb-4">
         <h2 className="text-black text-xl font-bold leading-8">송금 금액</h2>
         <button
           type="button"
-          onClick={onShowModal}
+          onClick={onShowRecentModal}
           className="text-zinc-400 text-base font-normal underline decoration-zinc-300"
         >
           [최근 송금 금액]
@@ -158,13 +151,15 @@ export default function AmountInput({
       </div>
       <button
         type="button"
-        onClick={() => setIsPadOpen(true)}
+        onClick={() => setIsKeypadVisible(true)}
         className="w-full border-b border-stone-300 py-3 text-left mb-6"
       >
         <span
-          className={`text-xl font-bold ${amount > 0 ? "text-black" : "text-stone-300"}`}
+          className={`text-xl font-bold ${currentAmount > 0 ? "text-black" : "text-stone-300"}`}
         >
-          {amount > 0 ? `${amount.toLocaleString()}원` : "송금 금액"}
+          {currentAmount > 0
+            ? `${currentAmount.toLocaleString()}원`
+            : "송금 금액"}
         </span>
       </button>
     </section>
