@@ -13,7 +13,7 @@ function Tabs({
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
-      data-orientation={orientation}
+      orientation={orientation}
       className={cn(
         "group/tabs flex w-full data-[orientation=horizontal]:flex-col",
         className,
@@ -63,7 +63,7 @@ function TabsTrigger({
       data-slot="tabs-trigger"
       className={cn(
         "relative inline-flex flex-1 items-center justify-center py-4 text-body-16-m whitespace-nowrap transition-all",
-        "text-grey-6 font-medium hover:text-black focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+        "text-grey-6 font-medium hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple-1 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
 
         "data-[state=active]:text-black data-[state=active]:font-semibold",
         "after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-transparent",
