@@ -103,6 +103,8 @@ export default function QuizPlayPage() {
           <button
             type="button"
             onClick={() => setShowHint((prev) => !prev)}
+            aria-expanded={showHint}
+            aria-controls="quiz-hint-content"
             className="mt-6 w-full rounded bg-grey-9 px-5 py-4 text-left"
           >
             <div className="flex items-center justify-between">
@@ -131,7 +133,10 @@ export default function QuizPlayPage() {
             </div>
 
             {showHint && (
-              <p className="mt-4 text-[18px] font-medium leading-6 text-grey-2">
+              <p
+                id="quiz-hint-content"
+                className="mt-4 text-[18px] font-medium leading-6 text-grey-2"
+              >
                 벚꽃 놀이를 갔다왔어요.
               </p>
             )}
