@@ -56,7 +56,7 @@ export default function QuizStartPage() {
           {/* 버튼 영역 */}
           <div className="mt-auto flex flex-col gap-4 pt-8">
             <Button
-              size="M"
+              size="L"
               variant="active"
               onClick={() => router.push("/quiz/play")}
               className="h-14 rounded-[20px] text-[18px] font-semibold leading-6"
@@ -65,7 +65,7 @@ export default function QuizStartPage() {
             </Button>
 
             <Button
-              size="M"
+              size="L"
               variant="purpleOutline"
               onClick={() => router.push("/")}
               className="h-14 rounded-[20px] text-[18px] font-semibold leading-6"
