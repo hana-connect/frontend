@@ -63,21 +63,29 @@ export default function QuizPlayPage() {
               const isSelected = selectedIndex === index;
 
               return (
-                <button
+                <label
                   key={choice}
-                  type="button"
-                  onClick={() => setSelectedIndex(index)}
-                  className={`flex h-20 w-full items-center justify-between rounded-2xl bg-[#FFFFFF] px-6 text-left transition ${
+                  className={`flex h-20 w-full cursor-pointer items-center justify-between rounded-2xl bg-[#FFFFFF] px-6 text-left transition ${
                     isSelected
                       ? "border-2 border-brand-purple-1"
                       : "border border-grey-5"
                   }`}
                 >
+                  <input
+                    type="radio"
+                    name="quiz-choice"
+                    value={choice}
+                    checked={isSelected}
+                    onChange={() => setSelectedIndex(index)}
+                    className="sr-only"
+                  />
+
                   <span className="text-[18px] font-medium leading-6 text-[#101828]">
                     {choice}
                   </span>
 
                   <div
+                    aria-hidden="true"
                     className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
                       isSelected ? "border-brand-purple-1" : "border-[#D1D5DC]"
                     }`}
@@ -86,7 +94,7 @@ export default function QuizPlayPage() {
                       <div className="h-2.5 w-2.5 rounded-full bg-brand-purple-1" />
                     )}
                   </div>
-                </button>
+                </label>
               );
             })}
           </div>
