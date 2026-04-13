@@ -1,8 +1,7 @@
 "use client";
 
 import { ChevronLeft } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
-// 1. 공통 Button 컴포넌트 임포트 (경로 확인 필수!)
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react"; // useState, useEffect 추가
 import Button from "@/common/components/button/Button";
 
 interface Props {
@@ -20,21 +19,42 @@ export default function AmountInput({
   isPadOpen,
   setIsPadOpen,
 }: Props) {
+  // 1. 패드 안에서만 사용할 임시 금액 상태
+  const [tempAmount, setTempAmount] = useState(amount);
+
+  // 패드가 열릴 때마다 부모의 현재 금액으로 임시 금액을 초기화
+  useEffect(() => {
+    if (isPadOpen) {
+      setTempAmount(amount);
+    }
+  }, [isPadOpen, amount]);
+
   const handleNumberClick = (val: string) => {
-    const strAmount = amount === 0 ? "" : amount.toString();
+    const strAmount = tempAmount === 0 ? "" : tempAmount.toString();
     const newAmount = parseInt(strAmount + val, 10);
     if (newAmount <= 500000) {
-      onAmountChange(newAmount);
+      setTempAmount(newAmount); // tempAmount 수정
     }
   };
 
   const handleBackspace = () => {
-    const strAmount = amount.toString();
+    const strAmount = tempAmount.toString();
     if (strAmount.length <= 1) {
-      onAmountChange(0);
+      setTempAmount(0);
     } else {
-      onAmountChange(parseInt(strAmount.slice(0, -1), 10));
+      setTempAmount(parseInt(strAmount.slice(0, -1), 10));
     }
+  };
+
+  // 2. '다음' 버튼 클릭 시에만 부모 상태(amount) 업데이트
+  const handleConfirm = () => {
+    onAmountChange(tempAmount);
+    setIsPadOpen(false);
+  };
+
+  // 3. 뒤로가기 클릭 시에는 아무것도 안 하고 닫기만 함
+  const handleCancel = () => {
+    setIsPadOpen(false);
   };
 
   if (isPadOpen) {
@@ -43,7 +63,7 @@ export default function AmountInput({
         <header className="sticky top-0 z-50 flex h-15 w-full items-center justify-center bg-white px-4 text-black shrink-0">
           <button
             type="button"
-            onClick={() => setIsPadOpen(false)}
+            onClick={handleCancel} // 수정: handleCancel 연결
             className="absolute left-4 p-1"
           >
             <ChevronLeft size={24} />
@@ -63,22 +83,23 @@ export default function AmountInput({
               채현이 적금 (용돈)
             </p>
           </div>
+          {/* tempAmount 표시 */}
           <div className="text-black text-4xl font-medium leading-8 mb-4">
-            {amount.toLocaleString()} <span className="text-4xl">원</span>
+            {tempAmount.toLocaleString()} <span className="text-4xl">원</span>
           </div>
           <div className="bg-neutral-100 my-2 px-5 py-2 rounded-2xl text-neutral-500 text-base font-medium whitespace-nowrap">
             지갑 잔액 800,000원
           </div>
         </div>
 
-        {/* 2. 퀵 버튼: 공통 Button (S size, gray variant) 적용 */}
+        {/* 퀵 버튼 */}
         <div className="flex justify-center gap-3 mt-42 px-8">
           {[10000, 30000, 50000].map((val) => (
             <Button
               key={val}
               size="S"
-              variant="gray" // 기본 틀은 유지하되 아래 className으로 덮어씁니다
-              onClick={() => onAmountChange(Math.min(500000, amount + val))}
+              variant="gray"
+              onClick={() => setTempAmount(Math.min(500000, tempAmount + val))} // tempAmount 수정
               className="flex-1 rounded-lg bg-white text-neutral-600 text-base font-medium leading-6 px-0 outline-[1.18px] outline-offset-[-1.18px] outline-gray-300"
               style={{ height: "34px" }}
             >
@@ -87,7 +108,7 @@ export default function AmountInput({
           ))}
         </div>
 
-        {/* 키패드 */}
+        {/* 키패드 (tempAmount 수정하도록 변경) */}
         <div className="mt-auto grid grid-cols-3 gap-y-2 w-full px-6 mb-4">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, "00", 0].map((n) => (
             <button
@@ -108,12 +129,12 @@ export default function AmountInput({
           </button>
         </div>
 
-        {/* 3. 하단 다음 버튼: 공통 Button (L size) 적용 */}
+        {/* 하단 버튼 */}
         <div className="px-6 pb-10">
           <Button
             size="L"
-            variant={amount > 0 ? "active" : "disabled"} // 금액 유무에 따라 스타일 자동 변경
-            onClick={() => setIsPadOpen(false)}
+            variant={tempAmount > 0 ? "active" : "disabled"}
+            onClick={handleConfirm} // 수정: handleConfirm 연결
           >
             다음
           </Button>
@@ -122,6 +143,7 @@ export default function AmountInput({
     );
   }
 
+  // 패드가 닫혀있을 때의 기본 뷰
   return (
     <section className="mt-6 mb-14 px-6">
       <div className="flex justify-between items-end mb-4">
