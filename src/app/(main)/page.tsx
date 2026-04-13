@@ -7,7 +7,7 @@ type MainPageProps = {
 
 async function page({ searchParams }: MainPageProps) {
   const params = await searchParams;
-  const userRole = params.role || "CHILD";
+  const userRole = params.role || "CLD";
 
   return (
     <div className="min-h-screen bg-[#f5f5f5]">

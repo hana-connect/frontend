@@ -242,7 +242,7 @@ const ChildMainView = ({
                 내 활동
               </h2>
               <Image
-                src="svg/ic_main_common_menu.svg"
+                src="svg/ic_main_kids_menu.svg"
                 alt="활동 메뉴"
                 width={90.67}
                 height={40}
