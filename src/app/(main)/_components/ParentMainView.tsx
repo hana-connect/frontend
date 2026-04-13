@@ -103,12 +103,12 @@ const ParentMainView = () => {
               <h2 className="text-[18px] font-semibold text-[#757783]">
                 {userName}님의 지갑
               </h2>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2">
                 <span className="text-[33px] font-bold text-black leading-tight">
                   {userBalance.toLocaleString()}원
                 </span>
               </div>
-              <div className="text-body-16-m text-[#676D86] flex flex-row items-center gap-0.5 mt-1 justify-end font-medium">
+              <div className="text-body-16-m text-[#676D86] flex flex-row items-center gap-0.5 justify-end font-medium">
                 내지갑/송금
                 <div className="bg-[#676D86] rounded-full w-5 h-5 flex items-center justify-center ml-2">
                   <ArrowRight
