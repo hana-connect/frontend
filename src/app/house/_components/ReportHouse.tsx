@@ -42,9 +42,13 @@ function ReportHouse({ level, season }: ReportHouseProps) {
         ))}
 
         {level === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center text-grey-3 text-body-16-m">
-            텅
-          </div>
+          <Image
+            src="/svg/house/ic_house_0.svg"
+            alt="ic_house_0"
+            fill
+            className="object-contain"
+            priority
+          />
         )}
       </div>
     </div>
