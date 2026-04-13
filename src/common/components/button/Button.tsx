@@ -41,16 +41,17 @@ const Button = ({
   };
 
   const variantStyles = {
-    outline: "bg-white border border-[#ECECEC] text-[16px] text-[#777777]",
-    disabled: "bg-[#DEDEDE] text-white",
-    active: "bg-[#9C6FFE] text-white",
-    purpleOutline: "bg-white border-[2px] border-[#9C6FFE] text-[#9C6FFE]",
+    outline: "bg-white border border-grey-5 text-[16px] text-grey-6",
+    disabled: "bg-grey-4 text-white",
+    active: "bg-brand-purple-1 text-white",
+    purpleOutline:
+      "bg-white border-[2px] border-brand-purple-1 text-brand-purple-1",
 
-    gray: "bg-[#F9F9F9] border border-[#ECECEC] text-[#777777]",
-    lightPurple: "bg-[#9C6FFE] text-white text-[18px]",
+    gray: "bg-[#F9F9F9] border border-grey-5 text-grey-6",
+    lightPurple: "bg-brand-purple-1 text-white text-[18px]",
     darkGray: "bg-[#F6F6F6] text-[#000000] text-[20px]",
 
-    smallPurple: "bg-[#FCFCFC] text-[#493963]",
+    smallPurple: "bg-white text-grey-1",
     smallGray: "bg-[#F6F6F6] text-[#555555]",
   };
 

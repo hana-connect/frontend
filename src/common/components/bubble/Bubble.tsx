@@ -12,7 +12,7 @@ type BubbleProps = {
 const Bubble = ({ message, parentProfile }: BubbleProps) => {
   return (
     <div
-      className="w-full h-46.25 flex items-center justify-end px-5"
+      className="w-full h-46.25 flex items-center justify-end px-5 rounded-[20px]"
       style={{
         background: "linear-gradient(135deg, #FFF3FF 12%, #F1F8FF 88%)",
       }}
