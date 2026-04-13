@@ -31,7 +31,7 @@ export default function QuizResultPage() {
             {/* 결과 카드 */}
             <div className="relative mt-2">
               <Image
-                src={isCorrect ? "/svg/confetti.svg" : "/svg/rain.svg"}
+                src={isCorrect ? "/svg/ic_confetti.svg" : "/svg/rain.svg"}
                 alt="결과 이미지"
                 width={256}
                 height={96}
