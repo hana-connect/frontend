@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroupItem } from "../radio-group/RadioGroup";
 
 type ItemCardProps = {
   title: string;
@@ -39,21 +39,17 @@ const ItemCard = ({
       onClick={handleCardClick}
       className={`
         w-full h-19 flex items-center justify-between
-        py-3 px-6 border border-grey-5 rounded-3xl text-left
+        py-3 px-6 border border-grey-5 rounded-3xl text-left text-body-16-m
         ${isPurple ? "bg-brand-purple-3" : "bg-grey-9"}
         ${className}
       `}
     >
       <div className="flex flex-col gap-1 pointer-events-none">
-        <span className="text-body-16-m text-(--color-foreground) leading-none">
-          {title}
-        </span>
-        <span className="text-body-16-m text-grey-6 leading-none">
-          {subTitle}
-        </span>
+        <span className="text-black leading-none">{title}</span>
+        <span className="text-grey-6 leading-none">{subTitle}</span>
       </div>
 
-      <div className="flex items-center gap-2 text-body-16-m text-(--color-foreground)">
+      <div className="flex items-center gap-2 text-black">
         {rightContent}
         {hasRadio && value && <RadioGroupItem value={value} id={value} />}
       </div>
