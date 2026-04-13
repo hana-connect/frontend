@@ -47,7 +47,7 @@ function AlertDialogContent({
       <AlertDialogOverlay />
       <AlertDialogPrimitive.Content
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 w-[calc(100%-80px)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-[20px] bg-white p-5 shadow-xl outline-none animate-in fade-in-0 zoom-in-95 duration-200",
+          "fixed top-1/2 left-1/2 z-50 w-[calc(100%-72px)] max-w-[303px] -translate-x-1/2 -translate-y-1/2 rounded-[20px] bg-white p-5 shadow-xl outline-none animate-in fade-in-0 zoom-in-95 duration-200",
           className,
         )}
         {...props}
@@ -124,7 +124,7 @@ function AlertDialogCancel({
       <Button
         size="L"
         variant="gray"
-        className={cn("flex-1 w-full", className)}
+        className={cn("flex-1 w-full bg-grey-4 border-grey-4", className)}
       >
         {props.children}
       </Button>
