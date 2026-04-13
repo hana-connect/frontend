@@ -4,7 +4,26 @@ import Link from "next/link";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
 
-const ChildMainView = () => {
+type ParentData = {
+  id: number;
+  name: string;
+  imageUrl: string;
+};
+
+type ChildMainProps = {
+  userName?: string;
+  balance?: number;
+  parents?: ParentData[];
+};
+
+const ChildMainView = ({
+  userName = "홍길동",
+  balance = 200068,
+  parents = [
+    { id: 1, name: "디지털하나로유지현", imageUrl: "svg/ic_mom1.svg" },
+    { id: 2, name: "하나로아빠", imageUrl: "svg/ic_mom2.svg" },
+  ],
+}: ChildMainProps) => {
   return (
     <main className="pb-10">
       <Header type="main" />
@@ -14,7 +33,7 @@ const ChildMainView = () => {
       <section aria-label="메인 이벤트 배너">
         <Image
           src="svg/ic_main_kids_banner.svg"
-          alt="아이부자 메인 배너: 다양한 혜택을 확인해보세요"
+          alt="아이부자 메인 배너"
           width={400}
           height={200}
           priority
@@ -27,17 +46,17 @@ const ChildMainView = () => {
         <section className="flex flex-col gap-4" aria-label="진행 중인 이벤트">
           <Image
             src="svg/ic_main_kids_quiz_banner.svg"
-            alt="매일매일 퀴즈 풀고 용돈 받기"
-            width={400}
-            height={200}
+            alt="오늘의 퀴즈를 오픈했어요!"
+            width={335}
+            height={57}
             priority
             className="w-full h-auto"
           />
           <Image
             src="svg/ic_main_kids_ad.svg"
             alt="추천 서비스 광고"
-            width={400}
-            height={200}
+            width={335}
+            height={90}
             priority
             className="w-full h-auto"
           />
@@ -55,11 +74,11 @@ const ChildMainView = () => {
                 id="wallet-section-title"
                 className="text-[18px] font-semibold text-[#757783]"
               >
-                000님의 지갑
+                {userName}님의 지갑
               </h2>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[33px] font-bold text-black leading-tight">
-                  268원
+                  {balance.toLocaleString()}원
                 </span>
                 <div className="bg-[#676D86] rounded-full w-6 h-6 flex items-center justify-center">
                   <ArrowRight
@@ -97,10 +116,10 @@ const ChildMainView = () => {
           <Link
             href="/house"
             className="w-full block"
-            aria-label="우리 집 완성도 확인하기"
+            aria-label="청약 리포트 페이지로 이동"
           >
             <div className="bg-white rounded-[20px] p-5 flex justify-between items-center w-full shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)]">
-              <p className="text-body-16-m text-black text-left leading-snug font-medium">
+              <p className="text-body-16-m text-[#111] text-left leading-snug font-medium">
                 청약 통장으로 짓고 있는 <br />
                 우리 집, 얼마나 완성됐을까?
               </p>
@@ -173,46 +192,39 @@ const ChildMainView = () => {
           </div>
 
           <ul className="flex flex-col">
-            <li className="flex py-2 items-center justify-between">
-              <div className="flex items-center">
-                <Image
-                  src="svg/ic_mom1.svg"
-                  alt="부모 프로필 1"
-                  width={50}
-                  height={50}
-                />
-                <div className="flex flex-col ml-4">
-                  <p className="text-grey-1 text-[16px] font-semibold">
-                    디지털하나로유지현
-                  </p>
-                  <p className="text-[14px] font-semibold text-grey-2">
-                    정기용돈 미등록
-                  </p>
+            {parents.map((parent, index) => (
+              <li
+                key={parent.id}
+                className={`flex py-2 items-center justify-between ${index > 0 ? "border-t border-gray-50" : ""}`}
+              >
+                <div className="flex items-center">
+                  <Image
+                    src={parent.imageUrl}
+                    alt={`${parent.name} 프로필`}
+                    width={50}
+                    height={50}
+                  />
+                  <div className="flex flex-col ml-4">
+                    <p className="text-grey-1 text-[16px] font-semibold">
+                      {parent.name}
+                    </p>
+                    <p className="text-[14px] font-semibold text-grey-2">
+                      정기용돈 미등록
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <p className="text-body-16-m text-brand-purple-1">내역 공유중</p>
-            </li>
-            <li className="flex py-2 items-center justify-between border-t border-gray-50">
-              <div className="flex items-center">
-                <Image
-                  src="svg/ic_mom2.svg"
-                  alt="부모 프로필 1"
-                  width={50}
-                  height={50}
-                />
-                <div className="flex flex-col ml-4">
-                  <p className="text-grey-1 text-[16px] font-semibold">
-                    디지털하나로유지현
+                {/* 첫 번째 부모 '내역 공유중', 나머지는 '지갑공유' 버튼 */}
+                {index === 0 ? (
+                  <p className="text-body-16-m text-brand-purple-1">
+                    내역 공유중
                   </p>
-                  <p className="text-[14px] font-semibold text-grey-2">
-                    정기용돈 미등록
-                  </p>
-                </div>
-              </div>
-              <Button size="S" variant="smallGray">
-                지갑공유
-              </Button>
-            </li>
+                ) : (
+                  <Button size="S" variant="smallGray">
+                    지갑공유
+                  </Button>
+                )}
+              </li>
+            ))}
           </ul>
         </section>
 
@@ -231,7 +243,7 @@ const ChildMainView = () => {
               </h2>
               <Image
                 src="svg/ic_main_common_menu.svg"
-                alt="활동 메뉴 더보기"
+                alt="활동 메뉴"
                 width={90.67}
                 height={40}
                 className="w-auto h-auto"
@@ -248,7 +260,7 @@ const ChildMainView = () => {
             />
             <Image
               src="svg/ic_main_kids_pig.svg"
-              alt="지금 시작하기"
+              alt="저금 시작하기"
               width={335}
               height={350}
               className="w-full h-auto"
