@@ -65,7 +65,7 @@ const AccountNumberInput = ({
           type="button"
           onClick={onVerify}
           disabled={verifyDisabled || disabled}
-          className="text-body-18-m h-[37px] w-[86px] shrink-0 rounded-[20px] bg-grey-7 leading-[33px] tracking-[-0.09px] text-grey-6"
+          className="text-body-18-m h-9.25 w-21.5 shrink-0 rounded-[20px] bg-grey-7 leading-8.25 tracking-[-0.09px] text-grey-6"
         >
           {verifyLabel}
         </button>
