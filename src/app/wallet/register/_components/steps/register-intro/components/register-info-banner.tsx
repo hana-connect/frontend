@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import wonderIcon from "@/app/wallet/register/_assets/icons/wonder.svg";
 
@@ -15,7 +16,7 @@ const RegisterInfoBanner = ({ title }: RegisterInfoBannerProps) => {
         <Image src={wonderIcon} alt="" width={19} height={19} />
         <span className="text-body-16-m text-brand-black">{title}</span>
       </div>
-      <Image src="/svg/Chevron_Right.svg" alt="" width={20} height={20} />
+      <ChevronRight size={24} className="text-brand-black" />
     </button>
   );
 };
