@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Button from "@/common/components/button/Button";
+import RegisterStepHeader from "@/common/components/header/RegisterStepHeader";
 import AccountNumberInput from "@/common/components/input/AccountNumberInput";
-import RegisterStepHeader from "../../register-step-header/register-step-header";
 
 type RegisterAccountProps = {
   onNext: () => void;
