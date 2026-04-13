@@ -29,7 +29,7 @@
   /* Gradient */
   --gradient-brand-1: linear-gradient(135deg, #905ffe 0%, #46c49f 100%);
   --gradient-brand-2: linear-gradient(135deg, #833af1 0%, #8921cb 100%);
-  --gradeint-brand-3: linear-gradient(119deg, #fff3ff 14.62%, #f1f8ff 86.07%);
+  --gradient-brand-3: linear-gradient(119deg, #fff3ff 14.62%, #f1f8ff 86.07%);
 }
 
 /* 텍스트 프리셋 */
