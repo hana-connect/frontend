@@ -5,12 +5,12 @@ import Button from "@/common/components/button/Button";
 import AccountNumberInput from "@/common/components/input/AccountNumberInput";
 import RegisterStepHeader from "../../register-step-header/register-step-header";
 
-interface Props {
+interface RegisterAccountProps {
   onNext: () => void;
   onBack: () => void;
 }
 
-const RegisterAccount = ({ onNext, onBack }: Props) => {
+const RegisterAccount = ({ onNext, onBack }: RegisterAccountProps) => {
   const [accountNumber, setAccountNumber] = useState("");
 
   const handleVerifyAccount = () => {
