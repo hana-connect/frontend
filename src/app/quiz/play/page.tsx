@@ -149,7 +149,7 @@ export default function QuizPlayPage() {
           {/* 제출 버튼 */}
           <div className="mt-auto pt-6">
             <Button
-              size="M"
+              size="L"
               variant={selectedIndex !== null ? "active" : "disabled"}
               disabled={selectedIndex === null}
               onClick={() => {
