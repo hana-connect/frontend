@@ -13,7 +13,7 @@ function page() {
     <main className="py-10 px-6">
       <h1 className="text-heading-24-b mb-3">별돌이의 청약리포트</h1>
       <ProgressBar level={level} month={month} />
-      <ReportHouse level={level} season="fall" />
+      <ReportHouse level={level} season="winter" />
       {level === 0 ? (
         <>
           <div className="bg-[#FFF2CA] p-4 rounded-2xl mb-5 text-body-16-m-2 text-center">
