@@ -21,7 +21,7 @@ export default function QuizStartPage() {
             </h1>
 
             <p className="mt-[2px] text-base font-medium leading-6 text-black">
-              아이의 활동를 퀴즈로 맞혀보세요 😊
+              아이의 활동을 퀴즈로 맞혀보세요 😊
             </p>
           </div>
 
