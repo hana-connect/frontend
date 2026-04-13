@@ -8,10 +8,13 @@ import ReportSummary from "./_components/ReportSummary";
 function page() {
   return (
     <main className="py-10 px-6">
-      <h1 className="text-heading-24-b">별돌이의 청약리포트</h1>
+      <h1 className="text-heading-24-b mb-3">별돌이의 청약리포트</h1>
       <ProgressBar level={6} month={3} />
       <ReportHouse />
-      <ReportCard />
+      <div className="grid grid-cols-2 gap-4 mt-2 mb-5">
+        <ReportCard label="총 납입 회차" value={28} unit="회" />
+        <ReportCard label="이번 납입 금액" value={28} unit="만원" />
+      </div>
       <ReportSummary />
       <ReportHistory />
       <section>
