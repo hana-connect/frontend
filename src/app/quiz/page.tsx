@@ -2,11 +2,51 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { getTodayQuiz } from "@/app/api/quiz/quiz";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
 
 export default function QuizStartPage() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getChildId = () => {
+    const storedChildId = sessionStorage.getItem("selectedChildId");
+    const parsedChildId = storedChildId ? Number(storedChildId) : NaN;
+
+    if (Number.isInteger(parsedChildId) && parsedChildId > 0) {
+      return parsedChildId;
+    }
+
+    return 1; // TODO: 나중에 실제 선택된 childId로 교체
+  };
+
+  const handleStartQuiz = async () => {
+    try {
+      setIsLoading(true);
+
+      const childId = getChildId();
+      const quizData = await getTodayQuiz(childId);
+
+      const isQuizCompleted = quizData.solvedCount >= quizData.totalCount;
+      const hasReadyQuestion = quizData.questions.some(
+        (question) => question.status === "READY",
+      );
+
+      if (isQuizCompleted || !hasReadyQuestion) {
+        router.push("/quiz/complete");
+        return;
+      }
+
+      router.push("/quiz/play");
+    } catch (error) {
+      console.error("퀴즈 시작 처리 실패:", error);
+      router.push("/quiz/play");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[375px] flex-col bg-[#FFFFFF]">
@@ -58,10 +98,11 @@ export default function QuizStartPage() {
             <Button
               size="L"
               variant="active"
-              onClick={() => router.push("/quiz/play")}
+              onClick={handleStartQuiz}
+              disabled={isLoading}
               className="h-14 rounded-[20px] text-[18px] font-semibold leading-6"
             >
-              퀴즈 시작하기
+              {isLoading ? "확인 중..." : "퀴즈 시작하기"}
             </Button>
 
             <Button

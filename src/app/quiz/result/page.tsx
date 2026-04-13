@@ -2,24 +2,105 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
+import type {
+  QuizQuestion,
+  QuizTodayResponse,
+  SubmitAnswerResponse,
+} from "@/app/api/quiz/types/quiz";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
+import QuizChoiceList from "@/common/components/quiz/QuizChoiceList";
+import QuizQuestionCard from "@/common/components/quiz/QuizQuestionCard";
 
 export default function QuizResultPage() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  const choices = [
-    "용돈 기록하기",
-    "사진 찍기",
-    "심부름 하기",
-    "영상 통화하기",
-  ];
+  const [quizData, setQuizData] = useState<QuizTodayResponse | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(
+    null,
+  );
+  const [answerResult, setAnswerResult] = useState<SubmitAnswerResponse | null>(
+    null,
+  );
 
-  const selectedIndex = 3;
-  const isCorrect = false; // 정답 여부
+  useEffect(() => {
+    const loadStoredResult = () => {
+      const storedQuizToday = sessionStorage.getItem("quizToday");
+      const storedCurrentQuestion = sessionStorage.getItem(
+        "quizCurrentQuestion",
+      );
+      const storedAnswerResult = sessionStorage.getItem("quizAnswerResult");
+
+      if (!storedQuizToday || !storedCurrentQuestion || !storedAnswerResult) {
+        router.replace("/quiz/play");
+        return;
+      }
+
+      try {
+        const parsedQuizData: QuizTodayResponse = JSON.parse(storedQuizToday);
+        const parsedCurrentQuestion: QuizQuestion = JSON.parse(
+          storedCurrentQuestion,
+        );
+        const parsedAnswerResult: SubmitAnswerResponse =
+          JSON.parse(storedAnswerResult);
+
+        setQuizData(parsedQuizData);
+        setCurrentQuestion(parsedCurrentQuestion);
+        setAnswerResult(parsedAnswerResult);
+      } catch (error) {
+        console.error("퀴즈 결과 데이터 파싱 실패:", error);
+        router.replace("/quiz/play");
+      }
+    };
+
+    loadStoredResult();
+  }, [router]);
+
+  const handleNext = () => {
+    if (!quizData) {
+      return;
+    }
+
+    const hasNextQuiz = quizData.solvedCount + 1 < quizData.totalCount;
+
+    if (hasNextQuiz) {
+      setOpen(true);
+      return;
+    }
+
+    router.push("/quiz/complete");
+  };
+
+  const handleContinueQuiz = () => {
+    setOpen(false);
+    router.push("/quiz/play");
+  };
+
+  if (!quizData || !currentQuestion || !answerResult) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-[375px] flex-col bg-[#FFFFFF]">
+        <Header type="sub" title="퀴즈 결과" />
+        <main className="flex flex-1 items-center justify-center bg-[#FFFFFF]">
+          <p className="text-[16px] font-medium text-grey-6">
+            결과를 불러오는 중입니다...
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  const choices = currentQuestion.choices;
+  const selectedIndex = answerResult.selectedIndex;
+  const isCorrect = answerResult.isCorrect;
+  const hasNextQuiz = quizData.solvedCount + 1 < quizData.totalCount;
+
+  const quizBadgeText = `QUIZ ${String(currentQuestion.questionOrder).padStart(2, "0")}`;
+  const questionText = currentQuestion.question;
+  const correctChoiceText =
+    currentQuestion.choices[answerResult.correctIndex] ?? "";
 
   return (
     <>
@@ -43,7 +124,7 @@ export default function QuizResultPage() {
               <div className="rounded-2xl border border-grey-5 bg-[#FFFFFF] px-6 pt-10 pb-6">
                 <div className="relative flex items-center gap-3">
                   <div
-                    className={`absolute left-0 bottom-[2px] h-6 w-[300px] ${
+                    className={`absolute bottom-[2px] left-0 h-6 w-[300px] ${
                       isCorrect ? "bg-fuchsia-100" : "bg-[#FDE2E4]"
                     }`}
                   />
@@ -80,72 +161,35 @@ export default function QuizResultPage() {
                     <>
                       아쉬워요 🥺
                       <br />
-                      정답은 영상 통화하기 입니다.
+                      정답은 {correctChoiceText} 입니다.
                     </>
                   )}
                 </p>
               </div>
             </div>
 
-            {/* 문제 카드 */}
-            <div className="relative mt-14">
-              <div className="absolute -top-5 left-6 z-10">
-                <div className="relative flex items-center justify-center drop-shadow-[0_6px_0_rgba(0,0,0,0.08)]">
-                  <div className="flex">
-                    <div className="h-[51px] w-[51px] rounded-full bg-[#B8B8B8]" />
-                    <div className="-ml-4 h-[51px] w-[51px] rounded-full bg-[#B8B8B8]" />
-                    <div className="-ml-4 h-[51px] w-[51px] rounded-full bg-[#B8B8B8]" />
-                  </div>
-                  <span className="absolute whitespace-nowrap text-[20px] font-bold leading-7 text-white">
-                    QUIZ 01
-                  </span>
-                </div>
-              </div>
+            <QuizQuestionCard
+              quizBadgeText={quizBadgeText}
+              questionText={questionText}
+              muted
+            />
 
-              <div className="rounded-2xl border border-grey-5 bg-[#FFFFFF] px-6 pt-10 pb-6">
-                <p className="text-[20px] font-bold leading-8 text-[#9C91B0]">
-                  문제입니다.
-                  <br />
-                  지난 주에 아이와 함께 했던 활동은
-                  <br />
-                  무엇일까요?
-                </p>
-              </div>
-            </div>
+            <QuizChoiceList
+              choices={choices}
+              selectedIndex={selectedIndex}
+              disabled
+              muted
+              questionOrder={currentQuestion.questionOrder}
+            />
 
-            {/* 보기 리스트 */}
-            <div className="mt-5 flex flex-col gap-[14px]">
-              {choices.map((choice, index) => {
-                const isSelected = selectedIndex === index;
-
-                return (
-                  <div
-                    key={choice}
-                    className="flex h-20 w-full items-center justify-between rounded-2xl border border-grey-5 bg-[#FFFFFF] px-6 text-left"
-                  >
-                    <span className="text-[18px] font-medium leading-6 text-[#B1A8BF]">
-                      {choice}
-                    </span>
-
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full border-2 border-[#D1D5DC]">
-                      {isSelected && (
-                        <div className="h-2.5 w-2.5 rounded-full bg-[#D1D5DC]" />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* 다음 버튼 */}
             <div className="mt-auto pt-6">
               <Button
                 size="L"
                 variant="active"
-                onClick={() => setOpen(true)}
+                onClick={handleNext}
                 className="h-14 rounded-[20px] text-[20px] font-semibold leading-6"
               >
-                다음 퀴즈 풀기
+                {hasNextQuiz ? "다음 퀴즈 풀기" : "퀴즈 끝내기"}
               </Button>
             </div>
           </section>
@@ -177,10 +221,7 @@ export default function QuizResultPage() {
                 <Button
                   size="L"
                   variant="active"
-                  onClick={() => {
-                    setOpen(false);
-                    router.push("/quiz/play");
-                  }}
+                  onClick={handleContinueQuiz}
                   className="h-12 w-full text-[18px] font-semibold"
                 >
                   예

@@ -3,23 +3,120 @@
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getTodayQuiz, submitQuizAnswer } from "@/app/api/quiz/quiz";
+import type {
+  QuizQuestion,
+  QuizTodayResponse,
+  SubmitAnswerResponse,
+} from "@/app/api/quiz/types/quiz";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
+import QuizChoiceList from "@/common/components/quiz/QuizChoiceList";
+import QuizQuestionCard from "@/common/components/quiz/QuizQuestionCard";
 import { cn } from "@/common/lib/utils";
 
 export default function QuizPlayPage() {
   const router = useRouter();
 
+  const [childId, setChildId] = useState<number | null>(null);
+  const [quizData, setQuizData] = useState<QuizTodayResponse | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(
+    null,
+  );
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [showHint, setShowHint] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const choices = [
-    "용돈 기록하기",
-    "사진 찍기",
-    "심부름 하기",
-    "영상 통화하기",
-  ];
+  const saveQuizResult = (
+    quiz: QuizTodayResponse,
+    question: QuizQuestion,
+    answer: SubmitAnswerResponse,
+  ) => {
+    sessionStorage.setItem("quizToday", JSON.stringify(quiz));
+    sessionStorage.setItem("quizCurrentQuestion", JSON.stringify(question));
+    sessionStorage.setItem("quizAnswerResult", JSON.stringify(answer));
+  };
+
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        const storedChildId = sessionStorage.getItem("selectedChildId");
+        const parsedChildId = storedChildId ? Number(storedChildId) : NaN;
+
+        const targetChildId =
+          Number.isInteger(parsedChildId) && parsedChildId > 0
+            ? parsedChildId
+            : 1; // TODO: 메인 페이지 연결 후 fallback 제거
+
+        const data = await getTodayQuiz(targetChildId);
+        const nextQuestion =
+          data.questions.find((question) => question.status === "READY") ??
+          null;
+
+        setChildId(targetChildId);
+
+        if (!nextQuestion) {
+          router.replace("/quiz/complete");
+          return;
+        }
+
+        setQuizData(data);
+        setCurrentQuestion(nextQuestion);
+        setSelectedIndex(null);
+        setShowHint(false);
+      } catch (error) {
+        console.error("퀴즈 조회 실패:", error);
+      }
+    };
+
+    fetchQuiz();
+  }, [router]);
+
+  const handleSubmitAnswer = async () => {
+    if (!childId || !quizData || !currentQuestion || selectedIndex === null) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const answerResult = await submitQuizAnswer({
+        childId,
+        quizSetId: quizData.quizSetId,
+        questionOrder: currentQuestion.questionOrder,
+        body: {
+          selectedIndex,
+        },
+      });
+
+      saveQuizResult(quizData, currentQuestion, answerResult);
+      router.push("/quiz/result");
+    } catch (error) {
+      console.error("답 제출 실패:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (!quizData || !currentQuestion) {
+    return (
+      <div className="mx-auto flex min-h-screen w-full max-w-[375px] flex-col bg-[#FFFFFF]">
+        <Header type="sub" title="퀴즈 풀기" />
+        <main className="flex flex-1 items-center justify-center bg-[#FFFFFF]">
+          <p className="text-[16px] font-medium text-grey-6">
+            퀴즈를 불러오는 중입니다...
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  const choices = currentQuestion.choices;
+  const progressText = `${quizData.solvedCount + 1}/${quizData.totalCount}`;
+  const quizBadgeText = `QUIZ ${String(currentQuestion.questionOrder).padStart(2, "0")}`;
+  const questionText = currentQuestion.question;
+  const hintText = currentQuestion.hint;
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[375px] flex-col bg-[#FFFFFF]">
@@ -27,83 +124,19 @@ export default function QuizPlayPage() {
 
       <main className="flex flex-1 flex-col bg-[#FFFFFF]">
         <section className="flex flex-1 flex-col bg-[linear-gradient(180deg,#FFF3FF_0%,#F1F8FF_25%,#FFFFFF_50%)] px-5 pt-6 pb-6">
-          <div className="relative mt-6">
-            {/* QUIZ 뱃지 */}
-            <div className="absolute -top-5 left-6 z-10">
-              <div className="relative flex items-center justify-center drop-shadow-[0_6px_0_rgba(0,0,0,0.08)]">
-                <div className="flex">
-                  <div className="h-[51px] w-[51px] rounded-full bg-brand-secondary" />
-                  <div className="-ml-4 h-[51px] w-[51px] rounded-full bg-brand-secondary" />
-                  <div className="-ml-4 h-[51px] w-[51px] rounded-full bg-brand-secondary" />
-                </div>
-                <span className="absolute whitespace-nowrap text-[20px] font-bold leading-7 text-white">
-                  QUIZ 01
-                </span>
-              </div>
-            </div>
+          <QuizQuestionCard
+            quizBadgeText={quizBadgeText}
+            questionText={questionText}
+            progressText={progressText}
+          />
 
-            <div className="rounded-2xl border border-grey-5 bg-[#FFFFFF] px-6 pt-10 pb-6">
-              <div className="text-right text-[20px] font-semibold leading-8 text-brand-black">
-                1/3
-              </div>
+          <QuizChoiceList
+            choices={choices}
+            selectedIndex={selectedIndex}
+            onSelect={setSelectedIndex}
+            questionOrder={currentQuestion.questionOrder}
+          />
 
-              <div className="my-3 border-t border-grey-5" />
-
-              <p className="text-[20px] font-bold leading-8 text-brand-black">
-                문제입니다.
-                <br />
-                지난 주에 아이와 함께 했던 활동은
-                <br />
-                무엇일까요?
-              </p>
-            </div>
-          </div>
-
-          {/* 보기 리스트 */}
-          <div className="mt-5 flex flex-col gap-[14px]">
-            {choices.map((choice, index) => {
-              const isSelected = selectedIndex === index;
-
-              return (
-                <label
-                  key={choice}
-                  className={cn(
-                    "flex h-20 w-full cursor-pointer items-center justify-between rounded-2xl bg-[#FFFFFF] px-6 text-left transition",
-                    isSelected
-                      ? "border-2 border-brand-purple-1"
-                      : "border border-grey-5",
-                  )}
-                >
-                  <input
-                    type="radio"
-                    name="quiz-choice"
-                    value={choice}
-                    checked={isSelected}
-                    onChange={() => setSelectedIndex(index)}
-                    className="sr-only"
-                  />
-
-                  <span className="text-[18px] font-medium leading-6 text-[#101828]">
-                    {choice}
-                  </span>
-
-                  <div
-                    aria-hidden="true"
-                    className={cn(
-                      "flex h-5 w-5 items-center justify-center rounded-full border-2",
-                      isSelected ? "border-brand-purple-1" : "border-[#D1D5DC]",
-                    )}
-                  >
-                    {isSelected && (
-                      <div className="h-2.5 w-2.5 rounded-full bg-brand-purple-1" />
-                    )}
-                  </div>
-                </label>
-              );
-            })}
-          </div>
-
-          {/* 힌트 */}
           <button
             type="button"
             onClick={() => setShowHint((prev) => !prev)}
@@ -139,24 +172,22 @@ export default function QuizPlayPage() {
                 id="quiz-hint-content"
                 className="mt-4 text-[18px] font-medium leading-6 text-grey-2"
               >
-                벚꽃 놀이를 갔다왔어요.
+                {hintText}
               </p>
             )}
           </button>
 
-          {/* 제출 버튼 */}
           <div className="mt-auto pt-6">
             <Button
               size="L"
-              variant={selectedIndex !== null ? "active" : "disabled"}
-              disabled={selectedIndex === null}
-              onClick={() => {
-                if (selectedIndex === null) return;
-                router.push("/quiz/result");
-              }}
+              variant={
+                selectedIndex !== null && !isSubmitting ? "active" : "disabled"
+              }
+              disabled={selectedIndex === null || isSubmitting}
+              onClick={handleSubmitAnswer}
               className="h-14 rounded-[20px] text-[20px] font-semibold leading-6"
             >
-              정답 제출
+              {isSubmitting ? "제출 중..." : "정답 제출"}
             </Button>
           </div>
         </section>

@@ -74,7 +74,7 @@ export default function QuizCompletePage() {
               <Button
                 size="L"
                 variant="active"
-                onClick={() => router.push("/")}
+                onClick={() => router.push("/quiz")}
                 className="h-14 rounded-[20px] text-[20px] font-semibold leading-6"
               >
                 확인
