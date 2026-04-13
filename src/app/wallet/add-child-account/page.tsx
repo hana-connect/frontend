@@ -23,10 +23,10 @@ const AddChildAccountPage = () => {
         </div>
 
         <main className="flex flex-1 flex-col px-6">
-          <Input placeholder="계좌 별명" />
+          <Input placeholder="계좌 별명" maxLength={12} />
 
           <div className="mt-9">
-            <Input placeholder="계좌번호" />
+            <Input placeholder="계좌번호" maxLength={11} />
           </div>
 
           <div className="mt-auto pb-9">
