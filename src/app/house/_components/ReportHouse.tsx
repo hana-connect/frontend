@@ -12,20 +12,18 @@ function ReportHouse({ level, season }: ReportHouseProps) {
 
   return (
     <div className="flex justify-center items-center my-8">
-      <div className="relative">
+      <div className="relative w-[375px] h-[293px] mx-[-24px]">
         <Image
           src={`/svg/house/${ground}.svg`}
           alt={ground}
-          width={375}
-          height={293}
-          className="object-contain mx-[-24px]"
+          fill
+          className="object-contain"
+          priority
         />
 
         {objects.map((asset) => (
-          <img
+          <div
             key={asset.name}
-            src={`/svg/house/${asset.name}.svg`}
-            alt={asset.name}
             style={{
               position: "absolute",
               left: asset.x,
@@ -33,7 +31,14 @@ function ReportHouse({ level, season }: ReportHouseProps) {
               width: asset.width,
               height: asset.height,
             }}
-          />
+          >
+            <Image
+              src={`/svg/house/${asset.name}.svg`}
+              alt={asset.name}
+              fill
+              className="object-contain"
+            />
+          </div>
         ))}
 
         {level === 0 && (
