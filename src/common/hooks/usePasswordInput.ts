@@ -56,7 +56,16 @@ export function usePasswordInput({
     setValue(nextValue);
 
     if (nextValue.length === maxLength && onComplete) {
-      const isValid = await onComplete(nextValue);
+      let isValid = false;
+      try {
+        isValid = await onComplete(nextValue);
+      } catch {
+        setValue("");
+        setErrorMessage(
+          "비밀번호 확인 중 오류가 발생했습니다. 다시 시도해주세요.",
+        );
+        return;
+      }
 
       if (!isValid) {
         const nextFailedCount = failedCount + 1;

@@ -26,7 +26,11 @@ function Dot({ active }: { active: boolean }) {
 
 function ErrorTooltip({ message }: { message: string }) {
   return (
-    <div className="relative inline-flex items-center justify-center whitespace-nowrap rounded-full bg-error px-4 py-2 text-body-16-m text-white">
+    <div
+      role="alert"
+      aria-live="assertive"
+      className="relative inline-flex items-center justify-center whitespace-nowrap rounded-full bg-error px-4 py-2 text-body-16-m text-white"
+    >
       <span>{message}</span>
       <div className="absolute -top-1 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 bg-error" />
     </div>
