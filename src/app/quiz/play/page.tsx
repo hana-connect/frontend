@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
+import { cn } from "@/common/lib/utils";
 
 export default function QuizPlayPage() {
   const router = useRouter();
@@ -65,11 +66,12 @@ export default function QuizPlayPage() {
               return (
                 <label
                   key={choice}
-                  className={`flex h-20 w-full cursor-pointer items-center justify-between rounded-2xl bg-[#FFFFFF] px-6 text-left transition ${
+                  className={cn(
+                    "flex h-20 w-full cursor-pointer items-center justify-between rounded-2xl bg-[#FFFFFF] px-6 text-left transition",
                     isSelected
                       ? "border-2 border-brand-purple-1"
-                      : "border border-grey-5"
-                  }`}
+                      : "border border-grey-5",
+                  )}
                 >
                   <input
                     type="radio"
@@ -86,9 +88,10 @@ export default function QuizPlayPage() {
 
                   <div
                     aria-hidden="true"
-                    className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-                      isSelected ? "border-brand-purple-1" : "border-[#D1D5DC]"
-                    }`}
+                    className={cn(
+                      "flex h-5 w-5 items-center justify-center rounded-full border-2",
+                      isSelected ? "border-brand-purple-1" : "border-[#D1D5DC]",
+                    )}
                   >
                     {isSelected && (
                       <div className="h-2.5 w-2.5 rounded-full bg-brand-purple-1" />
@@ -126,9 +129,10 @@ export default function QuizPlayPage() {
                 alt="화살표"
                 width={10}
                 height={6}
-                className={`h-[6px] w-[10px] transition-transform ${
-                  showHint ? "rotate-0" : "rotate-180"
-                }`}
+                className={cn(
+                  "h-[6px] w-[10px] transition-transform",
+                  showHint ? "rotate-0" : "rotate-180",
+                )}
               />
             </div>
 
@@ -147,6 +151,7 @@ export default function QuizPlayPage() {
             <Button
               size="M"
               variant={selectedIndex !== null ? "active" : "disabled"}
+              disabled={selectedIndex === null}
               onClick={() => {
                 if (selectedIndex === null) return;
                 router.push("/quiz/result");
