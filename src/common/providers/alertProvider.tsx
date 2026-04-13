@@ -63,6 +63,7 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
   const [options, setOptions] = useState<AlertOptions>({});
   const [isActing, setIsActing] = useState(false);
   const actingRef = useRef(false);
+  const alertSessionRef = useRef(0);
 
   const close = useCallback(() => setIsOpen(false), []);
 
@@ -75,26 +76,33 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
 
   const handleAction = useCallback(async () => {
     if (actingRef.current) return;
+    const sessionAtStart = alertSessionRef.current;
     actingRef.current = true;
     setIsActing(true);
 
     try {
       await options.onAction?.();
-      if (options.closeOnAction !== false) {
+      if (
+        options.closeOnAction !== false &&
+        sessionAtStart === alertSessionRef.current
+      ) {
         close();
         return;
       }
     } catch (error) {
       console.error("Alert Action Error:", error);
     } finally {
-      actingRef.current = false;
-      setIsActing(false);
+      if (sessionAtStart === alertSessionRef.current) {
+        actingRef.current = false;
+        setIsActing(false);
+      }
     }
   }, [close, options]);
 
   const contextValue = useMemo(
     () => ({
       alert: (newOptions: AlertOptions) => {
+        alertSessionRef.current += 1;
         actingRef.current = false;
         setIsActing(false);
         setOptions(newOptions);
