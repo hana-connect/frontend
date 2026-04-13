@@ -1,11 +1,11 @@
 import Image from "next/image";
 import wonderIcon from "@/app/wallet/register/_assets/icons/wonder.svg";
 
-interface Props {
+type RegisterInfoBannerProps = {
   title: string;
-}
+};
 
-const RegisterInfoBanner = ({ title }: Props) => {
+const RegisterInfoBanner = ({ title }: RegisterInfoBannerProps) => {
   return (
     <button
       type="button"
