@@ -72,10 +72,10 @@ function ParentMainView() {
           <div className="flex justify-between items-center w-full">
             <p className="text-grey-1 text-body-16-m">000님의 활동 0개</p>
             <Image
-              src="svg/ic_main_kids_menu.svg"
-              alt="Kids Menu"
-              width={49}
-              height={22}
+              src="svg/ic_main_common_menu.svg"
+              alt="Common Menu"
+              width={90.67}
+              height={40}
               className="w-auto h-auto"
               priority
             />
