@@ -72,7 +72,7 @@ export default function QuizCompletePage() {
             {/* 확인 버튼 */}
             <div className="mt-auto pt-8">
               <Button
-                size="M"
+                size="L"
                 variant="active"
                 onClick={() => router.push("/")}
                 className="h-14 rounded-[20px] text-[20px] font-semibold leading-6"
