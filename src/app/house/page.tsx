@@ -6,7 +6,7 @@ import ReportHistory from "./_components/ReportHistory";
 import ReportHouse from "./_components/ReportHouse";
 
 function page() {
-  const level = 15;
+  const level: number = 15;
   const month = 3;
 
   return (
