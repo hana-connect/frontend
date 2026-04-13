@@ -73,24 +73,13 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
     }
   }, [isOpen]);
 
-  const api = useMemo(() => ({ close, isActing }), [close, isActing]);
-
-  const alert = useCallback((newOptions: AlertOptions) => {
-    actingRef.current = false;
-    setIsActing(false);
-    setOptions(newOptions);
-    setIsOpen(true);
-  }, []);
-
   const handleAction = useCallback(async () => {
     if (actingRef.current) return;
-
     actingRef.current = true;
     setIsActing(true);
 
     try {
       await options.onAction?.();
-
       if (options.closeOnAction !== false) {
         close();
         return;
@@ -103,45 +92,44 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
     }
   }, [close, options]);
 
-  const renderFooter = () => {
-    if (options.footer) {
-      return typeof options.footer === "function"
-        ? options.footer(api)
-        : options.footer;
-    }
+  const contextValue = useMemo(
+    () => ({
+      alert: (newOptions: AlertOptions) => {
+        actingRef.current = false;
+        setIsActing(false);
+        setOptions(newOptions);
+        setIsOpen(true);
+      },
+      close,
+    }),
+    [close],
+  );
 
-    const showCancel = !!options.cancelLabel;
-
-    return (
-      <AlertDialogFooter>
-        {showCancel && (
-          <AlertDialogCancel {...options.cancelProps} disabled={isActing}>
-            {options.cancelLabel}
-          </AlertDialogCancel>
-        )}
-        <AlertDialogAction
-          {...options.actionProps}
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            handleAction();
-          }}
-          disabled={isActing}
-        >
-          {options.actionLabel || "확인"}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    );
-  };
+  const api = useMemo(() => ({ close, isActing }), [close, isActing]);
 
   return (
-    <AlertDialogContext.Provider value={{ alert, close }}>
+    <AlertDialogContext.Provider value={contextValue}>
       {children}
-      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogContent className={options.contentClassName}>
+      <AlertDialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (!open && actingRef.current) return;
+          setIsOpen(open);
+        }}
+      >
+        <AlertDialogContent
+          className={options.contentClassName}
+          onOpenAutoFocus={(e) => {
+            if (isActing) e.preventDefault();
+          }}
+          onEscapeKeyDown={(e) => {
+            if (actingRef.current) e.preventDefault();
+          }}
+        >
           <VisuallyHidden.Root>
             <AlertDialogTitle>{options.title || "알림"}</AlertDialogTitle>
             <AlertDialogDescription>
-              {options.description || "대화상자"}
+              {options.description || "상세 내용이 없습니다."}
             </AlertDialogDescription>
           </VisuallyHidden.Root>
 
@@ -166,7 +154,27 @@ export function AlertDialogProvider({ children }: { children: ReactNode }) {
                   <div className="mt-2 w-full">{options.content}</div>
                 )}
               </AlertDialogHeader>
-              {renderFooter()}
+
+              <AlertDialogFooter>
+                {options.cancelLabel && (
+                  <AlertDialogCancel
+                    {...options.cancelProps}
+                    disabled={isActing}
+                  >
+                    {options.cancelLabel}
+                  </AlertDialogCancel>
+                )}
+                <AlertDialogAction
+                  {...options.actionProps}
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.preventDefault();
+                    handleAction();
+                  }}
+                  disabled={isActing}
+                >
+                  {options.actionLabel || "확인"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
             </>
           )}
         </AlertDialogContent>
