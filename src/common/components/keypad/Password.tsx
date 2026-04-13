@@ -22,12 +22,31 @@ export default function Password({ title, length, onSuccess }: PasswordProps) {
   } = usePasswordInput({
     maxLength: length,
     onComplete: async (password) => {
-      // TODO: 실제 검증 로직으로 교체 필요
-      if (password === "1234") {
-        onSuccess();
-        return true;
+      const savedMemberId = localStorage.getItem("memberId");
+
+      if (!savedMemberId) {
+        return false;
       }
-      return false;
+
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          memberId: Number(savedMemberId),
+          password,
+        }),
+      });
+
+      const _result = await res.json();
+
+      if (!res.ok) {
+        return false;
+      }
+
+      onSuccess();
+      return true;
     },
   });
 
