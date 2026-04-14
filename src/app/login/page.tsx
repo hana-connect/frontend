@@ -40,7 +40,7 @@ function Page() {
         );
       }
 
-      router.push("/savings"); // TODO 경로 바꾸기
+      router.push("/");
       return true;
     } catch (error) {
       console.error("로그인 실패:", error);
