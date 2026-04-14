@@ -47,7 +47,6 @@ export async function serverSpringFetch<T>(
     const res = await fetch(`${SPRING_BASE_URL}${endpoint}`, {
       ...rest,
       headers,
-      cache: "no-store",
       signal: controller.signal,
     });
 
