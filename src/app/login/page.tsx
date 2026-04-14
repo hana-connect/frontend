@@ -7,37 +7,44 @@ function Page() {
   const router = useRouter();
 
   const handleLogin = async (password: string): Promise<boolean> => {
+    const rawMemberId = localStorage.getItem("memberId");
+    const memberId = Number(rawMemberId);
+
+    if (!Number.isInteger(memberId) || memberId <= 0) {
+      throw new Error("유효한 memberId가 없습니다.");
+    }
+
     try {
-      const memberId = localStorage.getItem("memberId");
-
-      if (!memberId) {
-        console.error("memberId가 없습니다.");
-        return false;
-      }
-
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          memberId: Number(memberId),
+          memberId,
           password,
         }),
       });
 
-      const result = await res.json();
+      const result = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        console.error(result.message);
-        return false;
+        if (res.status === 401 || res.status === 403) {
+          return false;
+        }
+
+        throw new Error(
+          typeof result.message === "string"
+            ? result.message
+            : "로그인 요청에 실패했습니다.",
+        );
       }
 
-      router.push("/house"); // TODO 경로 수정
+      router.push("/savings"); // TODO 경로 바꾸기
       return true;
     } catch (error) {
       console.error("로그인 실패:", error);
-      return false;
+      throw error;
     }
   };
 
