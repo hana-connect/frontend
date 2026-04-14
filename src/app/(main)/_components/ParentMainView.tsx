@@ -324,8 +324,8 @@ const ParentMainView = () => {
               시작해보세요!
             </p>
             <Image
-              src="svg/ic_main_parents_hi.svg"
-              alt=""
+              src="svg/ic_kids_hi.svg"
+              alt="아이 캐릭터"
               width={157}
               height={137}
               priority

@@ -125,7 +125,7 @@ const ChildMainView = ({
               </p>
               <Image
                 src="svg/ic_house.svg"
-                alt=""
+                alt="집 아이콘"
                 width={59}
                 height={52}
                 priority
