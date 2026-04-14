@@ -22,7 +22,7 @@ const Header = ({
 
   if (type === "main") {
     return (
-      <header className="sticky top-0 z-50 flex h-15 w-full items-center justify-between bg-[#F5F5F5] px-4">
+      <header className="fixed top-0 left-0 z-50 flex h-15 w-full items-center justify-between bg-[#F5F5F5] px-4">
         <div className="flex items-center">
           <div className="relative h-10 w-10">
             <Image
@@ -35,7 +35,6 @@ const Header = ({
             />
           </div>
         </div>
-
         <div className="flex items-center gap-7 text-[#949AAD] pr-2">
           <button type="button" aria-label="스캔" className="relative h-6 w-6">
             <ScanLine size={24} />

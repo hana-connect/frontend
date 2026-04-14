@@ -47,6 +47,14 @@
   .bg-brand-gradient-3 {
     background-image: var(--gradient-brand-3);
   }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @theme inline {
@@ -90,6 +98,5 @@
 
 body {
   background: var(--background);
-  color: var(--foreground);
   font-family: "Pretendard", sans-serif;
 }

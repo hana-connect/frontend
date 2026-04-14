@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AlertDialogProvider } from "@/common/providers/alertProvider";
 
 export const metadata: Metadata = {
   title: "HANA CONNECT",
@@ -14,8 +15,8 @@ export default function RootLayout({
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="min-h-full flex flex-col items-center">
-        <div className="w-full max-w-[375px] min-h-screen text-black bg-white shadow-lg overflow-x-hidden">
-          {children}
+        <div className="w-full max-w-[375px] min-h-screen bg-white text-black shadow-lg overflow-x-hidden">
+          <AlertDialogProvider>{children}</AlertDialogProvider>
         </div>
       </body>
     </html>
