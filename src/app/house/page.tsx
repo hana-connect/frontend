@@ -9,6 +9,7 @@ import ProgressBar from "./_components/ProgressBar";
 import ReportCard from "./_components/ReportCard";
 import ReportHistory from "./_components/ReportHistory";
 import ReportHouse from "./_components/ReportHouse";
+import { getCurrentSeason } from "./_lib/getCurrentSeason";
 
 type HouseStatusResponse = {
   status: number;
@@ -73,13 +74,15 @@ async function Page({ searchParams }: PageProps) {
   if (!report) {
     return <div>데이터를 불러오는 중 문제가 발생했습니다.</div>;
   }
+
   const { level, gauge } = report;
+  const currentSeason = getCurrentSeason();
 
   return (
     <main className="py-10 px-6">
       <h1 className="text-heading-24-b mb-3">별돌이의 청약리포트</h1>
-      <ProgressBar level={level} month={gauge} />
-      <ReportHouse level={level} season="winter" />
+      <ProgressBar level={level} gauge={gauge} />
+      <ReportHouse level={level} season={currentSeason} />
 
       {level === 0 ? (
         <>
