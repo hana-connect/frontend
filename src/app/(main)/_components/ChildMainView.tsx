@@ -2,7 +2,6 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/common/components/button/Button";
-import Header from "@/common/components/header/Header";
 
 type ParentData = {
   id: number;
@@ -26,7 +25,6 @@ const ChildMainView = ({
 }: ChildMainProps) => {
   return (
     <main className="pb-10">
-      <Header type="main" />
       <h1 className="sr-only">아이부자 아이 메인 홈</h1>
 
       {/* 상단 메인 배너 */}
@@ -163,11 +161,9 @@ const ChildMainView = ({
                 </p>
               </div>
             </div>
-            <Link href="/card/apply">
-              <Button size="S" variant="smallGray">
-                카드신청
-              </Button>
-            </Link>
+            <Button size="S" variant="smallGray">
+              카드신청
+            </Button>
           </div>
         </section>
 
@@ -183,12 +179,9 @@ const ChildMainView = ({
             >
               용돈 관리
             </h2>
-            <Link
-              href="/members"
-              className="text-[15px] text-[#757783] font-medium flex flex-row items-center gap-0.5"
-            >
+            <p className="text-[15px] text-[#757783] font-medium flex flex-row items-center gap-0.5">
               멤버관리 <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
+            </p>
           </div>
 
           <ul className="flex flex-col">
