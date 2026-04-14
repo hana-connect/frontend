@@ -1,6 +1,10 @@
 import { ArrowDownToLine, Share2 } from "lucide-react";
+import { redirect } from "next/navigation";
 import Button from "@/common/components/button/Button";
-import { serverSpringFetch } from "@/common/lib/api/server-spring-fetch";
+import {
+  SpringApiError,
+  serverSpringFetch,
+} from "@/common/lib/api/server-spring-fetch";
 import ProgressBar from "./_components/ProgressBar";
 import ReportCard from "./_components/ReportCard";
 import ReportHistory from "./_components/ReportHistory";
@@ -20,17 +24,57 @@ type HouseStatusResponse = {
   };
 };
 
-async function Page() {
-  const result = await serverSpringFetch<HouseStatusResponse>(
-    "/api/house/status",
-    {
-      method: "GET",
-    },
-  );
+// Next.js 15+ 환경에 맞게 searchParams 타입을 Promise로 정의합니다.
+type PageProps = {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+};
 
-  const report = result.data;
-  const level = report.level;
-  const gauge = report.gauge;
+async function Page({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  const kidId = resolvedSearchParams.kidId;
+
+  let report: HouseStatusResponse["data"] | null = null;
+
+  try {
+    const endpoint = kidId
+      ? `/api/house/status?kidId=${kidId}`
+      : "/api/house/status";
+
+    const result = await serverSpringFetch<HouseStatusResponse>(endpoint, {
+      method: "GET",
+      next: {
+        tags: ["house-status"],
+        revalidate: 3600,
+      },
+    });
+
+    report = result.data;
+  } catch (error) {
+    if (error instanceof SpringApiError) {
+      if (error.status === 400) {
+        console.error("kidId 누락 에러:", error.message);
+      }
+
+      if (error.status === 401) {
+        redirect("/login");
+      }
+
+      if (error.status === 403) {
+        // 403 에러 처리: 관계 없는 아이 조회 시도
+        console.error("접근 권한 에러:", error.message);
+      }
+
+      if (error.status === 404) {
+      }
+    }
+
+    throw error;
+  }
+
+  if (!report) {
+    return <div>데이터를 불러오는 중 문제가 발생했습니다.</div>;
+  }
+  const { level, gauge } = report;
 
   return (
     <main className="py-10 px-6">
