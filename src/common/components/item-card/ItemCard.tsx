@@ -30,7 +30,7 @@ const ItemCard = ({
       className={cn(
         "flex w-full h-19 items-center justify-between",
         "py-3 px-6 border border-grey-5 rounded-3xl text-left text-body-16-m",
-        isPurple ? "bg-brand-purple-3" : "bg-grey-9",
+        isPurple ? "bg-grey-3" : "bg-grey-9",
         className,
       )}
     >
