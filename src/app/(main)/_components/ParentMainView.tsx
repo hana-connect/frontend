@@ -83,7 +83,7 @@ const ParentMainView = () => {
 
       {/* 생일 이벤트 배너 */}
       <Image
-        src="svg/ic_main_parents_banner.svg"
+        src="/svg/ic_main_parents_banner.svg"
         alt="가족 생일 안내"
         width={400}
         height={200}
@@ -266,6 +266,7 @@ const ParentMainView = () => {
             <button
               type="button"
               className="bg-[#F6F6F6] text-grey-6 rounded-2xl py-2 px-4 h-auto font-medium"
+              aria-label={`${selectedChild.name} 정기용돈 등록하기`}
             >
               등록하기
             </button>
