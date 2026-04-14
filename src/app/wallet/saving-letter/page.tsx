@@ -64,7 +64,7 @@ const LetterPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header type="sub" title={"지난 작성 내역"} />
+      <Header type="sub" title={"적금 편지"} />
 
       <PassbookLayout
         title={accountInfo.productName}

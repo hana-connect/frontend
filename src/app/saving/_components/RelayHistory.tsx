@@ -43,7 +43,7 @@ export default function RelayHistory({ onBack }: RelayHistoryProps) {
         onPrev={handlePrev}
         onNext={handleNext}
         isFirstPage={currentPage === 1}
-        isLastPage={currentPage === totalPages}
+        isLastPage={currentPage === totalPages || totalPages === 0}
       >
         <div className="w-full mt-5">
           <div className="flex justify-between border-y border-grey-5 py-1 text-black text-[16px] font-semibold text-left">
@@ -62,7 +62,7 @@ export default function RelayHistory({ onBack }: RelayHistoryProps) {
                 {index !== 0 && index % 6 === 0 && (
                   <div className="h-px w-full bg-grey-5 my-0 shadow-[0_1px_3px_rgba(0,0,0,0.1)]" />
                 )}
-                <div className="flex justify-between items-center py-2 text-[14px] font-medium text-brand-black">
+                <div className="flex justify-between items-center py-2 text-[14px] font-medium text-[#2E2E36]">
                   <span className="w-6 text-center text-grey-6">
                     {String(
                       (currentPage - 1) * ITEMS_PER_PAGE + index + 1,
