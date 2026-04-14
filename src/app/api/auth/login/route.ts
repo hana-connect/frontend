@@ -1,8 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 const SPRING_BASE_URL = process.env.SPRING_BASE_URL ?? "http://localhost:8080";
+const LOGIN_TIMEOUT_MS = 5000;
 
 export async function POST(req: NextRequest) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), LOGIN_TIMEOUT_MS);
+
   try {
     const body = await req.json();
     const memberId = Number(body?.memberId);
@@ -22,10 +26,10 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({ memberId, password }),
       cache: "no-store",
+      signal: controller.signal,
     });
 
-    let result = null;
-
+    let result: any = null;
     try {
       result = await springRes.json();
     } catch {
@@ -67,10 +71,26 @@ export async function POST(req: NextRequest) {
     });
 
     return response;
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      return NextResponse.json(
+        { message: "로그인 요청 시간이 초과되었습니다. 다시 시도해 주세요." },
+        { status: 504 },
+      );
+    }
+
+    if (error instanceof TypeError) {
+      return NextResponse.json(
+        { message: "로그인 서버에 연결할 수 없습니다." },
+        { status: 502 },
+      );
+    }
+
     return NextResponse.json(
       { message: "서버 오류가 발생했습니다." },
       { status: 500 },
     );
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
