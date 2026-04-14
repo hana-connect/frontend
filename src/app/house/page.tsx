@@ -24,7 +24,6 @@ type HouseStatusResponse = {
   };
 };
 
-// Next.js 15+ 환경에 맞게 searchParams 타입을 Promise로 정의합니다.
 type PageProps = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
@@ -36,9 +35,10 @@ async function Page({ searchParams }: PageProps) {
   let report: HouseStatusResponse["data"] | null = null;
 
   try {
-    const endpoint = kidId
-      ? `/api/house/status?kidId=${kidId}`
-      : "/api/house/status";
+    const params = new URLSearchParams();
+    if (kidId) params.set("kidId", kidId);
+    const query = params.toString();
+    const endpoint = query ? `/api/house/status?${query}` : "/api/house/status";
 
     const result = await serverSpringFetch<HouseStatusResponse>(endpoint, {
       method: "GET",
@@ -60,7 +60,6 @@ async function Page({ searchParams }: PageProps) {
       }
 
       if (error.status === 403) {
-        // 403 에러 처리: 관계 없는 아이 조회 시도
         console.error("접근 권한 에러:", error.message);
       }
 
