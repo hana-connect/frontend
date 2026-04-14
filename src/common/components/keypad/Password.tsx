@@ -8,10 +8,16 @@ import { usePasswordInput } from "@/common/hooks/usePasswordInput";
 type PasswordProps = {
   title: string;
   length: number;
-  onComplete: (password: string) => Promise<boolean>;
+  onComplete?: (password: string) => Promise<boolean>;
+  onSuccess?: () => void;
 };
 
-export default function Password({ title, length, onComplete }: PasswordProps) {
+export default function Password({
+  title,
+  length,
+  onComplete,
+  onSuccess,
+}: PasswordProps) {
   const {
     value,
     errorMessage,
@@ -21,7 +27,18 @@ export default function Password({ title, length, onComplete }: PasswordProps) {
     handleBackspacePress,
   } = usePasswordInput({
     maxLength: length,
-    onComplete,
+    onComplete: async (password) => {
+      if (onComplete) {
+        return await onComplete(password);
+      }
+
+      if (onSuccess) {
+        onSuccess();
+        return true;
+      }
+
+      return false;
+    },
   });
 
   return (
