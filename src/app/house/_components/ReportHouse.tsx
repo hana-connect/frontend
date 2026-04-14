@@ -2,10 +2,10 @@ import Image from "next/image";
 import type { Season } from "../_constants/level";
 import { getHouseAssets } from "../_lib/getHouseAssets";
 
-interface ReportHouseProps {
+type ReportHouseProps = {
   level: number;
   season: Season;
-}
+};
 
 function ReportHouse({ level, season }: ReportHouseProps) {
   const { ground, objects } = getHouseAssets(level, season);
