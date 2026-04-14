@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const SPRING_BASE_URL = process.env.SPRING_BASE_URL ?? "http://localhost:8080";
+const SPRING_BASE_URL = process.env.SPRING_BASE_URL!;
 const LOGIN_TIMEOUT_MS = 5000;
 
 export async function POST(req: NextRequest) {

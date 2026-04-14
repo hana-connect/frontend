@@ -8,10 +8,10 @@ import { usePasswordInput } from "@/common/hooks/usePasswordInput";
 type PasswordProps = {
   title: string;
   length: number;
-  onSuccess: () => void;
+  onComplete: (password: string) => Promise<boolean>;
 };
 
-export default function Password({ title, length, onSuccess }: PasswordProps) {
+export default function Password({ title, length, onComplete }: PasswordProps) {
   const {
     value,
     errorMessage,
@@ -21,33 +21,7 @@ export default function Password({ title, length, onSuccess }: PasswordProps) {
     handleBackspacePress,
   } = usePasswordInput({
     maxLength: length,
-    onComplete: async (password) => {
-      const savedMemberId = localStorage.getItem("memberId");
-
-      if (!savedMemberId) {
-        return false;
-      }
-
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          memberId: Number(savedMemberId),
-          password,
-        }),
-      });
-
-      const _result = await res.json();
-
-      if (!res.ok) {
-        return false;
-      }
-
-      onSuccess();
-      return true;
-    },
+    onComplete,
   });
 
   return (
@@ -72,10 +46,8 @@ export default function Password({ title, length, onSuccess }: PasswordProps) {
           <div className="grid grid-cols-4 justify-items-center gap-x-6 gap-y-7">
             {Array.from({ length: 16 }, (_, index) => (
               <div
-                key={`keypad-skeleton-${
-                  // biome-ignore lint/suspicious/noArrayIndexKey: 길이, 순서 고정된 배열이므로 index 사용해도 문제 없음
-                  index
-                }`}
+                // biome-ignore lint/suspicious/noArrayIndexKey: 길이, 순서 고정된 배열이므로 index 사용해도 문제 없음
+                key={`keypad-skeleton-${index}`}
                 className="h-14 w-14"
               />
             ))}
