@@ -23,16 +23,23 @@ export async function bffFetch(
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
+    const headers = new Headers(fetchOptions.headers);
+
+    if (typeof fetchOptions.body === "string" && !headers.has("Content-Type")) {
+      headers.set("Content-Type", "application/json");
+    }
+
+    if (accessToken && !headers.has("Authorization")) {
+      headers.set("Authorization", `Bearer ${accessToken}`);
+    }
+
     const res = await fetch(`${SPRING_BASE_URL}${endpoint}`, {
       ...fetchOptions,
-      headers: {
-        "Content-Type": "application/json",
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        ...fetchOptions.headers,
-      },
+      headers,
       cache: "no-store",
       signal: controller.signal,
     });
+
     return res;
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {

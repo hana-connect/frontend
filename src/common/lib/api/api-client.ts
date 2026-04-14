@@ -4,8 +4,13 @@ async function request<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const headers = new Headers(options.headers);
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
   const res = await fetch(endpoint, {
-    headers: { "Content-Type": "application/json", ...options.headers },
+    headers,
     ...options,
   });
 

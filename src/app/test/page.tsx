@@ -8,9 +8,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleSubmit = async () => {
+    const parsedMemberId = Number(memberId);
+    if (!Number.isInteger(parsedMemberId) || parsedMemberId <= 0) {
+      alert("memberId는 1 이상의 숫자여야 합니다.");
+      return;
+    }
+
     try {
       await login({
-        memberId: Number(memberId),
+        memberId: parsedMemberId,
         password,
       });
       alert("로그인 성공");

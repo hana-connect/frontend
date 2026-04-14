@@ -22,7 +22,11 @@ export async function serverSpringFetch<T>(
   endpoint: string,
   options: ServerSpringFetchOptions = {},
 ): Promise<T> {
-  const { timeoutMs = DEFAULT_TIMEOUT_MS, headers, ...rest } = options;
+  const {
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+    headers: initHeaders,
+    ...rest
+  } = options;
 
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("accessToken")?.value;
@@ -31,13 +35,18 @@ export async function serverSpringFetch<T>(
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
+    const headers = new Headers(initHeaders);
+
+    if (typeof rest.body === "string" && !headers.has("Content-Type")) {
+      headers.set("Content-Type", "application/json");
+    }
+
+    if (accessToken && !headers.has("Authorization")) {
+      headers.set("Authorization", `Bearer ${accessToken}`);
+    }
     const res = await fetch(`${SPRING_BASE_URL}${endpoint}`, {
       ...rest,
-      headers: {
-        ...(rest.body ? { "Content-Type": "application/json" } : {}),
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        ...headers,
-      },
+      headers,
       cache: "no-store",
       signal: controller.signal,
     });
