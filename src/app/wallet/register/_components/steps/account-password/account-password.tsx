@@ -1,19 +1,27 @@
+import Password from "@/common/components/keypad/Password";
+
 type AccountPasswordProps = {
   onNext: () => void;
-  onBack: () => void;
 };
 
-const AccountPassword = ({ onNext, onBack }: AccountPasswordProps) => {
+const AccountPassword = ({ onNext }: AccountPasswordProps) => {
+  const handleVerifyAccountPassword = async (password: string) => {
+    const isValid = password === "1234";
+
+    if (isValid) {
+      onNext();
+      return true;
+    }
+
+    return false;
+  };
+
   return (
-    <div className="flex flex-1 flex-col gap-4 p-6">
-      <h1>계좌 비밀번호 입력</h1>
-      <button type="button" onClick={onBack}>
-        뒤로가기
-      </button>
-      <button type="button" onClick={onNext}>
-        완료
-      </button>
-    </div>
+    <Password
+      title="계좌 비밀번호를 입력해 주세요"
+      length={4}
+      onComplete={handleVerifyAccountPassword}
+    />
   );
 };
 
