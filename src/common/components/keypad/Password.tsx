@@ -8,10 +8,16 @@ import { usePasswordInput } from "@/common/hooks/usePasswordInput";
 type PasswordProps = {
   title: string;
   length: number;
-  onSuccess: () => void;
+  onComplete?: (password: string) => Promise<boolean>;
+  onSuccess?: () => void;
 };
 
-export default function Password({ title, length, onSuccess }: PasswordProps) {
+export default function Password({
+  title,
+  length,
+  onComplete,
+  onSuccess,
+}: PasswordProps) {
   const {
     value,
     errorMessage,
@@ -22,11 +28,15 @@ export default function Password({ title, length, onSuccess }: PasswordProps) {
   } = usePasswordInput({
     maxLength: length,
     onComplete: async (password) => {
-      // TODO: 실제 검증 로직으로 교체 필요
-      if (password === "1234") {
+      if (onComplete) {
+        return await onComplete(password);
+      }
+
+      if (onSuccess) {
         onSuccess();
         return true;
       }
+
       return false;
     },
   });
@@ -53,10 +63,8 @@ export default function Password({ title, length, onSuccess }: PasswordProps) {
           <div className="grid grid-cols-4 justify-items-center gap-x-6 gap-y-7">
             {Array.from({ length: 16 }, (_, index) => (
               <div
-                key={`keypad-skeleton-${
-                  // biome-ignore lint/suspicious/noArrayIndexKey: 길이, 순서 고정된 배열이므로 index 사용해도 문제 없음
-                  index
-                }`}
+                // biome-ignore lint/suspicious/noArrayIndexKey: 길이, 순서 고정된 배열이므로 index 사용해도 문제 없음
+                key={`keypad-skeleton-${index}`}
                 className="h-14 w-14"
               />
             ))}
