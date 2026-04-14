@@ -1,8 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { DEFAULT_TIMEOUT_MS, SPRING_BASE_URL } from "@/common/constants/api";
 
-const SPRING_BASE_URL = process.env.SPRING_BASE_URL!;
-const DEFAULT_TIMEOUT_MS = 5000;
 type BffFetchOptions = RequestInit & {
   timeoutMs?: number;
 };

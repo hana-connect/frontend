@@ -1,8 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
-
-const SPRING_BASE_URL = process.env.SPRING_BASE_URL!;
-const DEFAULT_TIMEOUT_MS = 5000;
+import { DEFAULT_TIMEOUT_MS, SPRING_BASE_URL } from "@/common/constants/api";
 
 type ServerSpringFetchOptions = RequestInit & {
   timeoutMs?: number;
