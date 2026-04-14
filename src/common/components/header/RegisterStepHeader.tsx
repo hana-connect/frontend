@@ -2,10 +2,10 @@
 
 import { ChevronLeft } from "lucide-react";
 
-interface RegisterStepHeaderProps {
+type RegisterStepHeaderProps = {
   title: string;
   onBack: () => void;
-}
+};
 
 const RegisterStepHeader = ({ title, onBack }: RegisterStepHeaderProps) => {
   return (
