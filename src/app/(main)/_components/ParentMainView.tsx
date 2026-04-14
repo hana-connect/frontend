@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import Button from "@/common/components/button/Button";
-import Header from "@/common/components/header/Header";
 import ItemCard from "@/common/components/item-card/ItemCard";
 
 type Account = {
@@ -78,7 +77,6 @@ const ParentMainView = () => {
 
   return (
     <main className="pb-10">
-      <Header type="main" />
       <h1 className="sr-only">부모 홈화면</h1>
 
       {/* 생일 이벤트 배너 */}
