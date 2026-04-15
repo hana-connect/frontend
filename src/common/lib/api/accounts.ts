@@ -1,15 +1,12 @@
 import { apiClient } from "@/common/lib/api/api-client";
+import type { ApiResponse } from "@/common/lib/api/types";
 
 type VerifyAccountRequest = {
   accountNumber: string;
 };
 
-type VerifyAccountResponse = {
-  status: number;
-  data: {
-    accountNumber: string;
-  };
-  message: string;
+type VerifyAccountData = {
+  accountNumber: string;
 };
 
 type LinkAccountRequest = {
@@ -17,19 +14,21 @@ type LinkAccountRequest = {
   accountPassword: string;
 };
 
-type LinkAccountResponse = {
-  status: number;
-  data: {
-    accountNumber: string;
-    linkedAt: string;
-  };
-  message: string;
+type LinkAccountData = {
+  accountNumber: string;
+  linkedAt: string;
 };
 
 export async function verifyAccount(body: VerifyAccountRequest) {
-  return apiClient.post<VerifyAccountResponse>("/api/accounts/verify", body);
+  return apiClient.post<ApiResponse<VerifyAccountData>>(
+    "/api/accounts/verify",
+    body,
+  );
 }
 
 export async function linkAccount(body: LinkAccountRequest) {
-  return apiClient.post<LinkAccountResponse>("/api/accounts/link", body);
+  return apiClient.post<ApiResponse<LinkAccountData>>(
+    "/api/accounts/link",
+    body,
+  );
 }
