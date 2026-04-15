@@ -108,8 +108,10 @@ const RequestPageClient = ({ initialParents }: RequestPageProps) => {
             <span className="text-body-16-m-2 text-grey-6">(50자 이내)</span>
           </div>
           <textarea
+            id="request-message"
             className="mt-4 block h-32 w-full rounded-[20px] bg-grey-9 border-none p-4 text-black outline-none resize-none focus:ring-1 focus:ring-brand-purple-1"
             placeholder="메시지를 입력해주세요."
+            aria-label="메시지를 입력해주세요."
             maxLength={50}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -159,7 +161,11 @@ const RequestPageClient = ({ initialParents }: RequestPageProps) => {
         />
       </div>
       <div className="fixed bottom-9 left-6 right-6">
-        <Button size="L" variant="active" onClick={() => router.push("/")}>
+        <Button
+          size="L"
+          variant="active"
+          onClick={() => router.push("/wallet")}
+        >
           확인
         </Button>
       </div>
