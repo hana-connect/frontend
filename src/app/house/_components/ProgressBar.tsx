@@ -1,11 +1,9 @@
 type ProgressBarProps = {
   level: number;
-  month: number;
+  gauge: number;
 };
 
-function ProgressBar({ level, month }: ProgressBarProps) {
-  const percentage = Math.min(Math.max((month / 12) * 100, 0), 100);
-
+function ProgressBar({ level, gauge }: ProgressBarProps) {
   return (
     <div className="flex flex-row gap-1 items-center">
       <div className="bg-brand-purple-1 w-[55px] h-[55px] flex items-center justify-center rounded-full text-white text-title-20-sb">
@@ -14,7 +12,7 @@ function ProgressBar({ level, month }: ProgressBarProps) {
       <div className="flex-1 h-4 rounded-full bg-[#E7E3F0] relative">
         <div
           className="h-full rounded-full bg-brand-gradient-1"
-          style={{ width: `${percentage}%` }}
+          style={{ width: `${gauge}%` }}
         />
       </div>
     </div>
