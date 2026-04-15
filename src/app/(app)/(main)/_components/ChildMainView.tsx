@@ -10,17 +10,17 @@ type ParentData = {
 };
 
 type ChildMainProps = {
-  userName?: string;
-  balance?: number;
+  userName: string;
+  balance: number;
   parents?: ParentData[];
 };
 
 const ChildMainView = ({
-  userName = "홍길동",
-  balance = 200068,
+  userName,
+  balance,
   parents = [
-    { id: 1, name: "디지털하나로유지현", imageUrl: "svg/ic_mom1.svg" },
-    { id: 2, name: "하나로아빠", imageUrl: "svg/ic_mom2.svg" },
+    { id: 1, name: "디지털하나로유지현", imageUrl: "/svg/ic_mom1.svg" },
+    { id: 2, name: "하나로아빠", imageUrl: "/svg/ic_mom2.svg" },
   ],
 }: ChildMainProps) => {
   return (
