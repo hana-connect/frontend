@@ -17,8 +17,10 @@ export const getTodayQuiz = async (childId: number) => {
     throw new Error(`퀴즈 조회 실패 (${res.status})`);
   }
 
-  const result: ApiResponse<QuizTodayResponse> = await res.json();
-  return result.data;
+  const result: QuizTodayResponse | ApiResponse<QuizTodayResponse> =
+    await res.json();
+
+  return "data" in result ? result.data : result;
 };
 
 // 답 제출
@@ -53,6 +55,8 @@ export const submitQuizAnswer = async ({
     throw new Error(`답 제출 실패 (${res.status})`);
   }
 
-  const result: ApiResponse<SubmitAnswerResponse> = await res.json();
-  return result.data;
+  const result: SubmitAnswerResponse | ApiResponse<SubmitAnswerResponse> =
+    await res.json();
+
+  return "data" in result ? result.data : result;
 };
