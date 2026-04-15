@@ -2,9 +2,8 @@ import { CircleQuestionMark } from "lucide-react";
 import Image from "next/image";
 import Button from "@/common/components/button/Button";
 
-function WalletBalance() {
+function WalletBalance({ role }: { role: "PARENT" | "KID" }) {
   const amount = 1234567;
-  const role = "PARENT";
 
   return (
     <>

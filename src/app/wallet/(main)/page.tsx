@@ -57,7 +57,7 @@ function Page() {
 
   return (
     <main className="space-y-6 px-6 py-4">
-      <WalletBalance />
+      <WalletBalance role={userRole} />
       <AccountList
         userRole={userRole}
         accounts={pageData.accounts}
