@@ -68,7 +68,7 @@ async function Page({ searchParams }: PageProps) {
     const report = statusResult.data;
     const histories = historyResult.data.histories;
     const { level, gauge } = report;
-    const currentSeason = getCurrentSeason();
+    const currentSeason = getCurrentSeason(paidAt);
 
     return (
       <main className="py-10 px-6">
