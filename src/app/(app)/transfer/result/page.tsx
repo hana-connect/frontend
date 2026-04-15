@@ -18,7 +18,10 @@ export default function TransferResultPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!transferId) return;
+    if (!transferId) {
+      setLoading(false);
+      return;
+    }
 
     const fetchResult = async () => {
       try {
