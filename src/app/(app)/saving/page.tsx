@@ -12,7 +12,6 @@ import RelayMessage from "./_components/RelayMessage";
 import TransferComplete from "./_components/TransferComplete";
 
 type TransferStep = "input" | "password" | "complete" | "history";
-type LimitModalState = { isOpen: boolean; type: "daily" | "saving" };
 
 export default function SavingPage() {
   const router = useRouter();
@@ -20,10 +19,8 @@ export default function SavingPage() {
   const [step, setStep] = useState<TransferStep>("input");
   const [amount, setAmount] = useState(0);
   const [message, setMessage] = useState("");
-  const [limitModal, setLimitModal] = useState<LimitModalState>({
-    isOpen: false,
-    type: "daily",
-  });
+
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
 
   const isTransferReady = amount > 0 && message.trim().length > 0;
 
@@ -31,12 +28,8 @@ export default function SavingPage() {
     const currentSaving = 250000;
     const savingLimit = 300000;
 
-    if (inputAmount > 500000) {
-      setLimitModal({ isOpen: true, type: "daily" });
-      return false;
-    }
     if (currentSaving + inputAmount > savingLimit) {
-      setLimitModal({ isOpen: true, type: "saving" });
+      setIsLimitModalOpen(true);
       return false;
     }
     return true;
@@ -59,21 +52,18 @@ export default function SavingPage() {
             </div>
 
             <div className="flex-1 overflow-y-auto pb-40">
-              {/* 송금 금액 */}
               <AmountInput
                 amount={amount}
                 onAmountChange={setAmount}
                 onCheckLimit={checkLimit}
               />
 
-              {/* 메시지 작성 */}
               <RelayMessage
                 message={message}
                 onMessageChange={setMessage}
                 onShowHistory={() => setStep("history")}
               />
 
-              {/* 하단 버튼 */}
               <div className="mt-20 left-0 w-full px-6 bg-white py-4 z-10">
                 <Button
                   size="L"
@@ -114,11 +104,10 @@ export default function SavingPage() {
 
         {/* 한도 초과 모달 */}
         <LimitOverModal
-          isOpen={limitModal.isOpen}
-          type={limitModal.type}
-          onClose={() => setLimitModal((prev) => ({ ...prev, isOpen: false }))}
+          isOpen={isLimitModalOpen}
+          onClose={() => setIsLimitModalOpen(false)}
           onRetry={() => {
-            setLimitModal((prev) => ({ ...prev, isOpen: false }));
+            setIsLimitModalOpen(false);
             setAmount(0);
           }}
         />
