@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Password from "@/common/components/keypad/Password";
 
-export default function Page() {
+export default function PrepaymentPassword() {
   const router = useRouter();
 
   const handlePasswordComplete = async (password: string) => {

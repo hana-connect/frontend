@@ -20,7 +20,7 @@ export default function PrepaymentResult() {
       <div className="flex-1 w-full px-6 flex flex-col items-center pt-25 text-center">
         <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
 
-        <h1 className="text-sm font-medium text-brand-black mt-6">
+        <h1 className="text-xl font-medium text-brand-black mt-6">
           납입이 완료되었어요!
         </h1>
 

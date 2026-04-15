@@ -9,7 +9,7 @@ import Input from "@/common/components/input/Input";
 import TransferAmount from "@/common/components/keypad/TransferAmount";
 import PaymentRoundSelect from "./_components/PaymentRoundSelect";
 
-export default function DepositPage() {
+export default function prepaymentDeposit() {
   const [amount, setAmount] = useState<number | null>(null);
   const [round, setRound] = useState("");
   const [showAmountPad, setShowAmountPad] = useState(false);
