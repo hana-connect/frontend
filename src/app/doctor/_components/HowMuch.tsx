@@ -7,7 +7,7 @@ const HowMuch = () => {
         <div className="absolute inset-0 bg-brand-purple-3 rounded-full scale-110 opacity-40 blur-md" />
         <div className="relative w-35 h-35">
           <Image
-            src="/svg/ic_doctor_money.svg"
+            src="/svg/doctor/ic_doctor_money.svg"
             alt="Money Growth Icon"
             fill
             priority

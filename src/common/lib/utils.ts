@@ -17,3 +17,7 @@ export const getTodayDateKST = () => {
     .replace(/\s/g, "")
     .replace(/\.$/, "");
 };
+
+export function formatMoney(value: number) {
+  return `${value.toLocaleString()}원`;
+}
