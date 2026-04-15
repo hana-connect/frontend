@@ -1,6 +1,9 @@
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
-import type { MainAccountInfo, UserRole } from "@/app/wallet/(main)/_types";
+import type {
+  MainAccountInfo,
+  UserRole,
+} from "@/app/(app)/wallet/(main)/_types";
 import Button from "@/common/components/button/Button";
 
 type TopRegisterSectionProps = {
