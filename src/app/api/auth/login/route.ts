@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { SPRING_BASE_URL } from "@/common/constants/api";
 
-const SPRING_BASE_URL = process.env.SPRING_BASE_URL;
 const LOGIN_TIMEOUT_MS = 5000;
 
 type ApiResponse<T> = {
