@@ -1,13 +1,12 @@
 "use client";
 
 import { createContext, useContext } from "react";
+import type { UserRole } from "@/common/types/user";
 
-type MemberRole = "KID" | "PARENT";
-
-const UserRoleContext = createContext<MemberRole | undefined>(undefined);
+const UserRoleContext = createContext<UserRole | undefined>(undefined);
 
 type UserRoleProviderProps = {
-  memberRole: MemberRole;
+  memberRole: UserRole;
   children: React.ReactNode;
 };
 

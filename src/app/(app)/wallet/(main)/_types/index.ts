@@ -1,10 +1,14 @@
-export type UserRole = "KID" | "PARENT";
+export type { AccountType } from "@/common/types/account";
+export type { UserRole } from "@/common/types/user";
+
+import type { AccountType } from "@/common/types/account";
 
 export type Account = {
-  id: number;
+  accountId: number;
   name: string;
-  number: string;
+  accountNumber: string;
   balance: number;
+  accountType: AccountType;
 };
 
 export type MainAccountInfo = {
