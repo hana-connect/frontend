@@ -1,6 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server";
-
-const SPRING_BASE_URL = process.env.SPRING_BASE_URL;
+import type { QuizTodayResponse } from "@/app/api/quiz/types/quiz";
+import {
+  SpringApiError,
+  serverSpringFetch,
+} from "@/common/lib/api/server-spring-fetch";
 
 export async function GET(req: NextRequest) {
   try {
@@ -13,35 +16,24 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const accessToken = req.cookies.get("accessToken")?.value;
-
-    if (!accessToken) {
-      return NextResponse.json(
-        { message: "인증 토큰이 없습니다." },
-        { status: 401 },
-      );
-    }
-
-    const springRes = await fetch(
-      `${SPRING_BASE_URL}/api/quiz/today?childId=${childId}`,
+    const data = await serverSpringFetch<QuizTodayResponse>(
+      `/api/quiz/today?childId=${childId}`,
       {
         method: "GET",
         cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        timeoutMs: 10000,
       },
     );
 
-    const resultText = await springRes.text();
+    return NextResponse.json(data, { status: 200 });
+  } catch (error) {
+    if (error instanceof SpringApiError) {
+      return NextResponse.json(
+        { message: error.message, data: error.data ?? null },
+        { status: error.status },
+      );
+    }
 
-    return new NextResponse(resultText, {
-      status: springRes.status,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  } catch {
     return NextResponse.json(
       { message: "서버 오류가 발생했습니다." },
       { status: 500 },

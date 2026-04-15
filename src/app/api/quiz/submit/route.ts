@@ -1,11 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server";
-
-const SPRING_BASE_URL = process.env.SPRING_BASE_URL;
+import { proxyJsonToSpring } from "@/common/lib/api/bff-proxy";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { childId, quizSetId, questionOrder, selectedIndex } = body;
+    const parsedBody = await req.json();
+    const { childId, quizSetId, questionOrder, selectedIndex } = parsedBody;
 
     if (
       !childId ||
@@ -19,37 +18,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const accessToken = req.cookies.get("accessToken")?.value;
-
-    if (!accessToken) {
-      return NextResponse.json(
-        { message: "인증 토큰이 없습니다." },
-        { status: 401 },
-      );
-    }
-
-    const springRes = await fetch(
-      `${SPRING_BASE_URL}/api/quiz/${quizSetId}/questions/${questionOrder}/answer?childId=${childId}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ selectedIndex }),
-        cache: "no-store",
-      },
-    );
-
-    const resultText = await springRes.text();
-
-    return new NextResponse(resultText, {
-      status: springRes.status,
-      headers: {
-        "Content-Type": "application/json",
-      },
+    return proxyJsonToSpring(req, {
+      endpoint: `/api/quiz/${quizSetId}/questions/${questionOrder}/answer?childId=${childId}`,
+      method: "POST",
+      body: { selectedIndex },
     });
-  } catch {
+  } catch (error) {
+    console.error("퀴즈 답안 제출 BFF 오류:", error);
+
     return NextResponse.json(
       { message: "서버 오류가 발생했습니다." },
       { status: 500 },
