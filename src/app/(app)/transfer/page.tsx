@@ -1,18 +1,51 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { TransferPrepareResponse } from "@/app/api/transfer/type";
 import Header from "@/common/components/header/Header";
 import TransferAmount from "@/common/components/keypad/TransferAmount";
+import { apiClient } from "@/common/lib/api/api-client";
+import type { ApiResponse } from "@/common/lib/api/types";
 
 export default function TransferPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const accountId = searchParams.get("accountId");
+
+  const [data, setData] = useState<TransferPrepareResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!accountId) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchTransferPrepare = async () => {
+      try {
+        const result = await apiClient.get<
+          ApiResponse<TransferPrepareResponse>
+        >(`/api/transfer/prepare?accountId=${accountId}`);
+
+        setData(result.data);
+      } catch (error) {
+        console.error("송금 준비 조회 실패", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransferPrepare();
+  }, [accountId]);
 
   const handleNext = (amount: number) => {
-    console.log("선택한 송금 금액:", amount);
-
-    // 다음 페이지로 amount 넘기기 예시
-    router.push(`/transfer/password?amount=${amount}`);
+    router.push(`/transfer/password?amount=${amount}&accountId=${accountId}`);
   };
+
+  if (loading) return <div>로딩 중...</div>;
+  if (!data) return <div>송금 정보를 불러올 수 없습니다.</div>;
 
   return (
     <main className="min-h-screen bg-white">
@@ -20,10 +53,10 @@ export default function TransferPage() {
         <Header type="sub" title="송금하기" />
 
         <TransferAmount
-          accountHolder="김채현(김*현)"
-          accountNickname="채원이 입출금 통장"
-          balance={800000}
-          maxAmount={800000}
+          accountHolder={data.displayName}
+          accountNickname={data.accountAlias}
+          balance={data.balance}
+          maxAmount={data.balance} // 송금 초과 : 현재 잔액
           onNext={handleNext}
         />
       </div>
