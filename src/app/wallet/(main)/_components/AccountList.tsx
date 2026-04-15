@@ -49,7 +49,7 @@ function AccountList({
           </p>
         ) : (
           <div className="mt-8">
-            <div className="space-y-4">
+            <div id="wallet-account-list" className="space-y-4">
               {visibleAccounts.map((account) => {
                 return (
                   <ItemCard
@@ -72,6 +72,8 @@ function AccountList({
                 <button
                   type="button"
                   onClick={() => setIsExpanded((prev) => !prev)}
+                  aria-expanded={isExpanded}
+                  aria-controls="wallet-account-list"
                   className="mt-3 flex h-[50px] w-full items-center justify-center rounded-[18px] border border-grey-5 bg-grey-9 text-body-16-m text-grey-6"
                 >
                   {isExpanded ? "접기" : "더보기"}

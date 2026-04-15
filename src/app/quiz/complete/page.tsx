@@ -55,7 +55,7 @@ export default function QuizCompletePage() {
             <div className="relative mt-8 flex justify-center">
               <div className="relative w-full">
                 <Image
-                  src="/svg/quiz/quiz_friends.svg"
+                  src="/svg/quiz/ic_quiz_friends.svg"
                   alt="퀴즈 완료 캐릭터"
                   width={268}
                   height={90}

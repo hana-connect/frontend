@@ -32,7 +32,9 @@ export default function QuizResultPage() {
             <div className="relative mt-2">
               <Image
                 src={
-                  isCorrect ? "/svg/quiz/ic_confetti.svg" : "/svg/quiz/rain.svg"
+                  isCorrect
+                    ? "/svg/quiz/ic_confetti.svg"
+                    : "/svg/quiz/ic_rain.svg"
                 }
                 alt="결과 이미지"
                 width={256}
@@ -56,7 +58,7 @@ export default function QuizResultPage() {
                     </div>
                   ) : (
                     <Image
-                      src="/svg/quiz/quizx.svg"
+                      src="/svg/quiz/ic_quizx.svg"
                       alt="오답 아이콘"
                       width={40}
                       height={40}

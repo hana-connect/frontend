@@ -130,7 +130,7 @@ const ParentMainView = () => {
 
         {/* 상단 광고 */}
         <Image
-          src="svg/main/ic_main_parents_ad.svg"
+          src="/svg/main/ic_main_parents_ad.svg"
           alt="원픽 통장 만들기 광고"
           width={400}
           height={200}
@@ -221,7 +221,7 @@ const ParentMainView = () => {
       <div className="flex flex-col gap-4 p-4">
         {/* 하단 광고 */}
         <Image
-          src="svg/main/ic_main_common_ad.svg"
+          src="/svg/main/ic_main_common_ad.svg"
           alt="원픽 통장 광고"
           width={400}
           height={200}
@@ -308,7 +308,7 @@ const ParentMainView = () => {
               {selectedChild.name}님의 활동 0개
             </h2>
             <Image
-              src="svg/main/ic_main_parents_menu.svg"
+              src="/svg/main/ic_main_parents_menu.svg"
               alt="활동 메뉴 상세"
               width={50}
               height={22}
@@ -353,7 +353,7 @@ const ParentMainView = () => {
                 아이 퀴즈를 풀고 더 친해져 봐요!
               </p>
               <Image
-                src="svg/main/ic_main_parents_quiz.svg"
+                src="/svg/main/ic_main_parents_quiz.svg"
                 alt=""
                 width={68}
                 height={66}

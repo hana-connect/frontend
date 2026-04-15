@@ -5,7 +5,6 @@ import Button from "@/common/components/button/Button";
 type SharedWallet = {
   id: number;
   name: string;
-  imageSrc: string;
   statusText: string;
 };
 
@@ -14,19 +13,16 @@ async function getSharedWallets(): Promise<SharedWallet[]> {
     {
       id: 1,
       name: "김엄마",
-      imageSrc: "/images/profile.png",
       statusText: "잔액과 내역 공유 중",
     },
     {
       id: 2,
       name: "김엄마",
-      imageSrc: "/images/profile.png",
       statusText: "잔액과 내역 공유 중",
     },
     {
       id: 3,
       name: "김엄마",
-      imageSrc: "/images/profile.png",
       statusText: "잔액과 내역 공유 중",
     },
   ];
@@ -80,7 +76,12 @@ function SharedWalletRow({ wallet }: SharedWalletRowProps) {
         </div>
       </div>
 
-      <Button size="S" variant="smallGray" className="shrink-0">
+      <Button
+        size="S"
+        variant="smallGray"
+        className="shrink-0"
+        aria-label={`${wallet.name} 설정`}
+      >
         설정
       </Button>
     </div>
