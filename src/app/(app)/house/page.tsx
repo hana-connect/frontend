@@ -108,8 +108,8 @@ async function Page({ searchParams }: PageProps) {
             />
             <ReportCard
               label="이번 납입 금액"
-              value={report.monthlyPayment ?? 0}
-              unit="원"
+              value={report?.monthlyPayment ? report.monthlyPayment / 10000 : 0}
+              unit="만원"
             />
           </div>
 
