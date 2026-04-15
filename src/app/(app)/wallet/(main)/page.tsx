@@ -42,13 +42,10 @@ async function Page() {
 
   try {
     const result = await serverSpringFetch<GetMyAccountsResponse>(
-      "/api/accounts/me?limit=2",
+      "/api/accounts/me",
       {
         method: "GET",
-        next: {
-          tags: ["my-accounts"],
-          revalidate: 3600,
-        },
+        cache: "no-store",
       },
     );
 
