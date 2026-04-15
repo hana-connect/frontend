@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Password from "@/common/components/keypad/Password";
 
-export default function Page() {
+export default function PaymentPassword() {
   const router = useRouter();
 
   const handlePasswordComplete = async (password: string) => {
@@ -15,7 +15,7 @@ export default function Page() {
       return false;
     }
 
-    router.push("/prepayment/result");
+    router.push("/payment/result");
     return true;
   };
 
