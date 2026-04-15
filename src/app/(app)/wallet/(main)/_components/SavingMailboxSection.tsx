@@ -14,7 +14,7 @@ type TerminatedAccount = {
 
 type TerminatedSavingsResponse = ApiResponse<TerminatedAccount[]>;
 
-async function getExpiredSavings(): Promise<SavingMailbox[]> {
+async function getExpiredSavings(): Promise<SavingMailbox[] | null> {
   try {
     const response = await serverSpringFetch<TerminatedSavingsResponse>(
       "/api/accounts/terminated-savings",
@@ -36,7 +36,7 @@ async function getExpiredSavings(): Promise<SavingMailbox[]> {
       }
       console.error("만기 적금 조회 에러:", error.message);
     }
-    return [];
+    return null;
   }
 }
 
@@ -47,7 +47,14 @@ async function SavingMailboxSection() {
     <section className="pb-8">
       <h2 className="text-heading-24-b">적금 우체통 모아보기</h2>
 
-      {mailboxes.length === 0 ? (
+      {mailboxes === null ? (
+        <div className="mt-8 text-center">
+          <p className="text-body-16-m text-grey-6">
+            정보를 불러오지 못했습니다. <br />
+            잠시 후 다시 시도해 주세요.
+          </p>
+        </div>
+      ) : mailboxes.length === 0 ? (
         <p className="mt-8 text-center text-body-16-m text-grey-6">
           만기된 적금이 없어요.
         </p>

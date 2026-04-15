@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import ItemCard from "@/common/components/item-card/ItemCard";
 import type { SavingMailbox } from "../_types";
@@ -29,20 +30,26 @@ function SavingMailboxList({ mailboxes }: SavingMailboxListProps) {
       <div className="space-y-4">
         {visibleMailboxes.map((mailbox) => {
           return (
-            <ItemCard
+            <Link
               key={mailbox.id}
-              title={mailbox.name}
-              subTitle={mailbox.number}
-              className="h-[72px] rounded-[22px] px-5 py-4"
-              rightContent={
-                <Image
-                  src="/svg/ic_mailbox.svg"
-                  alt={`${mailbox.name} 우체통`}
-                  width={48}
-                  height={48}
-                />
-              }
-            />
+              href={`/wallet/saving-letter`} // TODO: 추후 id로 연결
+              className="block"
+            >
+              <ItemCard
+                key={mailbox.id}
+                title={mailbox.name}
+                subTitle={mailbox.number}
+                className="h-18 rounded-[22px] px-5 py-4"
+                rightContent={
+                  <Image
+                    src="/svg/ic_mailbox.svg"
+                    alt={`${mailbox.name} 우체통`}
+                    width={48}
+                    height={48}
+                  />
+                }
+              />
+            </Link>
           );
         })}
       </div>
