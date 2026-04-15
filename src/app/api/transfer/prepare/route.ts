@@ -8,11 +8,13 @@ import type { TransferPrepareResponse } from "../type";
 
 export async function GET(req: NextRequest) {
   try {
-    const accountId = req.nextUrl.searchParams.get("accountId");
+    const accountIdParam = req.nextUrl.searchParams.get("accountId");
 
-    if (!accountId) {
+    const accountId = Number(accountIdParam);
+
+    if (!accountIdParam || !Number.isInteger(accountId) || accountId <= 0) {
       return NextResponse.json(
-        { message: "accountId는 필수입니다." },
+        { message: "유효한 accountId가 필요합니다." },
         { status: 400 },
       );
     }
