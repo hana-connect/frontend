@@ -65,9 +65,9 @@ export default function PaymentDeposit() {
   const handleSubmit = () => {
     if (!amount) return;
 
-    const subscriptionAmount = Math.min(amount, LIMIT_AMOUNT);
-    const irpAmount =
-      moveExtraToIrp && amount > LIMIT_AMOUNT ? amount - LIMIT_AMOUNT : 0;
+    const overAmount = Math.max(0, amount - LIMIT_AMOUNT);
+    const subscriptionAmount = moveExtraToIrp ? amount - overAmount : amount;
+    const irpAmount = moveExtraToIrp ? overAmount : 0;
 
     localStorage.setItem(
       "paymentResult",
