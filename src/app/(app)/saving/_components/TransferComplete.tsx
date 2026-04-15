@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Bubble from "@/common/components/bubble/Bubble";
 import Button from "@/common/components/button/Button";
 
 type TransferCompleteProps = {
@@ -13,77 +15,55 @@ export default function TransferComplete({
   message,
   onConfirm,
 }: TransferCompleteProps) {
-  return (
-    <div className="fixed inset-0 bg-[var(--color-white)] z-[80] flex flex-col p-6 animate-in fade-in duration-500 font-['Pretendard']">
-      <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="w-16 h-16 bg-violet-50 rounded-full flex items-center justify-center mb-6">
-          <svg
-            className="w-8 h-8 text-[#9C6FFE]"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="4"
-            role="img"
-            aria-labelledby="success-title"
-          >
-            <title id="success-title">입금 완료 아이콘</title>
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        </div>
+  const today = "2026.04.11";
 
-        <h2 className="text-[var(--color-foreground)] text-xl font-bold mb-10">
-          입금이 완료되었어요!
+  const parentProfile = {
+    src: "/svg/ic_mom2.svg",
+    alt: "엄마 프로필",
+  };
+
+  return (
+    <div className="absolute inset-0 bg-white z-80 flex flex-col w-full max-w-93.75 mx-auto animate-in fade-in duration-500 font-['Pretendard'] overflow-y-auto">
+      <div className="flex-1 w-full px-6 flex flex-col items-center pt-25 text-center">
+        <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
+
+        <h2 className="text-body-20-m text-brand-black mt-6">
+          송금이 완료되었어요!
         </h2>
 
-        <div className="w-full border-t border-[var(--color-background-dim)] py-6 space-y-5">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-[var(--color-foreground)] opacity-40">
-              입금 계좌번호
-            </span>
-            <span className="font-semibold text-[var(--color-foreground)] opacity-80">
-              1002158055957
-            </span>
+        <div className="w-full h-[0.8px] bg-grey-5 mt-12" aria-hidden="true" />
+
+        <div className="w-full mt-6 space-y-4">
+          <div className="flex justify-between text-body-16-m text-grey-6">
+            <span>송금 계좌번호</span>
+            <span className="text-brand-black">1002158055957</span>
           </div>
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-[var(--color-foreground)] opacity-40">
-              송금 금액
-            </span>
-            <span className="font-bold text-[var(--color-foreground)] text-lg">
+
+          <div className="flex justify-between text-body-16-m text-grey-6">
+            <span>송금 금액</span>
+            <span className="text-brand-black">
               {amount.toLocaleString()}원
             </span>
           </div>
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-[var(--color-foreground)] opacity-40">
-              송금일
-            </span>
-            <span className="font-semibold text-[var(--color-foreground)] opacity-80">
-              2026.04.11
-            </span>
+
+          <div className="flex justify-between text-body-16-m text-grey-6">
+            <span>송금일</span>
+            <span className="text-brand-black">{today}</span>
           </div>
         </div>
 
-        <div className="w-full mt-8 flex items-end gap-3 px-2">
-          <div className="flex-1 bg-violet-50 rounded-2xl rounded-br-none p-5 relative shadow-sm border border-violet-100">
-            <p className="text-[#9C6FFE] font-bold leading-relaxed">
-              {message || "너를 늘 응원하고 있단다"}
-            </p>
-          </div>
-          <div className="w-12 h-12 bg-[var(--color-background-dim)] rounded-full overflow-hidden border-2 border-white shadow-md mb-[-4px] shrink-0">
-            <div className="w-full h-full bg-violet-200" />
-          </div>
+        {/* 메시지 버블 영역 */}
+        <div className="w-full mt-10">
+          <Bubble message={message} parentProfile={parentProfile} />
         </div>
       </div>
 
-      <div className="pb-4">
+      <div className="w-full px-6 pb-9 mt-10">
         <Button
           size="L"
           variant="active"
           onClick={onConfirm}
-          className="w-full rounded-[20px] shadow-lg active:scale-[0.98] transition-all"
+          className="w-full"
         >
           확인
         </Button>
