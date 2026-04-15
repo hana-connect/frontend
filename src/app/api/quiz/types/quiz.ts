@@ -1,5 +1,5 @@
 // 문제 1개
-export interface QuizQuestion {
+export type QuizQuestion {
   questionOrder: number;
   question: string;
   choices: string[];
