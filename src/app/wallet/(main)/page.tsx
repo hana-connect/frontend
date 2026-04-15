@@ -1,5 +1,5 @@
 import AccountList from "./_components/AccountList";
-import KidSection from "./_components/KidSection";
+import MyKidSection from "./_components/MyKidSection";
 import SavingMailboxSection from "./_components/SavingMailboxSection";
 import WalletBalance from "./_components/WalletBalance";
 import type { Account, MainAccountInfo, UserRole } from "./_types";
@@ -43,12 +43,12 @@ const walletPageData: Record<
       bankName: "하나은행",
       accountNumber: "589-910061-78107",
     },
-    bottomSection: <KidSection />,
+    bottomSection: <MyKidSection />,
   },
 };
 
 function Page() {
-  const userRole: UserRole = "KID";
+  const userRole: UserRole = "PARENT";
   const pageData = walletPageData[userRole];
 
   return (
