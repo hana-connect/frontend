@@ -11,3 +11,9 @@ export type MainAccountInfo = {
   bankName: string;
   accountNumber: string;
 };
+
+export type SavingMailbox = {
+  id: number;
+  name: string;
+  number: string;
+};
