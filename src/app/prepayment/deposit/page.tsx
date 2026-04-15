@@ -75,12 +75,12 @@ export default function DepositPage() {
 
             <ul className="mt-4 space-y-2 text-base font-medium leading-5 text-[#5E6976]">
               <li>
-                · 50만원을 입금하시면 10만원씩 5회차로 나누어 입금할 수 있는
+                · 50만원을 입금하면서 월 10만원씩 5회차로 나누어 입금을 원하는
                 경우 납입회차를 ‘5회’로 입력해 주세요.
               </li>
               <li>
-                · 제한납입회차가 있을 경우 납입회차를 5회로 납입하면 청약 회차는
-                넘어갈 수 있습니다.
+                · 최종납입회차가 2회일 경우 납입회차로 5회로 납입하면
+                최종납입회차는 7회가 됩니다.
               </li>
             </ul>
           </section>
