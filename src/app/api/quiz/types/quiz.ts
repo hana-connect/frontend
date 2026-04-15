@@ -1,5 +1,5 @@
 // 문제 1개
-export type QuizQuestion {
+export type QuizQuestion = {
   questionOrder: number;
   question: string;
   choices: string[];
@@ -10,7 +10,7 @@ export type QuizQuestion {
 
   // 사용자가 이전에 선택한 값 (없으면 null)
   selectedIndex: number | null;
-}
+};
 
 // 오늘 퀴즈 세트 조회
 export interface QuizTodayResponse {
