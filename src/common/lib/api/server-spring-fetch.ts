@@ -52,8 +52,11 @@ export async function serverSpringFetch<T>(
 
     let data: unknown = null;
     try {
-      data = await res.json();
+      data = res.status === 204 ? null : await res.json();
     } catch {
+      if (res.ok) {
+        throw new SpringApiError("응답 본문을 해석할 수 없습니다.", 502);
+      }
       data = null;
     }
 
