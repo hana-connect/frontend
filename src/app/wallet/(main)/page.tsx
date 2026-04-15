@@ -1,6 +1,7 @@
 import AccountList from "./_components/AccountList";
 import MyKidSection from "./_components/MyKidSection";
 import SavingMailboxSection from "./_components/SavingMailboxSection";
+import SharedWalletSection from "./_components/SharedWalletSection";
 import WalletBalance from "./_components/WalletBalance";
 import type { Account, MainAccountInfo, UserRole } from "./_types";
 
@@ -30,12 +31,15 @@ const walletPageData: Record<
   {
     accounts: Account[];
     mainAccountInfo?: MainAccountInfo;
-    bottomSection: React.ReactNode;
+    extraSections: React.ReactNode[];
   }
 > = {
   KID: {
     accounts: MOCK_ACCOUNTS,
-    bottomSection: <SavingMailboxSection />,
+    extraSections: [
+      <SharedWalletSection key="shared-wallet" />,
+      <SavingMailboxSection key="saving-mailbox" />,
+    ],
   },
   PARENT: {
     accounts: MOCK_ACCOUNTS,
@@ -43,12 +47,12 @@ const walletPageData: Record<
       bankName: "하나은행",
       accountNumber: "589-910061-78107",
     },
-    bottomSection: <MyKidSection />,
+    extraSections: [<MyKidSection key="my-kid" />],
   },
 };
 
 function Page() {
-  const userRole: UserRole = "PARENT";
+  const userRole: UserRole = "KID";
   const pageData = walletPageData[userRole];
 
   return (
@@ -59,7 +63,7 @@ function Page() {
         accounts={pageData.accounts}
         mainAccountInfo={pageData.mainAccountInfo}
       />
-      {pageData.bottomSection}
+      {pageData.extraSections}
     </main>
   );
 }
