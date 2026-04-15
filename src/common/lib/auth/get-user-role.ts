@@ -8,6 +8,7 @@ type MemberRole = "KID" | "PARENT";
 
 type TokenPayload = {
   memberRole: MemberRole;
+  exp?: number;
 };
 
 export async function getUserRole(): Promise<MemberRole> {
@@ -20,6 +21,11 @@ export async function getUserRole(): Promise<MemberRole> {
 
   try {
     const decoded = jwtDecode<TokenPayload>(token);
+    const now = Math.floor(Date.now() / 1000);
+
+    if (!decoded.exp || decoded.exp <= now) {
+      redirect("/login");
+    }
 
     if (decoded.memberRole !== "KID" && decoded.memberRole !== "PARENT") {
       redirect("/login");
