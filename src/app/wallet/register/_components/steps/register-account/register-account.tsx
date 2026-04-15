@@ -1,20 +1,45 @@
 "use client";
 
-import { useState } from "react";
 import Button from "@/common/components/button/Button";
 import RegisterStepHeader from "@/common/components/header/RegisterStepHeader";
 import AccountNumberInput from "@/common/components/input/AccountNumberInput";
+import { verifyAccount } from "@/common/lib/api/accounts";
+import { useAlert } from "@/common/providers/alertProvider";
 
 type RegisterAccountProps = {
+  accountNumber: string;
+  isAccountVerified: boolean;
+  onAccountNumberChange: (value: string) => void;
+  onVerifySuccess: () => void;
   onNext: () => void;
   onBack: () => void;
 };
 
-const RegisterAccount = ({ onNext, onBack }: RegisterAccountProps) => {
-  const [accountNumber, setAccountNumber] = useState("");
+const RegisterAccount = ({
+  accountNumber,
+  isAccountVerified,
+  onAccountNumberChange,
+  onVerifySuccess,
+  onNext,
+  onBack,
+}: RegisterAccountProps) => {
+  const { alert } = useAlert();
 
-  const handleVerifyAccount = () => {
-    return;
+  const handleVerifyAccount = async () => {
+    try {
+      await verifyAccount({ accountNumber });
+      onVerifySuccess();
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "계좌 정보를 다시 확인해주세요.";
+
+      alert({
+        title: message,
+        actionLabel: "확인",
+      });
+    }
   };
 
   return (
@@ -33,12 +58,20 @@ const RegisterAccount = ({ onNext, onBack }: RegisterAccountProps) => {
             label="계좌번호"
             placeholder="계좌번호"
             value={accountNumber}
-            onChange={setAccountNumber}
-            onVerify={handleVerifyAccount}
+            onChange={onAccountNumberChange}
+            onVerify={() => {
+              void handleVerifyAccount();
+            }}
+            verifyDisabled={accountNumber.length !== 11}
           />
         </div>
         <div className="mt-auto px-6 pt-9">
-          <Button size="L" variant="active" onClick={onNext}>
+          <Button
+            size="L"
+            variant={isAccountVerified ? "active" : "disabled"}
+            onClick={onNext}
+            disabled={!isAccountVerified}
+          >
             다음
           </Button>
         </div>

@@ -1,7 +1,15 @@
 import Image from "next/image";
 import Button from "@/common/components/button/Button";
 
-const RegisterComplete = () => {
+type RegisterCompleteProps = {
+  accountNumber: string;
+  linkedAt: string;
+};
+
+const RegisterComplete = ({
+  accountNumber,
+  linkedAt,
+}: RegisterCompleteProps) => {
   return (
     <main className="min-h-screen bg-white flex flex-col">
       <div className="flex-1 w-full px-6 flex flex-col items-center pt-25 text-center">
@@ -14,11 +22,11 @@ const RegisterComplete = () => {
         <div className="w-full h-[0.8px] bg-grey-5 mt-12" aria-hidden="true" />
         <div className="mt-6 w-full flex justify-between text-body-16-m text-grey-6 pb-4">
           <span>계좌번호</span>
-          <span className="text-brand-black">111-2222-3333</span>
+          <span className="text-brand-black">{accountNumber}</span>
         </div>
         <div className="w-full flex justify-between text-body-16-m text-grey-6">
           <span>등록일</span>
-          <span className="text-brand-black">2026.04.07</span>
+          <span className="text-brand-black">{linkedAt}</span>
         </div>
       </div>
 
