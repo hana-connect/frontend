@@ -30,11 +30,11 @@ const RequestPage = () => {
   // 요청
   if (step === 1) {
     return (
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white overflow-y-auto pb-32">
         <Header type="sub" title="아이 계좌번호 요청하기" />
 
         <section>
-          <h1 className="text-title-24-sb text-black px-6 py-7">
+          <h1 className="text-title-24-sb text-black p-5">
             요청할 멤버를 선택해주세요.
           </h1>
           <div className="mt-4 flex items-center gap-2 px-6">
@@ -44,47 +44,57 @@ const RequestPage = () => {
             <CircleQuestionMark size={20} className="text-[#333]" />
           </div>
 
-          <div className="mt-4 flex gap-3 overflow-x-auto scrollbar-hide px-6">
-            {DUMMY_PARENTS.map((parent) => (
-              <button
-                type="button"
-                key={parent.id}
-                onClick={() => setSelectedParent(parent.id)}
-                aria-pressed={selectedParent === parent.id}
-                aria-label={`${parent.name} 선택`}
-                className={cn(
-                  "flex flex-col items-center gap-3 px-1 py-4 rounded-[20px] bg-grey-9 transition-all shrink-0 w-35 border-grey-5 border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-purple-3/50",
-                )}
-              >
-                <div className="relative size-20 shrink-0">
-                  <div className="relative w-full h-full rounded-full overflow-hidden bg-white">
-                    <Image
-                      src={parent.img}
-                      alt={parent.name}
-                      fill
-                      className="object-cover"
-                    />
-                    {selectedParent === parent.id && (
-                      <div className="absolute inset-0 bg-brand-purple-background/90 flex items-center justify-center z-10">
-                        <Check
-                          size={40}
-                          className="text-white"
-                          strokeWidth={2.5}
-                        />
-                      </div>
+          <div className="mt-4 px-6">
+            {DUMMY_PARENTS.length > 0 ? (
+              <div className="flex gap-3 overflow-x-auto scrollbar-hide">
+                {DUMMY_PARENTS.map((parent) => (
+                  <button
+                    type="button"
+                    key={parent.id}
+                    onClick={() => setSelectedParent(parent.id)}
+                    aria-pressed={selectedParent === parent.id}
+                    aria-label={`${parent.name} 선택`}
+                    className={cn(
+                      "flex flex-col items-center gap-3 px-1 py-4 rounded-[20px] bg-grey-9 transition-all shrink-0 w-35 border-grey-5 border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-purple-3/50",
                     )}
-                  </div>
+                  >
+                    <div className="relative size-20 shrink-0">
+                      <div className="relative w-full h-full rounded-full overflow-hidden bg-white">
+                        <Image
+                          src={parent.img}
+                          alt={parent.name}
+                          fill
+                          className="object-cover"
+                        />
+                        {selectedParent === parent.id && (
+                          <div className="absolute inset-0 bg-brand-purple-background/90 flex items-center justify-center z-10">
+                            <Check
+                              size={40}
+                              className="text-white"
+                              strokeWidth={2.5}
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                  <div className="absolute -bottom-1 -right-1 size-6.25 rounded-full bg-[#2F195A] flex items-center justify-center z-10">
-                    <span className="text-[12px] font-semibold text-white leading-none">
-                      부모
+                      <div className="absolute -bottom-1 -right-1 size-6.25 rounded-full bg-[#2F195A] flex items-center justify-center z-10">
+                        <span className="text-[12px] font-semibold text-white leading-none">
+                          부모
+                        </span>
+                      </div>
+                    </div>
+
+                    <span className="text-body-14-m text-black">
+                      {parent.name}
                     </span>
-                  </div>
-                </div>
-
-                <span className="text-body-14-m text-black">{parent.name}</span>
-              </button>
-            ))}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="flex h-37.5 w-full flex-col items-center justify-center text-body-16-m-2 text-grey-6">
+                아이와 연결된 부모가 없습니다.
+              </div>
+            )}
           </div>
         </section>
 
@@ -129,7 +139,7 @@ const RequestPage = () => {
   const todayDate = getTodayDateKST();
 
   return (
-    <main className="min-h-screen bg-white flex flex-col items-center">
+    <main className="min-h-screen bg-white flex flex-col items-center overflow-y-auto pb-32">
       <div className="flex-1 w-full px-6 flex flex-col items-center pt-25 text-center">
         <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
         <h1 className="text-body-20-m text-black mt-6">
