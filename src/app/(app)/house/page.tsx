@@ -5,33 +5,24 @@ import {
   SpringApiError,
   serverSpringFetch,
 } from "@/common/lib/api/server-spring-fetch";
+import type { ApiResponse } from "@/common/lib/api/types";
 import ProgressBar from "./_components/ProgressBar";
 import ReportCard from "./_components/ReportCard";
 import ReportHistory, { type HistoryItem } from "./_components/ReportHistory";
 import ReportHouse from "./_components/ReportHouse";
 import { getCurrentSeason } from "./_lib/getCurrentSeason";
 
-type HouseStatusResponse = {
-  status: number;
-  message: string;
-  data: {
-    memberId: number;
-    level: number;
-    gauge: number;
-    totalCount: number | null;
-    monthlyPayment: number | null;
-    startDate: string | null;
-    message: string | null;
-  };
-};
+type HouseStatusResponse = ApiResponse<{
+  memberId: number;
+  level: number;
+  gauge: number;
+  totalCount: number | null;
+  monthlyPayment: number | null;
+  startDate: string | null;
+  message: string | null;
+}>;
 
-type HouseHistoryResponse = {
-  status: number;
-  message: string;
-  data: {
-    histories: HistoryItem[];
-  };
-};
+type HouseHistoryResponse = ApiResponse<{ histories: HistoryItem[] }>;
 
 type PageProps = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -40,10 +31,13 @@ type PageProps = {
 async function Page({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const kidId = resolvedSearchParams.kidId;
+  const paidAt = resolvedSearchParams.paidAt;
 
   try {
     const params = new URLSearchParams();
     if (kidId) params.set("kidId", kidId);
+    if (paidAt) params.set("paidAt", paidAt);
+
     const query = params.toString();
 
     const statusEndpoint = query
