@@ -18,11 +18,12 @@ function AccountList({
   accounts,
   mainAccountInfo,
 }: AccountListProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(2);
 
   const isChild = userRole === "KID";
   const hasAccounts = accounts.length > 0;
   const hasMoreThanTwo = accounts.length > 2;
+  const isAllVisible = visibleCount >= accounts.length;
 
   const visibleAccounts = useMemo(() => {
     if (!hasAccounts) {
@@ -30,11 +31,11 @@ function AccountList({
     }
 
     if (isChild) {
-      return isExpanded ? accounts : accounts.slice(0, 2);
+      return accounts.slice(0, visibleCount);
     }
 
     return accounts.slice(0, 2);
-  }, [accounts, hasAccounts, isChild, isExpanded]);
+  }, [accounts, hasAccounts, isChild, visibleCount]);
 
   return (
     <section className="pb-8">
@@ -71,12 +72,19 @@ function AccountList({
               (isChild ? (
                 <button
                   type="button"
-                  onClick={() => setIsExpanded((prev) => !prev)}
-                  aria-expanded={isExpanded}
+                  onClick={() => {
+                    if (isAllVisible) {
+                      setVisibleCount(2);
+                      return;
+                    }
+
+                    setVisibleCount((prev) => prev + 2);
+                  }}
+                  aria-expanded={isAllVisible}
                   aria-controls="wallet-account-list"
                   className="mt-3 flex h-[50px] w-full items-center justify-center rounded-[18px] border border-grey-5 bg-grey-9 text-body-16-m text-grey-6"
                 >
-                  {isExpanded ? "접기" : "더보기"}
+                  {isAllVisible ? "접기" : "더보기"}
                 </button>
               ) : (
                 <Link
