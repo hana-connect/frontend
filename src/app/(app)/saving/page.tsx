@@ -12,6 +12,11 @@ import RelayMessage from "./_components/RelayMessage";
 import TransferComplete from "./_components/TransferComplete";
 
 type TransferStep = "input" | "password" | "complete" | "history";
+type LimitInfo = {
+  currentSaving: number;
+  inputAmount: number;
+  savingLimit: number;
+};
 
 export default function SavingPage() {
   const router = useRouter();
@@ -20,7 +25,7 @@ export default function SavingPage() {
   const [amount, setAmount] = useState(0);
   const [message, setMessage] = useState("");
 
-  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
+  const [limitInfo, setLimitInfo] = useState<LimitInfo | null>(null);
 
   const isTransferReady = amount > 0 && message.trim().length > 0;
 
@@ -29,7 +34,7 @@ export default function SavingPage() {
     const savingLimit = 300000;
 
     if (currentSaving + inputAmount > savingLimit) {
-      setIsLimitModalOpen(true);
+      setLimitInfo({ currentSaving, inputAmount, savingLimit });
       return false;
     }
     return true;
@@ -104,11 +109,13 @@ export default function SavingPage() {
 
         {/* 한도 초과 모달 */}
         <LimitOverModal
-          isOpen={isLimitModalOpen}
-          onClose={() => setIsLimitModalOpen(false)}
+          isOpen={!!limitInfo}
+          limitData={limitInfo}
+          onClose={() => {
+            setLimitInfo(null);
+          }}
           onRetry={() => {
-            setIsLimitModalOpen(false);
-            setAmount(0);
+            setLimitInfo(null);
           }}
         />
       </main>
