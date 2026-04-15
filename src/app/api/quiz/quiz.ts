@@ -1,14 +1,9 @@
+import type { ApiResponse } from "@/common/lib/api/types";
 import type {
   QuizTodayResponse,
   SubmitAnswerRequest,
   SubmitAnswerResponse,
 } from "./types/quiz";
-
-type ApiResponse<T> = {
-  status: number;
-  message: string;
-  data: T;
-};
 
 // 오늘 퀴즈 조회
 export const getTodayQuiz = async (childId: number) => {
@@ -22,10 +17,8 @@ export const getTodayQuiz = async (childId: number) => {
     throw new Error(`퀴즈 조회 실패 (${res.status})`);
   }
 
-  const result: QuizTodayResponse | ApiResponse<QuizTodayResponse> =
-  await res.json();
-  
-  return "data" in result ? result.data : result;
+  const result: ApiResponse<QuizTodayResponse> = await res.json();
+  return result.data;
 };
 
 // 답 제출
