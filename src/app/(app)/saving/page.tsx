@@ -27,19 +27,25 @@ export default function SavingPage() {
 
   const isTransferReady = amount > 0 && message.trim().length > 0;
 
-  const handleTransferSubmit = () => {
+  const checkLimit = (inputAmount: number): boolean => {
     const currentSaving = 250000;
     const savingLimit = 300000;
 
-    if (amount > 500000) {
+    if (inputAmount > 500000) {
       setLimitModal({ isOpen: true, type: "daily" });
-      return;
+      return false;
     }
-    if (currentSaving + amount > savingLimit) {
+    if (currentSaving + inputAmount > savingLimit) {
       setLimitModal({ isOpen: true, type: "saving" });
-      return;
+      return false;
     }
-    setStep("password");
+    return true;
+  };
+
+  const handleTransferSubmit = () => {
+    if (checkLimit(amount)) {
+      setStep("password");
+    }
   };
 
   return (
@@ -54,7 +60,11 @@ export default function SavingPage() {
 
             <div className="flex-1 overflow-y-auto pb-40">
               {/* 송금 금액 */}
-              <AmountInput amount={amount} onAmountChange={setAmount} />
+              <AmountInput
+                amount={amount}
+                onAmountChange={setAmount}
+                onCheckLimit={checkLimit}
+              />
 
               {/* 메시지 작성 */}
               <RelayMessage

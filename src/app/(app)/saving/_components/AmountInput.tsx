@@ -8,11 +8,13 @@ import RecentTransferModal from "./RecentTransferModal";
 type AmountInputProps = {
   amount: number;
   onAmountChange: (val: number) => void;
+  onCheckLimit: (inputAmount: number) => boolean;
 };
 
 export default function AmountInput({
   amount,
   onAmountChange,
+  onCheckLimit,
 }: AmountInputProps) {
   const [isKeypadVisible, setIsKeypadVisible] = useState(false);
   const [isRecentModalOpen, setIsRecentModalOpen] = useState(false);
@@ -32,8 +34,10 @@ export default function AmountInput({
             accountNickname="채현이 적금 (용돈)"
             balance={800000}
             onNext={(inputAmount) => {
-              onAmountChange(inputAmount);
-              setIsKeypadVisible(false);
+              if (onCheckLimit(inputAmount)) {
+                onAmountChange(inputAmount);
+                setIsKeypadVisible(false);
+              }
             }}
           />
         </div>
