@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const SPRING_BASE_URL = process.env.SPRING_BASE_URL ?? "http://localhost:8080";
+const SPRING_BASE_URL = process.env.SPRING_BASE_URL;
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,12 +19,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const accessToken = req.cookies.get("accessToken")?.value;
+
+    if (!accessToken) {
+      return NextResponse.json(
+        { message: "인증 토큰이 없습니다." },
+        { status: 401 },
+      );
+    }
+
     const springRes = await fetch(
       `${SPRING_BASE_URL}/api/quiz/${quizSetId}/questions/${questionOrder}/answer?childId=${childId}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ selectedIndex }),
         cache: "no-store",

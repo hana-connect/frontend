@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const SPRING_BASE_URL = process.env.SPRING_BASE_URL ?? "http://localhost:8080";
+const SPRING_BASE_URL = process.env.SPRING_BASE_URL;
 
 export async function GET(req: NextRequest) {
   try {
@@ -13,11 +13,23 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    const accessToken = req.cookies.get("accessToken")?.value;
+
+    if (!accessToken) {
+      return NextResponse.json(
+        { message: "인증 토큰이 없습니다." },
+        { status: 401 },
+      );
+    }
+
     const springRes = await fetch(
       `${SPRING_BASE_URL}/api/quiz/today?childId=${childId}`,
       {
         method: "GET",
         cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
     );
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
 import type {
@@ -16,7 +16,16 @@ import QuizQuestionCard from "@/common/components/quiz/QuizQuestionCard";
 
 export default function QuizResultPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
+
+  const childIdParam = searchParams.get("childId");
+  const childId =
+    childIdParam &&
+    Number.isInteger(Number(childIdParam)) &&
+    Number(childIdParam) > 0
+      ? Number(childIdParam)
+      : null;
 
   const [quizData, setQuizData] = useState<QuizTodayResponse | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(
@@ -35,7 +44,7 @@ export default function QuizResultPage() {
       const storedAnswerResult = sessionStorage.getItem("quizAnswerResult");
 
       if (!storedQuizToday || !storedCurrentQuestion || !storedAnswerResult) {
-        router.replace("/quiz/play");
+        router.replace(childId ? `/quiz/play?childId=${childId}` : "/quiz");
         return;
       }
 
@@ -52,12 +61,12 @@ export default function QuizResultPage() {
         setAnswerResult(parsedAnswerResult);
       } catch (error) {
         console.error("퀴즈 결과 데이터 파싱 실패:", error);
-        router.replace("/quiz/play");
+        router.replace(childId ? `/quiz/play?childId=${childId}` : "/quiz");
       }
     };
 
     loadStoredResult();
-  }, [router]);
+  }, [router, childId]);
 
   const handleNext = () => {
     if (!quizData) {
@@ -71,12 +80,14 @@ export default function QuizResultPage() {
       return;
     }
 
-    router.push("/quiz/complete");
+    router.push(
+      childId ? `/quiz/complete?childId=${childId}` : "/quiz/complete",
+    );
   };
 
   const handleContinueQuiz = () => {
     setOpen(false);
-    router.push("/quiz/play");
+    router.push(childId ? `/quiz/play?childId=${childId}` : "/quiz");
   };
 
   if (!quizData || !currentQuestion || !answerResult) {
@@ -109,7 +120,6 @@ export default function QuizResultPage() {
 
         <main className="flex flex-1 flex-col bg-[#FFFFFF]">
           <section className="flex flex-1 flex-col bg-[linear-gradient(180deg,#FFF3FF_0%,#F1F8FF_25%,#FFFFFF_50%)] px-5 pt-6 pb-6">
-            {/* 결과 카드 */}
             <div className="relative mt-2">
               <Image
                 src={
@@ -213,8 +223,11 @@ export default function QuizResultPage() {
               <div className="w-[86px] shrink-0">
                 <Button
                   size="L"
-                  variant="disabled"
-                  onClick={() => setOpen(false)}
+                  variant="gray"
+                  onClick={() => {
+                    setOpen(false);
+                    router.push(`/quiz?childId=${childId}`);
+                  }}
                   className="h-12 w-full text-[18px] font-medium"
                 >
                   아니요

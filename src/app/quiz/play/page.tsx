@@ -2,7 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getTodayQuiz, submitQuizAnswer } from "@/app/api/quiz/quiz";
 import type {
@@ -18,8 +18,16 @@ import { cn } from "@/common/lib/utils";
 
 export default function QuizPlayPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [childId, setChildId] = useState<number | null>(null);
+  const childIdParam = searchParams.get("childId");
+  const childId =
+    childIdParam &&
+    Number.isInteger(Number(childIdParam)) &&
+    Number(childIdParam) > 0
+      ? Number(childIdParam)
+      : null;
+
   const [quizData, setQuizData] = useState<QuizTodayResponse | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(
     null,
@@ -41,23 +49,19 @@ export default function QuizPlayPage() {
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        const storedChildId = sessionStorage.getItem("selectedChildId");
-        const parsedChildId = storedChildId ? Number(storedChildId) : NaN;
+        if (!childId) {
+          alert("선택된 자녀 정보가 없습니다.");
+          router.replace("/quiz");
+          return;
+        }
 
-        const targetChildId =
-          Number.isInteger(parsedChildId) && parsedChildId > 0
-            ? parsedChildId
-            : 1; // TODO: 메인 페이지 연결 후 fallback 제거
-
-        const data = await getTodayQuiz(targetChildId);
+        const data = await getTodayQuiz(childId);
         const nextQuestion =
           data.questions.find((question) => question.status === "READY") ??
           null;
 
-        setChildId(targetChildId);
-
         if (!nextQuestion) {
-          router.replace("/quiz/complete");
+          router.replace(`/quiz/complete?childId=${childId}`);
           return;
         }
 
@@ -67,11 +71,12 @@ export default function QuizPlayPage() {
         setShowHint(false);
       } catch (error) {
         console.error("퀴즈 조회 실패:", error);
+        alert("퀴즈 정보를 불러오지 못했습니다. 다시 시도해주세요.");
       }
     };
 
     fetchQuiz();
-  }, [router]);
+  }, [router, childId]);
 
   const handleSubmitAnswer = async () => {
     if (!childId || !quizData || !currentQuestion || selectedIndex === null) {
@@ -91,9 +96,10 @@ export default function QuizPlayPage() {
       });
 
       saveQuizResult(quizData, currentQuestion, answerResult);
-      router.push("/quiz/result");
+      router.push(`/quiz/result?childId=${childId}`);
     } catch (error) {
       console.error("답 제출 실패:", error);
+      alert("정답 제출에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setIsSubmitting(false);
     }

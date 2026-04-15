@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { getTodayQuiz } from "@/app/api/quiz/quiz";
 import Button from "@/common/components/button/Button";
@@ -9,24 +9,26 @@ import Header from "@/common/components/header/Header";
 
 export default function QuizStartPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
-  const getChildId = () => {
-    const storedChildId = sessionStorage.getItem("selectedChildId");
-    const parsedChildId = storedChildId ? Number(storedChildId) : NaN;
-
-    if (Number.isInteger(parsedChildId) && parsedChildId > 0) {
-      return parsedChildId;
-    }
-
-    return 1; // TODO: 나중에 실제 선택된 childId로 교체
-  };
+  const childIdParam = searchParams.get("childId");
+  const childId =
+    childIdParam &&
+    Number.isInteger(Number(childIdParam)) &&
+    Number(childIdParam) > 0
+      ? Number(childIdParam)
+      : null;
 
   const handleStartQuiz = async () => {
     try {
       setIsLoading(true);
 
-      const childId = getChildId();
+      if (!childId) {
+        alert("선택된 자녀 정보가 없습니다.");
+        return;
+      }
+
       const quizData = await getTodayQuiz(childId);
 
       const isQuizCompleted = quizData.solvedCount >= quizData.totalCount;
@@ -35,14 +37,14 @@ export default function QuizStartPage() {
       );
 
       if (isQuizCompleted || !hasReadyQuestion) {
-        router.push("/quiz/complete");
+        router.push(`/quiz/complete?childId=${childId}`);
         return;
       }
 
-      router.push("/quiz/play");
+      router.push(`/quiz/play?childId=${childId}`);
     } catch (error) {
       console.error("퀴즈 시작 처리 실패:", error);
-      router.push("/quiz/play");
+      alert("퀴즈 정보를 불러오지 못했습니다. 다시 시도해주세요.");
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +56,6 @@ export default function QuizStartPage() {
 
       <main className="flex flex-1 flex-col bg-[#FFFFFF]">
         <section className="flex flex-1 flex-col px-[22px] pt-4 pb-8">
-          {/* 제목 */}
           <div className="mt-[6px]">
             <h1 className="text-2xl font-semibold leading-9 text-black">
               우리 아이 퀴즈
@@ -65,7 +66,6 @@ export default function QuizStartPage() {
             </p>
           </div>
 
-          {/* 메인 카드 */}
           <div className="mt-[40px] flex h-[256px] flex-col items-center justify-center rounded-2xl bg-violet-50 px-[56px]">
             <p className="text-center text-[20px] font-bold leading-[32px] text-black">
               아이의 다양한 활동을
@@ -84,7 +84,6 @@ export default function QuizStartPage() {
             </div>
           </div>
 
-          {/* 안내 배너 */}
           <div className="mt-6 rounded-2xl bg-amber-100 px-5 py-5">
             <p className="text-center text-[15px] font-medium leading-[24px] text-gray-700">
               퀴즈를 풀면 연금계좌로 리워드를 드려요.
@@ -93,7 +92,6 @@ export default function QuizStartPage() {
             </p>
           </div>
 
-          {/* 버튼 영역 */}
           <div className="mt-auto flex flex-col gap-4 pt-8">
             <Button
               size="L"
@@ -108,7 +106,7 @@ export default function QuizStartPage() {
             <Button
               size="L"
               variant="purpleOutline"
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/wallet")}
               className="h-14 rounded-[20px] text-[18px] font-semibold leading-6"
             >
               리워드 받을 계좌 설정하러 가기
