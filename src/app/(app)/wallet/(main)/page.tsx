@@ -7,22 +7,25 @@ import type { Account, MainAccountInfo, UserRole } from "./_types";
 
 const MOCK_ACCOUNTS: Account[] = [
   {
-    id: 1,
+    accountId: 1,
     name: "주택청약종합저축",
-    number: "1102-111-055957",
+    accountNumber: "1102-111-055957",
     balance: 6900000,
+    accountType: "SUBSCRIPTION",
   },
   {
-    id: 2,
+    accountId: 2,
     name: "3·6·9 정기예금",
-    number: "8811-122-234512",
+    accountNumber: "8811-122-234512",
     balance: 10000000,
+    accountType: "DEPOSIT", // 정기예금 → DEPOSIT 추천
   },
   {
-    id: 3,
+    accountId: 3,
     name: "자유적금",
-    number: "123-456-789012",
+    accountNumber: "123-456-789012",
     balance: 3000000,
+    accountType: "SAVINGS", // 적금 → SAVINGS
   },
 ];
 

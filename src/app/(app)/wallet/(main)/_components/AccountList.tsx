@@ -53,9 +53,9 @@ function AccountList({
               {visibleAccounts.map((account) => {
                 return (
                   <ItemCard
-                    key={account.id}
+                    key={account.accountId}
                     title={account.name}
-                    subTitle={account.number}
+                    subTitle={account.accountNumber}
                     isPurple={false}
                     rightContent={
                       <span className="text-body-16-m font-bold">

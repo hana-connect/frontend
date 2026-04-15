@@ -1,10 +1,18 @@
 export type UserRole = "KID" | "PARENT";
 
+export type AccountType =
+  | "FREE"
+  | "DEPOSIT"
+  | "SAVINGS"
+  | "SUBSCRIPTION"
+  | "PENSION";
+
 export type Account = {
-  id: number;
+  accountId: number;
   name: string;
-  number: string;
+  accountNumber: string;
   balance: number;
+  accountType: AccountType;
 };
 
 export type MainAccountInfo = {
