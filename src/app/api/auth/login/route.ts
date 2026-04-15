@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { SPRING_BASE_URL } from "@/common/constants/api";
 
-const LOGIN_TIMEOUT_MS = 5000;
+const LOGIN_TIMEOUT_MS = 15000;
 
 type ApiResponse<T> = {
   status: number;
