@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
-import type { WalletData } from "../page";
+
+type ParentMainViewProps = {
+  userName: string;
+  balance: number;
+};
 
 type Account = {
   id: number;
@@ -21,7 +25,7 @@ type Child = {
   accounts: Account[];
 };
 
-const ParentMainView = ({ userName, balance }: WalletData) => {
+const ParentMainView = ({ userName, balance }: ParentMainViewProps) => {
   const childrenData: Child[] = [
     {
       id: 1,
