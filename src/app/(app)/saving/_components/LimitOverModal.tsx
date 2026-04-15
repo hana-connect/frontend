@@ -93,7 +93,7 @@ export default function LimitOverModal({
             size="L"
             variant="active"
             onClick={onRetry}
-            className="flex-1 text-[18px]"
+            className="flex-1 text-base sm:text-lg whitespace-nowrap px-2"
           >
             기존 다른 통장에 입금하기
           </Button>

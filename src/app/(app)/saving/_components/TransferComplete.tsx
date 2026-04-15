@@ -54,10 +54,7 @@ export default function TransferComplete({
 
         {/* 메시지 버블 영역 */}
         <div className="w-full mt-10">
-          <Bubble
-            message={message || "너를 늘 응원하고 있단다"}
-            parentProfile={parentProfile}
-          />
+          <Bubble message={message} parentProfile={parentProfile} />
         </div>
       </div>
 
