@@ -69,7 +69,6 @@ export default function RelayMessage({
           <textarea
             value={message}
             onChange={(e) => {
-              // 10자까지만 자르기 (한글 조합 에러 방지)
               const val = e.target.value;
               if (val.length <= 10) {
                 onMessageChange(val);
