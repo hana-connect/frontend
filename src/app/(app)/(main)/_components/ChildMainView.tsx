@@ -30,7 +30,7 @@ const ChildMainView = ({
       {/* 상단 메인 배너 */}
       <section aria-label="메인 이벤트 배너">
         <Image
-          src="svg/ic_main_kids_banner.svg"
+          src="/svg/main/ic_main_kids_banner.svg"
           alt="아이부자 메인 배너"
           width={400}
           height={200}
@@ -43,7 +43,7 @@ const ChildMainView = ({
         {/* 퀴즈 및 광고 배너 */}
         <section className="flex flex-col gap-4" aria-label="진행 중인 이벤트">
           <Image
-            src="svg/ic_main_kids_quiz_banner.svg"
+            src="/svg/main/ic_main_kids_quiz_banner.svg"
             alt="오늘의 퀴즈를 오픈했어요!"
             width={335}
             height={57}
@@ -51,7 +51,7 @@ const ChildMainView = ({
             className="w-full h-auto"
           />
           <Image
-            src="svg/ic_main_kids_ad.svg"
+            src="/svg/main/ic_main_kids_ad.svg"
             alt="추천 서비스 광고"
             width={335}
             height={90}
@@ -101,7 +101,7 @@ const ChildMainView = ({
         </section>
 
         <Image
-          src="svg/ic_main_common_ad.svg"
+          src="/svg/main/ic_main_common_ad.svg"
           alt="공통 서비스 광고"
           width={400}
           height={200}
@@ -146,7 +146,7 @@ const ChildMainView = ({
           <div className="flex py-2 items-center justify-between">
             <div className="flex items-center">
               <Image
-                src="svg/ic_main_kids_card.svg"
+                src="/svg/main/ic_main_kids_card.svg"
                 alt="아이부자 카드"
                 width={40}
                 height={54}
@@ -235,7 +235,7 @@ const ChildMainView = ({
                 내 활동
               </h2>
               <Image
-                src="svg/ic_main_kids_menu.svg"
+                src="/svg/main/ic_main_kids_menu.svg"
                 alt="활동 메뉴"
                 width={90.67}
                 height={40}
@@ -245,14 +245,14 @@ const ChildMainView = ({
           </div>
           <div className="flex flex-col gap-4">
             <Image
-              src="svg/ic_main_kids_medal.svg"
+              src="/svg/main/ic_main_kids_medal.svg"
               alt="새로운 미션 도전하기"
               width={335}
               height={350}
               className="w-full h-auto"
             />
             <Image
-              src="svg/ic_main_kids_pig.svg"
+              src="/svg/main/ic_main_kids_pig.svg"
               alt="저금 시작하기"
               width={335}
               height={350}
