@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
-import wonderIcon from "@/app/wallet/register/_assets/icons/wonder.svg";
+import wonderIcon from "@/app/(app)/wallet/register/_assets/icons/wonder.svg";
 
 type RegisterInfoBannerProps = {
   title: string;
