@@ -33,10 +33,11 @@ export default function PaymentRoundSelect({
             text-left shadow-none ring-0 outline-none
             focus:ring-0 focus:ring-offset-0 focus:outline-none
             focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent
-            data-[placeholder]:text-[#CCCCCC] font-bold text-xl
+            data-[placeholder]:text-[#CCCCCC]
+            font-bold text-xl text-brand-black
           "
         >
-          <SelectValue placeholder="선택" />
+          <SelectValue placeholder="선택" className="text-brand-black" />
         </SelectTrigger>
 
         <SelectContent

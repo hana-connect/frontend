@@ -54,8 +54,9 @@ export default function DepositPage() {
           <Header type="sub" title="청약 납입하기" />
 
           <section className="mt-10">
+            <p className="mb-6 text-xl font-bold text-brand-black">납입금액</p>
+
             <Input
-              label="납입금액"
               placeholder="금액 입력"
               value={amount ? amount.toLocaleString() : ""}
               readOnly
