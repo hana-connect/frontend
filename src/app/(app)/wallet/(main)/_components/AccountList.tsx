@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import TopRegisterSection from "@/app/saving/_components/TopRegisterSection";
+import TopRegisterSection from "@/app/(app)/saving/_components/TopRegisterSection";
 import ItemCard from "@/common/components/item-card/ItemCard";
 import { formatMoney } from "@/common/lib/utils";
 import type { Account, MainAccountInfo, UserRole } from "../_types";
