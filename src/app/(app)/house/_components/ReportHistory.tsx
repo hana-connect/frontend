@@ -1,8 +1,4 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { DUMMY_HISTORIES } from "../_mocks";
+import Link from "next/link";
 
 export interface HistoryItem {
   year: number;
@@ -13,18 +9,15 @@ export interface HistoryItem {
   reward: string;
 }
 
-function ReportHistory() {
-  const router = useRouter();
-  const [histories, _setHistories] = useState<HistoryItem[]>(DUMMY_HISTORIES);
-  const [isLoading, _setIsLoading] = useState(false);
+type ReportHistoryProps = {
+  histories: HistoryItem[];
+  kidId?: string;
+};
 
-  /*
-  useEffect(() => {
-    // fetch logic...
-  }, []);
-  */
-
-  if (isLoading) return <div>로딩 중...</div>;
+function ReportHistory({ histories, kidId }: ReportHistoryProps) {
+  if (histories.length === 0) {
+    return null;
+  }
 
   return (
     <section className="pb-11">
@@ -36,27 +29,29 @@ function ReportHistory() {
             ? "첫 납입 완료"
             : `${item.level - 1}년 연속 납입 완료`;
 
+          const params = new URLSearchParams();
+          if (kidId) params.set("kidId", kidId);
+          params.set("paidAt", item.paidAt);
+
           return (
-            // biome-ignore lint/a11y/noStaticElementInteractions: '
-            // biome-ignore lint/a11y/useKeyWithClickEvents:''
-            <div
+            <Link
               key={item.paidAt}
-              className="flex items-center justify-between cursor-pointer py-1"
-              onClick={() => router.push(`/report/${item.year}`)}
+              href={`?${params.toString()}`}
+              className="flex items-center justify-between py-1"
             >
-              <p className="flex-1 text-body-16-m text-brand-purple-1 whitespace-nowrap">
+              <p className="flex-1 whitespace-nowrap text-body-16-m text-brand-purple-1">
                 {displayTitle}
               </p>
 
               <div className="flex items-center">
-                <p className="text-body-16-m text-grey-2 whitespace-nowrap">
+                <p className="whitespace-nowrap text-body-16-m text-grey-2">
                   {displayDate}
                 </p>
-                <p className="w-23 text-body-16-m text-grey-1 text-right ml-2 whitespace-nowrap">
+                <p className="ml-2 w-23 whitespace-nowrap text-right text-body-16-m text-grey-1">
                   {item.reward}
                 </p>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
