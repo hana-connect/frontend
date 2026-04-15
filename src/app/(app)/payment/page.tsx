@@ -102,7 +102,8 @@ export default function PaymentDeposit() {
                 초과분은 가점에 반영되지 않아요.
                 <br />
                 <br />
-                {(pendingAmount ?? 0).toLocaleString()}원, 연금 계좌로 옮길까요?
+                {(pendingAmount ? pendingAmount - 250000 : 0).toLocaleString()}
+                원, 연금 계좌로 옮길까요?
               </AlertDialogTitle>
 
               <AlertDialogDescription>
