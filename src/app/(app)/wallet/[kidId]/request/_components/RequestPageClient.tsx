@@ -58,8 +58,10 @@ const RequestPageClient = ({ initialParents }: RequestPageProps) => {
                     type="button"
                     key={parent.connectMemberId}
                     onClick={() => setSelectedParent(parent.connectMemberId)}
+                    aria-pressed={selectedParent === parent.connectMemberId}
                     className={cn(
-                      "flex flex-col items-center gap-3 px-1 py-4 rounded-[20px] bg-grey-9 transition-all shrink-0 w-35 border-grey-5 border focus-visible:outline-none",
+                      "flex flex-col items-center gap-3 px-1 py-4 rounded-[20px] bg-grey-9 transition-all shrink-0 w-35 border-grey-5 border",
+                      "focus:outline-none focus-visible:outline-none",
                       selectedParent === parent.connectMemberId &&
                         "border-brand-purple-1",
                     )}
