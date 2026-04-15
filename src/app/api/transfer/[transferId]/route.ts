@@ -16,15 +16,21 @@ export async function GET(_req: Request, { params }: RouteContext) {
   try {
     const { transferId } = await params;
 
-    if (!transferId) {
+    const transferIdNumber = Number(transferId);
+
+    if (
+      !transferId ||
+      !Number.isInteger(transferIdNumber) ||
+      transferIdNumber <= 0
+    ) {
       return NextResponse.json(
-        { message: "transferId는 필수입니다." },
+        { message: "유효한 transferId가 필요합니다." },
         { status: 400 },
       );
     }
 
     const data = await serverSpringFetch<ApiResponse<TransferExecuteResponse>>(
-      `/api/transfer/${transferId}`,
+      `/api/transfer/${transferIdNumber}`,
       {
         method: "GET",
         cache: "no-store",
