@@ -2,7 +2,6 @@
 
 import Password from "@/common/components/keypad/Password";
 import { linkAccount } from "@/common/lib/api/accounts";
-import { useAlert } from "@/common/providers/alertProvider";
 
 type AccountPasswordProps = {
   accountNumber: string;
@@ -13,8 +12,6 @@ const AccountPassword = ({
   accountNumber,
   onLinkSuccess,
 }: AccountPasswordProps) => {
-  const { alert } = useAlert();
-
   const handleVerifyAccountPassword = async (password: string) => {
     try {
       const result = await linkAccount({
@@ -31,19 +28,9 @@ const AccountPassword = ({
         ) {
           return false;
         }
-
-        alert({
-          title: error.message,
-          actionLabel: "확인",
-        });
-        return false;
       }
 
-      alert({
-        title: "요청 처리 중 오류가 발생했습니다.",
-        actionLabel: "확인",
-      });
-      return false;
+      throw error;
     }
   };
 
