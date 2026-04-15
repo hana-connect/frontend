@@ -1,11 +1,7 @@
-export type UserRole = "KID" | "PARENT";
+export type { AccountType } from "@/common/types/account";
+export type { UserRole } from "@/common/types/user";
 
-export type AccountType =
-  | "FREE"
-  | "DEPOSIT"
-  | "SAVINGS"
-  | "SUBSCRIPTION"
-  | "PENSION";
+import type { AccountType } from "@/common/types/account";
 
 export type Account = {
   accountId: number;
