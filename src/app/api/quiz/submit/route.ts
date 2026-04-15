@@ -4,16 +4,24 @@ import { proxyJsonToSpring } from "@/common/lib/api/bff-proxy";
 export async function POST(req: NextRequest) {
   try {
     const parsedBody = await req.json();
-    const { childId, quizSetId, questionOrder, selectedIndex } = parsedBody;
+
+    const childId = Number(parsedBody.childId);
+    const quizSetId = Number(parsedBody.quizSetId);
+    const questionOrder = Number(parsedBody.questionOrder);
+    const selectedIndex = Number(parsedBody.selectedIndex);
 
     if (
-      !childId ||
-      !quizSetId ||
-      questionOrder === undefined ||
-      selectedIndex === undefined
+      !Number.isInteger(childId) ||
+      childId <= 0 ||
+      !Number.isInteger(quizSetId) ||
+      quizSetId <= 0 ||
+      !Number.isInteger(questionOrder) ||
+      questionOrder < 0 ||
+      !Number.isInteger(selectedIndex) ||
+      selectedIndex < 0
     ) {
       return NextResponse.json(
-        { message: "필수 값이 누락되었습니다." },
+        { message: "잘못된 요청 값입니다." },
         { status: 400 },
       );
     }
