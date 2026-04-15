@@ -72,6 +72,7 @@ export default function QuizPlayPageClient() {
       } catch (error) {
         console.error("퀴즈 조회 실패:", error);
         alert("퀴즈 정보를 불러오지 못했습니다. 다시 시도해주세요.");
+        router.replace(`/quiz?childId=${childId}); // 시작 페이지로 이동
       }
     };
 
@@ -201,4 +202,3 @@ export default function QuizPlayPageClient() {
     </div>
   );
 }
-// 분리해줘
