@@ -6,6 +6,11 @@ import { useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
 
+type ParentMainViewProps = {
+  userName: string;
+  balance: number;
+};
+
 type Account = {
   id: number;
   title: string;
@@ -20,10 +25,7 @@ type Child = {
   accounts: Account[];
 };
 
-const ParentMainView = () => {
-  const [userName] = useState("유지현");
-  const [userBalance] = useState(22222);
-
+const ParentMainView = ({ userName, balance }: ParentMainViewProps) => {
   const childrenData: Child[] = [
     {
       id: 1,
@@ -103,7 +105,7 @@ const ParentMainView = () => {
               </h2>
               <div className="flex items-center gap-2">
                 <span className="text-[33px] font-bold text-black leading-tight">
-                  {userBalance.toLocaleString()}원
+                  {balance.toLocaleString()}원
                 </span>
               </div>
               <div className="text-body-16-m text-[#676D86] flex flex-row items-center gap-0.5 justify-end font-medium">
