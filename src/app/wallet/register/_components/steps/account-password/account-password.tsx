@@ -1,9 +1,9 @@
-interface Props {
+type AccountPasswordProps = {
   onNext: () => void;
   onBack: () => void;
-}
+};
 
-const AccountPassword = ({ onNext, onBack }: Props) => {
+const AccountPassword = ({ onNext, onBack }: AccountPasswordProps) => {
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
       <h1>계좌 비밀번호 입력</h1>

@@ -4,9 +4,9 @@ import Header from "@/common/components/header/Header";
 import IrpCard from "./components/irp-card";
 import RegisterInfoBanner from "./components/register-info-banner";
 
-interface Props {
+type RegisterIntroProps = {
   onNext: () => void;
-}
+};
 
 type ViewType = "child" | "parent";
 
@@ -24,7 +24,7 @@ const introViewContent: Record<
   },
 };
 
-const RegisterIntro = ({ onNext }: Props) => {
+const RegisterIntro = ({ onNext }: RegisterIntroProps) => {
   const viewType: ViewType = "parent";
 
   const { bannerTitle, showIrpCard } = introViewContent[viewType];
