@@ -1,4 +1,4 @@
-export type UserRole = "CHILD" | "PARENT";
+export type UserRole = "KID" | "PARENT";
 
 export type Account = {
   id: number;

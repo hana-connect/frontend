@@ -23,7 +23,7 @@ function AccountList({
 }: AccountListProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const isChild = userRole === "CHILD";
+  const isChild = userRole === "KID";
   const hasAccounts = accounts.length > 0;
   const hasMoreThanTwo = accounts.length > 2;
 

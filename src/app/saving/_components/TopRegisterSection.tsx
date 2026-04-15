@@ -12,7 +12,7 @@ function TopRegisterSection({
   role,
   mainAccountInfo,
 }: TopRegisterSectionProps) {
-  const isChild = role === "CHILD";
+  const isChild = role === "KID";
 
   return (
     <div className="space-y-6">
