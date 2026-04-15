@@ -35,7 +35,7 @@ function ReportHistory({ histories, kidId }: ReportHistoryProps) {
 
           return (
             <Link
-              key={item.paidAt}
+              key={`${item.paidAt}-${item.level}-${item.year}`}
               href={`?${params.toString()}`}
               className="flex items-center justify-between py-1"
             >
