@@ -42,7 +42,7 @@ const PassbookLayout = ({
 
       <div
         className={`bg-[#FAFAFA] px-1 ${
-          tabs ? "min-h-[459.5px]" : "min-h-119.75"
+          tabs ? "min-h-[459.5px]" : "mt-5 min-h-119.75"
         }`}
       >
         {children}
