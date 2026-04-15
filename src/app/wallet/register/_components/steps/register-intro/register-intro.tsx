@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import accountRegisterImage from "@/app/wallet/register/_assets/icons/account-register.svg";
 import Header from "@/common/components/header/Header";
+import { useUserRole } from "@/common/providers/user-role-provider";
 import IrpCard from "./components/irp-card";
 import RegisterInfoBanner from "./components/register-info-banner";
 
@@ -25,7 +28,8 @@ const introViewContent: Record<
 };
 
 const RegisterIntro = ({ onNext }: RegisterIntroProps) => {
-  const viewType: ViewType = "parent";
+  const memberRole = useUserRole();
+  const viewType: ViewType = memberRole === "KID" ? "child" : "parent";
 
   const { bannerTitle, showIrpCard } = introViewContent[viewType];
 
