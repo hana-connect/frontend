@@ -10,7 +10,7 @@ type RegisterAccountProps = {
   accountNumber: string;
   isAccountVerified: boolean;
   onAccountNumberChange: (value: string) => void;
-  onVerifySuccess: () => void;
+  onVerifySuccess: (value: string) => void;
   onNext: () => void;
   onBack: () => void;
 };
@@ -26,9 +26,11 @@ const RegisterAccount = ({
   const { alert } = useAlert();
 
   const handleVerifyAccount = async () => {
+    const requestedAccountNumber = accountNumber;
+
     try {
-      await verifyAccount({ accountNumber });
-      onVerifySuccess();
+      await verifyAccount({ accountNumber: requestedAccountNumber });
+      onVerifySuccess(requestedAccountNumber);
     } catch (error) {
       const message =
         error instanceof Error && error.message

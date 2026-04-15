@@ -10,17 +10,19 @@ import RegisterIntro from "../steps/register-intro/register-intro";
 const RegisterFunnel = () => {
   const { currentStep, nextStep, prevStep } = useFunnel();
   const [accountNumber, setAccountNumber] = useState("");
-  const [isAccountVerified, setIsAccountVerified] = useState(false);
+  const [verifiedAccountNumber, setVerifiedAccountNumber] = useState("");
   const [linkedAccountNumber, setLinkedAccountNumber] = useState("");
   const [linkedAt, setLinkedAt] = useState("");
+  const isAccountVerified =
+    accountNumber.length > 0 && accountNumber === verifiedAccountNumber;
 
   const handleAccountNumberChange = (value: string) => {
     setAccountNumber(value);
-    setIsAccountVerified(false);
+    setVerifiedAccountNumber("");
   };
 
-  const handleVerifySuccess = () => {
-    setIsAccountVerified(true);
+  const handleVerifySuccess = (value: string) => {
+    setVerifiedAccountNumber(value);
   };
 
   const handleLinkSuccess = (data: {
