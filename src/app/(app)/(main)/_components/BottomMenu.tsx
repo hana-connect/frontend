@@ -48,14 +48,14 @@ const BottomMenu = () => {
   return (
     <nav
       className={`
-      fixed left-1/2 -translate-x-1/2 transition-all duration-500 ease-in-out
-      flex items-center bg-white z-50
-      ${
-        isScrolled
-          ? "w-[60%] bottom-6 h-14 rounded-full shadow-2xl px-6 justify-between"
-          : "w-full h-25 rounded-tl-2xl rounded-tr-2xl shadow-md px-5 pb-5 justify-around bottom-0"
-      }
-    `}
+    fixed left-1/2 -translate-x-1/2 transition-all duration-500 ease-in-out
+    flex items-center bg-white z-50
+    ${
+      isScrolled
+        ? "w-56.25 bottom-6 h-14 rounded-full shadow-2xl px-6 justify-between"
+        : "w-full max-w-93.75 bottom-0 h-25 rounded-tl-2xl rounded-tr-2xl shadow-md px-5 pb-5 justify-around"
+    }
+  `}
     >
       {menuItems.map((item) => (
         <div

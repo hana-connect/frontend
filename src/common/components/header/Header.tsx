@@ -22,7 +22,7 @@ const Header = ({
 
   if (type === "main") {
     return (
-      <header className="fixed top-0 left-0 z-50 flex h-15 w-full items-center justify-between bg-[#F5F5F5] px-4">
+      <header className="fixed top-0 left-1/2 z-50 flex h-15 w-full max-w-93.75 -translate-x-1/2 items-center justify-between bg-[#F5F5F5] px-4">
         <div className="flex items-center">
           <div className="relative h-10 w-10">
             <Image
