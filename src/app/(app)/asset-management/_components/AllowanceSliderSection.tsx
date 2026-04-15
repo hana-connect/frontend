@@ -1,5 +1,4 @@
 "use client";
-
 import Button from "@/common/components/button/Button";
 import { formatCurrency } from "../_utils/formatters";
 
@@ -7,12 +6,17 @@ type AllowanceSliderSectionProps = {
   ratio: number;
   allowanceAmount: number;
   handleRatioChange: (value: number) => void;
+  aiRecommendation: {
+    aiComment?: string;
+    recommendRatio?: string;
+    kidAllowance?: number;
+  } | null;
 };
 
 export default function AllowanceSliderSection({
   ratio,
-  allowanceAmount,
   handleRatioChange,
+  aiRecommendation,
 }: AllowanceSliderSectionProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -26,6 +30,12 @@ export default function AllowanceSliderSection({
     handleRatioChange(val);
   };
 
+  const lifeExpenseRaw = aiRecommendation?.aiComment?.match(/\d+/)?.[0] || "0";
+  const lifeExpense = Number(lifeExpenseRaw);
+
+  // 2. 현재 슬라이더 비율(ratio)에 맞춰 실시간 용돈 계산 (올림 처리!)
+  const currentAllowance = Math.ceil(lifeExpense * (ratio / 100));
+
   return (
     <section className="mt-10 mb-10 w-full overflow-hidden">
       <h2 className="text-lg font-bold text-black mb-4">
@@ -34,11 +44,17 @@ export default function AllowanceSliderSection({
 
       <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center">
         <div className="text-center mb-10 text-gray-600 text-[14px] font-medium leading-relaxed">
-          이번 달 생활비는 <span className="text-gray-800">1,000,000원</span>
+          이번 달 생활비는{" "}
+          <span className="text-gray-800">
+            {formatCurrency(Number(lifeExpense))}원
+          </span>
           이고,
           <br />
-          자산 분배 결과 <span className="text-[#9C6FFE]">10:90</span>을
-          추천드려요.
+          자산 분배 결과{" "}
+          <span className="text-[#9C6FFE]">
+            {aiRecommendation?.recommendRatio}
+          </span>
+          을 추천드려요.
         </div>
 
         <div className="w-full flex items-center justify-between gap-2 mb-8">
@@ -84,7 +100,7 @@ export default function AllowanceSliderSection({
           <p>
             현재 비율에 맞는 추천 용돈은 <br />
             <span className="text-[#9C6FFE] font-semibold">
-              {formatCurrency(allowanceAmount)}원
+              {formatCurrency(currentAllowance)}원
             </span>
             입니다.
           </p>
