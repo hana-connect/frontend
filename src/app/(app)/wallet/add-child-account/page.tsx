@@ -6,7 +6,6 @@ import { useState } from "react";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
 import Input from "@/common/components/input/Input";
-import { verifyAccount } from "@/common/lib/api/accounts";
 import { addKidAccount } from "@/common/lib/api/kids";
 import { useAlert } from "@/common/providers/alertProvider";
 
@@ -15,6 +14,7 @@ type ApiError = Error & { status?: number };
 type AddedKidAccount = {
   kidName: string;
   accountNumber: string;
+  accountType: string;
   requestDate: string;
 };
 
@@ -44,8 +44,8 @@ const AddChildAccountPage = () => {
     });
   };
 
-  const handleAddKidAccount = async () => {
-    if (!kidId) {
+  const handleAddKidAccount = async (verifiedAccountNumber?: string) => {
+    if (!kidId || !/^\d+$/.test(kidId)) {
       alert({
         title: "아이 정보를 다시 확인해주세요.",
         actionLabel: "확인",
@@ -58,7 +58,7 @@ const AddChildAccountPage = () => {
 
       const response = await addKidAccount(kidId, {
         nickname: nickname.trim(),
-        accountNumber: normalizedAccountNumber,
+        accountNumber: verifiedAccountNumber ?? normalizedAccountNumber,
       });
 
       setAddedAccount(response.data);
@@ -74,26 +74,18 @@ const AddChildAccountPage = () => {
         return;
       }
 
+      if (apiError.status === 404) {
+        openNotFoundAlert();
+        return;
+      }
+
       alert({
-        title: "계좌 정보를 다시 확인해주세요.",
+        title: apiError.message || "계좌 정보를 다시 확인해주세요.",
         actionLabel: "확인",
       });
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const openSubscriptionConfirmModal = () => {
-    alert({
-      title: `${childName}님의 청약 통장이 맞으신가요?`,
-      description:
-        "청약 통장은 납입 횟수와 금액이 중요해요. 계좌 정보를 다시 한번 확인해 주세요.",
-      actionLabel: "예",
-      cancelLabel: "아니오",
-      onAction: async () => {
-        await handleAddKidAccount();
-      },
-    });
   };
 
   const handleSubmit = async () => {
@@ -101,38 +93,12 @@ const AddChildAccountPage = () => {
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-
-      const verifyResponse = await verifyAccount({
-        accountNumber: normalizedAccountNumber,
-      });
-
-      if (verifyResponse.data.accountType === "SUBSCRIPTION") {
-        openSubscriptionConfirmModal();
-        return;
-      }
-
-      await handleAddKidAccount();
-    } catch (error) {
-      const apiError = error as ApiError;
-
-      if (apiError.status === 404) {
-        openNotFoundAlert();
-        return;
-      }
-
-      alert({
-        title: "계좌 정보를 다시 확인해주세요.",
-        actionLabel: "확인",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    await handleAddKidAccount();
   };
 
   const handleComplete = () => {
     router.push("/wallet");
+    router.refresh();
   };
 
   const formatRequestDate = (date: string | undefined) => {
@@ -182,7 +148,11 @@ const AddChildAccountPage = () => {
                 placeholder="계좌번호"
                 maxLength={11}
                 value={accountNumber}
-                onChange={(e) => setAccountNumber(e.target.value)}
+                onChange={(e) =>
+                  setAccountNumber(
+                    e.target.value.replace(/\D/g, "").slice(0, 11),
+                  )
+                }
               />
             </div>
 
@@ -209,6 +179,12 @@ const AddChildAccountPage = () => {
               <br />
               계좌 추가가 완료되었어요!
             </h1>
+            {addedAccount?.accountType === "SUBSCRIPTION" && (
+              <p className="mt-4 text-body-14-m text-grey-6 whitespace-pre-line">
+                청약은 납입 횟수가 중요한 만큼, <br></br>중복 납입이 발생하지
+                않도록 확인해 주세요.
+              </p>
+            )}
             <div
               className="w-full h-[0.8px] bg-grey-5 mt-12"
               aria-hidden="true"

@@ -7,6 +7,7 @@ export type VerifyAccountRequest = {
 
 export type VerifyAccountData = {
   accountNumber: string;
+  accountType: AccountType;
 };
 
 export type LinkAccountRequest = {
