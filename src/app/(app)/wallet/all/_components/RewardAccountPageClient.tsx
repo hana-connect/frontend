@@ -5,6 +5,7 @@ import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
 import { RadioGroup } from "@/common/components/radio-group/RadioGroup";
 import { apiClient } from "@/common/lib/api/api-client";
+import type { ApiResponse } from "@/common/lib/api/types";
 import { formatMoney } from "@/common/lib/utils";
 import type { AccountType } from "../../(main)/_types";
 
@@ -25,18 +26,14 @@ type RewardAccount = {
 
 type RewardAccountPageClientProps = {
   accounts: AccountItem[];
-  rewardAccount: RewardAccount;
+  rewardAccount: RewardAccount | null;
 };
 
-type PatchRewardAccountResponse = {
-  status: number;
-  data: {
-    accountId: number;
-    name: string;
-    accountNumber: string;
-  };
-  message?: string;
-};
+type PatchRewardAccountResponse = ApiResponse<{
+  accountId: number;
+  name: string;
+  accountNumber: string;
+}>;
 
 function RewardAccountPageClient({
   accounts,
@@ -58,7 +55,7 @@ function RewardAccountPageClient({
     return accounts.filter((account) => account.accountType === "PENSION");
   }, [accounts]);
 
-  const initialRewardId = String(rewardAccount.accountId);
+  const initialRewardId = rewardAccount ? String(rewardAccount.accountId) : "";
   const [selectedRewardId, setSelectedRewardId] = useState(initialRewardId);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -103,7 +100,6 @@ function RewardAccountPageClient({
 
         <div className="mt-10 space-y-10">
           <AccountSection title="입출금" accounts={depositAccounts} />
-
           <AccountSection title="예적금" accounts={savingAccounts} />
 
           <section>
@@ -111,24 +107,30 @@ function RewardAccountPageClient({
               연금/리워드 계좌
             </h3>
 
-            <RadioGroup
-              value={selectedRewardId}
-              onValueChange={handleRewardChange}
-            >
-              <div className="mb-12 space-y-4">
-                {rewardCandidateAccounts.map((account) => (
-                  <AccountCard
-                    key={account.accountId}
-                    account={account}
-                    hasRadio
-                    value={String(account.accountId)}
-                    onClickCard={() =>
-                      handleRewardChange(String(account.accountId))
-                    }
-                  />
-                ))}
-              </div>
-            </RadioGroup>
+            {rewardCandidateAccounts.length === 0 ? (
+              <p className="my-9 text-center text-body-16-m text-[#555]">
+                연결된 계좌가 없어요.
+              </p>
+            ) : (
+              <RadioGroup
+                value={selectedRewardId}
+                onValueChange={handleRewardChange}
+              >
+                <div className="mb-12 space-y-4">
+                  {rewardCandidateAccounts.map((account) => (
+                    <AccountCard
+                      key={account.accountId}
+                      account={account}
+                      hasRadio
+                      value={String(account.accountId)}
+                      onClickCard={() =>
+                        handleRewardChange(String(account.accountId))
+                      }
+                    />
+                  ))}
+                </div>
+              </RadioGroup>
+            )}
 
             <Button
               size="L"
@@ -155,11 +157,17 @@ function AccountSection({ title, accounts }: AccountSectionProps) {
     <section>
       <h3 className="mb-4 text-title-24-sb text-black">{title}</h3>
 
-      <div className="space-y-4">
-        {accounts.map((account) => (
-          <AccountCard key={account.accountId} account={account} />
-        ))}
-      </div>
+      {accounts && accounts.length > 0 ? (
+        <div className="space-y-4">
+          {accounts.map((account) => (
+            <AccountCard key={account.accountId} account={account} />
+          ))}
+        </div>
+      ) : (
+        <p className="my-9 text-center text-body-16-m text-[#555]">
+          연결된 계좌가 없어요.
+        </p>
+      )}
     </section>
   );
 }
