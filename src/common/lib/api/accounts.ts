@@ -1,5 +1,6 @@
 import { apiClient } from "@/common/lib/api/api-client";
 import type { ApiResponse } from "@/common/lib/api/types";
+import type { AccountType } from "@/common/types/account";
 
 type VerifyAccountRequest = {
   accountNumber: string;
@@ -7,6 +8,7 @@ type VerifyAccountRequest = {
 
 type VerifyAccountData = {
   accountNumber: string;
+  accountType: AccountType;
 };
 
 type LinkAccountRequest = {

@@ -1,56 +1,156 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
 import Input from "@/common/components/input/Input";
+import { verifyAccount } from "@/common/lib/api/accounts";
+import { addKidAccount } from "@/common/lib/api/kids";
 import { useAlert } from "@/common/providers/alertProvider";
 
-type MockResult = "not-found" | "housing" | "normal";
+type ApiError = Error & { status?: number };
+
+type AddedKidAccount = {
+  kidName: string;
+  accountNumber: string;
+  requestDate: string;
+};
 
 const AddChildAccountPage = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { alert } = useAlert();
   const [nickname, setNickname] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
-  const [mockResult] = useState<MockResult>("housing");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [addedAccount, setAddedAccount] = useState<AddedKidAccount | null>(
+    null,
+  );
 
-  // UI 확인용 임시 케이스: "not-found" | "housing" | "normal"
-  const childName = "김채현";
+  const childName = searchParams.get("childName") ?? "아이";
+  const kidId = searchParams.get("kidId") ?? "";
+  const normalizedAccountNumber = accountNumber.replace(/\D/g, "");
 
-  const openCase2 = () => {
+  const isFormValid =
+    nickname.trim().length > 0 && normalizedAccountNumber.length === 11;
+
+  const openNotFoundAlert = () => {
     alert({
-      title: `${childName}님의 ${accountNumber || "000-112-234234"} 계좌가 존재하지 않아요.`,
+      title: `${childName}님의 ${accountNumber} 계좌가 존재하지 않아요.`,
       actionLabel: "확인",
     });
   };
 
-  const openCase3 = () => {
+  const handleAddKidAccount = async () => {
+    if (!kidId) {
+      alert({
+        title: "아이 정보를 다시 확인해주세요.",
+        actionLabel: "확인",
+      });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await addKidAccount(kidId, {
+        nickname: nickname.trim(),
+        accountNumber: normalizedAccountNumber,
+      });
+
+      setAddedAccount(response.data);
+      setIsCompleted(true);
+    } catch (error) {
+      const apiError = error as ApiError;
+
+      if (apiError.status === 409) {
+        alert({
+          title: "이미 등록된 계좌입니다.",
+          actionLabel: "확인",
+        });
+        return;
+      }
+
+      alert({
+        title: "계좌 정보를 다시 확인해주세요.",
+        actionLabel: "확인",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const openSubscriptionConfirmModal = () => {
     alert({
       title: `${childName}님의 청약 통장이 맞으신가요?`,
       description:
         "청약 통장은 납입 횟수와 금액이 중요해요. 계좌 정보를 다시 한번 확인해 주세요.",
       actionLabel: "예",
       cancelLabel: "아니오",
-      onAction: () => {
-        setIsCompleted(true);
+      onAction: async () => {
+        await handleAddKidAccount();
       },
     });
   };
 
-  const handleSubmit = () => {
-    if (mockResult === "not-found") {
-      openCase2();
+  const handleSubmit = async () => {
+    if (isSubmitting || !isFormValid) {
       return;
     }
 
-    if (mockResult === "housing") {
-      openCase3();
-      return;
+    try {
+      setIsSubmitting(true);
+
+      const verifyResponse = await verifyAccount({
+        accountNumber: normalizedAccountNumber,
+      });
+
+      if (verifyResponse.data.accountType === "SUBSCRIPTION") {
+        openSubscriptionConfirmModal();
+        return;
+      }
+
+      await handleAddKidAccount();
+    } catch (error) {
+      const apiError = error as ApiError;
+
+      if (apiError.status === 404) {
+        openNotFoundAlert();
+        return;
+      }
+
+      alert({
+        title: "계좌 정보를 다시 확인해주세요.",
+        actionLabel: "확인",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleComplete = () => {
+    router.push("/wallet");
+  };
+
+  const formatRequestDate = (date: string | undefined) => {
+    if (!date) {
+      return "-";
     }
 
-    setIsCompleted(true);
+    const parsedDate = new Date(date);
+
+    if (Number.isNaN(parsedDate.getTime())) {
+      return date;
+    }
+
+    const year = parsedDate.getFullYear();
+    const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(parsedDate.getDate()).padStart(2, "0");
+
+    return `${year}.${month}.${day}`;
   };
 
   return (
@@ -87,7 +187,14 @@ const AddChildAccountPage = () => {
             </div>
 
             <div className="mt-auto pb-9">
-              <Button size="L" variant="active" onClick={handleSubmit}>
+              <Button
+                size="L"
+                variant={isFormValid ? "active" : "disabled"}
+                onClick={() => {
+                  void handleSubmit();
+                }}
+                disabled={!isFormValid || isSubmitting}
+              >
                 추가하기
               </Button>
             </div>
@@ -98,7 +205,7 @@ const AddChildAccountPage = () => {
           <div className="flex-1 w-full px-6 flex flex-col items-center pt-25 text-center">
             <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
             <h1 className="text-body-20-m text-brand-black mt-6">
-              {childName}님의
+              {addedAccount?.kidName ?? childName}님의
               <br />
               계좌 추가가 완료되었어요!
             </h1>
@@ -109,17 +216,18 @@ const AddChildAccountPage = () => {
             <div className="mt-6 w-full flex justify-between text-body-16-m text-grey-6 pb-4">
               <span>계좌번호</span>
               <span className="text-brand-black">
-                {accountNumber || "111-2222-3333"}
+                {addedAccount?.accountNumber || accountNumber}
               </span>
             </div>
             <div className="w-full flex justify-between text-body-16-m text-grey-6">
               <span>요청일</span>
-              <span className="text-brand-black">2026.04.07</span>
+              <span className="text-brand-black">
+                {formatRequestDate(addedAccount?.requestDate)}
+              </span>
             </div>
           </div>
-
           <div className="w-full px-6 pb-9">
-            <Button size="L" variant="active">
+            <Button size="L" variant="active" onClick={handleComplete}>
               확인
             </Button>
           </div>
