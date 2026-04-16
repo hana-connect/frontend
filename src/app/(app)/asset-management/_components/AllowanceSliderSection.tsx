@@ -1,155 +1,210 @@
 "use client";
+
+import Image from "next/image";
+import type React from "react";
 import Button from "@/common/components/button/Button";
-import { formatCurrency } from "../_utils/formatters";
+import { formatMoney } from "@/common/lib/utils";
+
+type AiRecommendation = {
+  aiComment?: string;
+  recommendRatio?: string;
+  kidAllowance?: number;
+} | null;
 
 type AllowanceSliderSectionProps = {
   ratio: number;
   handleRatioChange: (value: number) => void;
-  aiRecommendation: {
-    aiComment?: string;
-    recommendRatio?: string;
-    kidAllowance?: number;
-  } | null;
+  aiRecommendation: AiRecommendation;
 };
+
+const MIN_RATIO = 0;
+const MAX_RATIO = 100;
+
+function clampRatio(value: number) {
+  return Math.min(MAX_RATIO, Math.max(MIN_RATIO, value));
+}
+
+function getSecondaryComment(aiComment?: string) {
+  if (!aiComment) {
+    return "";
+  }
+
+  const sentences = aiComment.split(".");
+  const rest = sentences.slice(1).filter(Boolean).join(".").trim();
+
+  return rest ? `${rest}.` : "";
+}
+
+function renderCommentParts(
+  comment: string,
+  lifeExpense: number,
+  recommendRatio: string,
+) {
+  if (!comment) return null;
+
+  const ratioPattern = recommendRatio ? `|${recommendRatio}` : "";
+  const tokenizerRegex = new RegExp(
+    `(생활비는.*?원|이고,|직접${ratioPattern})`,
+    "g",
+  );
+
+  const tokens = comment.split(tokenizerRegex);
+
+  return tokens.map((token, index) => {
+    if (!token) return null;
+
+    const key = `token-${index}`;
+
+    if (token.startsWith("생활비는") && token.endsWith("원")) {
+      return (
+        <span key={key}>
+          이번 달 생활비는{" "}
+          <span className="text-gray-800">{formatMoney(lifeExpense)}원</span>
+        </span>
+      );
+    }
+
+    if (token === "이고,") {
+      return (
+        <span key={key}>
+          {token}
+          <br />
+        </span>
+      );
+    }
+
+    if (token === "직접") {
+      return (
+        <span key={key}>
+          <br />
+          {token}
+        </span>
+      );
+    }
+
+    if (recommendRatio && token === recommendRatio) {
+      return (
+        <span key={key} className="text-brand-purple-1">
+          {token}
+        </span>
+      );
+    }
+
+    return <span key={key}>{token}</span>;
+  });
+}
 
 export default function AllowanceSliderSection({
   ratio,
   handleRatioChange,
   aiRecommendation,
 }: AllowanceSliderSectionProps) {
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  const recommendRatio = aiRecommendation?.recommendRatio ?? "";
+  const lifeExpense = aiRecommendation?.kidAllowance ?? 0;
+  const secondaryComment = getSecondaryComment(aiRecommendation?.aiComment);
+  const currentAllowance = Math.ceil(lifeExpense * (ratio / 100));
+  const myRatio = MAX_RATIO - ratio;
+
+  const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+
     if (value === "") {
       handleRatioChange(0);
       return;
     }
-    let val = Number(value);
-    if (val > 100) val = 100;
-    if (val < 0) val = 0;
-    handleRatioChange(val);
+
+    handleRatioChange(clampRatio(Number(value)));
   };
 
-  const getSecondaryComment = () => {
-    if (!aiRecommendation?.aiComment) return "";
-    const sentences = aiRecommendation.aiComment.split(".");
-    return `${sentences.slice(1).filter(Boolean).join(".").trim()}.`;
+  const handleRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleRatioChange(clampRatio(Number(e.target.value)));
   };
-
-  const secondaryComment = getSecondaryComment();
-  const lifeExpense = aiRecommendation?.kidAllowance || 0;
-
-  // 현재 슬라이더 비율(ratio)에 맞춰 실시간 용돈 계산 (올림 처리!)
-  const currentAllowance = Math.ceil(lifeExpense * (ratio / 100));
 
   return (
     <section className="mt-10 mb-10 w-full overflow-hidden">
-      <h2 className="text-lg font-bold text-black mb-4">
+      <h2 className="mb-4 text-lg font-bold text-black">
         아이 용돈 비율 설정하기
       </h2>
 
-      <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center">
-        <div className="text-center mb-10 text-gray-600 text-[14px] font-medium leading-relaxed">
-          {secondaryComment.split(/(이고,|\s*직접)/).map((part) => {
-            // 1. 생활비 안내 부분
-            if (part.includes("생활비는")) {
-              return (
-                <span key="section-expense">
-                  이번 달 생활비는{" "}
-                  <span className="text-gray-800">
-                    {formatCurrency(lifeExpense)}원
-                  </span>
-                </span>
-              );
-            }
-
-            // 2. 구분자 "이고," 처리
-            if (part === "이고,") {
-              return (
-                <span key="sep-and">
-                  이고,
-                  <br />
-                </span>
-              );
-            }
-
-            // 3. "직접" 부분 줄바꿈 처리
-            if (part.trim() === "직접") {
-              return (
-                <span key="sep-direct">
-                  <br />
-                  직접
-                </span>
-              );
-            }
-
-            // 4. 나머지 문장 및 강조 로직
-            const ratio = aiRecommendation?.recommendRatio || "";
-            return (
-              <span key={`content-block-${part.slice(0, 10)}`}>
-                {part.includes(ratio)
-                  ? part.split(ratio).map((text, _, arr) => {
-                      const isLast = text === arr[arr.length - 1];
-                      const uniqueKey = `ratio-fragment-${text.substring(0, 5)}-${text.length}`;
-
-                      return (
-                        <span key={uniqueKey}>
-                          {text}
-                          {!isLast && (
-                            <span className="text-[#9C6FFE]">{ratio}</span>
-                          )}
-                        </span>
-                      );
-                    })
-                  : part}
-              </span>
-            );
-          })}
+      <div className="flex flex-col items-center rounded-3xl border border-grey-7 shadow-2xs bg-white p-8">
+        <div className="mb-10 text-center text-[14px] font-medium leading-relaxed text-gray-600">
+          {renderCommentParts(secondaryComment, lifeExpense, recommendRatio)}
         </div>
 
-        <div className="w-full flex items-center justify-between gap-2 mb-8">
+        <div className="mb-8 flex w-full items-center justify-between gap-2">
           <div className="flex flex-col items-center gap-2">
-            <div className="w-14 h-14 bg-violet-100 rounded-full flex items-center justify-center text-3xl shrink-0">
-              👧
-            </div>
+            <Image
+              src="/svg/ic_child.svg"
+              alt="아이 프로필"
+              width={56}
+              height={56}
+            />
             <span className="text-[11px] font-bold text-gray-500">아이</span>
             <input
               type="number"
               value={ratio === 0 ? "" : ratio}
-              onChange={handleInputChange}
+              onChange={handleNumberInputChange}
               placeholder="0"
-              className="w-14 h-6 text-center  text-sm font-semibold text-gray-800 border border-gray-200 rounded outline-none appearance-none bg-white"
+              className="h-6 w-14 appearance-none rounded border border-gray-200 bg-white text-center text-sm font-semibold text-gray-800 outline-none"
               style={{ MozAppearance: "textfield" }}
             />
           </div>
 
-          <div className="flex-1 flex flex-col items-center px-4">
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={ratio}
-              onChange={(e) => handleRatioChange(Number(e.target.value))}
-              className="w-full h-2.5 bg-gray-100 rounded-full appearance-none cursor-pointer accent-[#9C6FFE] touch-none"
-            />
-            <span className="mt-4 text-gray-300 text-lg font-light">:</span>
+          <div className="flex flex-1 flex-col items-center px-4">
+            <div className="relative flex w-full items-center h-3">
+              <div className="absolute inset-x-0 h-3 rounded-full bg-[#E7E3F0]" />
+
+              <div
+                className="absolute left-0 h-3 rounded-full pointer-events-none bg-brand-gradient-1"
+                style={{
+                  width: `${ratio}%`,
+                }}
+              />
+
+              <div
+                className="absolute pointer-events-none rounded-full bg-white border-3 border-[#E1D3F3] z-10"
+                style={{
+                  left: `${ratio}%`,
+                  transform: "translateX(-50%)",
+                  width: 24,
+                  height: 24,
+                  top: "50%",
+                  marginTop: -12,
+                }}
+              />
+
+              <input
+                type="range"
+                min={MIN_RATIO}
+                max={MAX_RATIO}
+                step={1}
+                value={ratio}
+                onChange={handleRangeChange}
+                className="absolute inset-0 w-full cursor-pointer opacity-0 touch-none z-10"
+              />
+            </div>
+            <span className="mt-4 text-lg font-light text-black">:</span>
           </div>
 
           <div className="flex flex-col items-center gap-2">
-            <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center text-3xl shrink-0">
-              👨
-            </div>
+            <Image
+              src="/svg/ic_mom2.svg"
+              alt="부모 프로필"
+              width={56}
+              height={56}
+            />
             <span className="text-[11px] font-bold text-gray-500">나</span>
-            <div className="w-14 h-6 flex items-center justify-center text-sm font-semibold opacity-60">
-              {100 - ratio}
+            <div className="flex h-6 w-14 items-center justify-center text-sm font-semibold opacity-60">
+              {myRatio}
             </div>
           </div>
         </div>
 
-        <div className="text-center mb-10 text-gray-700 text-base font-medium h-12 flex items-center justify-center">
+        <div className="mb-10 flex h-12 items-center justify-center text-center text-base font-medium text-gray-700">
           <p>
             현재 비율에 맞는 추천 용돈은 <br />
-            <span className="text-[#9C6FFE] font-semibold">
-              {formatCurrency(currentAllowance)}원
+            <span className="font-semibold text-brand-purple-1">
+              {formatMoney(currentAllowance)}
             </span>
             입니다.
           </p>

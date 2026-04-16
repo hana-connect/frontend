@@ -1,5 +1,5 @@
+import { formatMoney } from "@/common/lib/utils";
 import { ASSET_COLORS } from "../_constants/assetCategories";
-import { formatCurrency } from "../_utils/formatters";
 import type { AssetAIRecommendation } from "../AssetManagementClientPage";
 
 type AIAssetAllocationProps = {
@@ -49,7 +49,7 @@ export default function AIAssetAllocation({
         <p className="text-base text-gray-400 mt-1">{aiDescription}</p>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-gray-50 shadow-sm">
+      <div className="bg-white p-6 rounded-3xl border border-grey-7 shadow-2xs">
         <div className="h-4 w-full flex rounded-full overflow-hidden mb-6 bg-gray-200">
           <div
             style={{
@@ -91,7 +91,7 @@ export default function AIAssetAllocation({
                 {item.label}
               </span>
               <span className="font-medium text-black">
-                {formatCurrency(item.value ?? 0)}원
+                {formatMoney(item.value ?? 0)}
               </span>
             </div>
           ))}
@@ -99,7 +99,7 @@ export default function AIAssetAllocation({
           <div className="flex justify-between font-bold pt-3 border-t text-black">
             <span>총 자산</span>
             <span>
-              <span>{formatCurrency(assetData?.totalAssets ?? 0)}원</span>
+              <span>{formatMoney(assetData?.totalAssets ?? 0)}</span>
             </span>
           </div>
         </div>
