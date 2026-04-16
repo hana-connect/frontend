@@ -1,10 +1,15 @@
 "use client";
+
 import { ArrowRight, ChevronDown, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
+import {
+  getKidLinkedAccounts,
+  type KidDetail,
+} from "@/common/lib/api/main/app-client";
 import type { KidData, WalletData } from "../page";
 
 type ParentMainViewProps = {
@@ -12,36 +17,71 @@ type ParentMainViewProps = {
   kids: KidData[];
 };
 
-type Account = {
-  id: number;
-  title: string;
-  subTitle: string;
-  type: "SUBSCRIPTION" | "SAVINGS" | "CHECKING";
-};
-
-// TODO: 추후 아이별 상세 API 연결 시 제거
-const mockDetailMap: Record<number, { balance: number; accounts: Account[] }> =
-  {};
-
-const defaultDetail = { balance: 0, accounts: [] };
-
 const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
   const [selectedKidId, setSelectedKidId] = useState<number | null>(
     kids.length > 0 ? kids[0].connectMemberId : null,
   );
 
-  const selectedKid = kids.find((k) => k.connectMemberId === selectedKidId);
-  // TODO: 추후 아이별 상세 API로 교체
-  const selectedDetail =
-    selectedKidId !== null
-      ? (mockDetailMap[selectedKidId] ?? defaultDetail)
-      : defaultDetail;
+  const [kidDetailMap, setKidDetailMap] = useState<Map<number, KidDetail>>(
+    new Map(),
+  );
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 화면에 실제로 보여줄 아이 ID
+  const [displayKidId, setDisplayKidId] = useState<number | null>(
+    selectedKidId,
+  );
+
+  // 이전 아이 데이터 유지용
+  const displayKid = kids.find((k) => k.connectMemberId === displayKidId);
+  const displayDetail = displayKidId
+    ? (kidDetailMap.get(displayKidId) ?? null)
+    : null;
+
+  const fetchKidDetail = useCallback(
+    async (kidId: number) => {
+      // 이미 캐시에 있으면 바로 화면 전환
+      if (kidDetailMap.has(kidId)) {
+        setDisplayKidId(kidId);
+        return;
+      }
+
+      setIsLoading(true);
+
+      try {
+        const data = await getKidLinkedAccounts(kidId);
+
+        setKidDetailMap((prev) => {
+          const next = new Map(prev);
+          next.set(kidId, data);
+          return next;
+        });
+
+        // 데이터 도착 후에만 화면 전환
+        setDisplayKidId(kidId);
+      } catch (e) {
+        console.error("아이 상세 조회 실패:", e);
+        // 실패해도 일단 전환
+        setDisplayKidId(kidId);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+
+    [kidDetailMap],
+  );
+
+  useEffect(() => {
+    if (selectedKidId !== null) {
+      fetchKidDetail(selectedKidId);
+    }
+  }, [selectedKidId, fetchKidDetail]);
 
   return (
     <main className="pb-10">
       <h1 className="sr-only">부모 홈화면</h1>
 
-      {/* 생일 이벤트 배너 */}
       <Image
         src="/svg/main/ic_main_parents_banner.svg"
         alt="가족 생일 안내"
@@ -140,7 +180,7 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
         </nav>
       </div>
 
-      {/* 아이 선택 - API 데이터 사용 */}
+      {/* 아이 선택 */}
       <section
         aria-label="자녀 선택"
         className="flex overflow-x-auto no-scrollbar scroll-smooth"
@@ -188,9 +228,9 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
         </div>
       </section>
 
-      {selectedKid ? (
+      {/* 아이 상세 */}
+      {displayKid ? (
         <div className="flex flex-col gap-4 p-4">
-          {/* 하단 광고 */}
           <Image
             src="/svg/main/ic_main_common_ad.svg"
             alt="원픽 통장 광고"
@@ -199,18 +239,18 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
             className="w-full h-auto"
             priority
           />
-
-          {/* 아이 상세 (TODO: 추후 아이별 상세 API 연결) */}
           <section
-            aria-label={`${selectedKid.connectMemberName} 정보 상세`}
-            className="bg-white rounded-[20px] p-4 flex flex-col w-full shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)] gap-3 mb-2"
+            aria-label={`${displayKid.connectMemberName} 정보 상세`}
+            className={`bg-white rounded-[20px] p-4 flex flex-col w-full shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)] gap-3 mb-2 transition-opacity duration-200 ${
+              isLoading ? "opacity-60" : "opacity-100"
+            }`}
           >
             <div className="flex items-center justify-between w-full px-3 py-1">
               <div className="flex flex-col">
-                <div className="flex text-title-24-sb gap-1 items-center">
+                <div className="flex text-title-20-sb gap-1 items-center">
                   <span className="text-grey-1">잔액 </span>
                   <span className="text-[#7746DD]">
-                    {selectedDetail.balance.toLocaleString()}원
+                    {(displayDetail?.walletMoney ?? 0).toLocaleString()}원
                   </span>
                   <ChevronRight
                     className="w-5 text-[#7746DD]"
@@ -221,35 +261,37 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
               </div>
               <button
                 type="button"
-                className="bg-[#676D86] text-white rounded-2xl py-2 px-4 h-auto font-medium"
-                aria-label={`${selectedKid.connectMemberName}에게 용돈 지급`}
+                className="bg-[#676D86] text-white rounded-2xl py-2 px-3 h-auto text-body-16-m-2"
+                aria-label={`${displayKid.connectMemberName}에게 용돈 지급`}
               >
                 용돈지급
               </button>
             </div>
             <div className="flex items-center justify-between w-full px-3 py-1 border-t border-gray-50 pt-3">
-              <div className="flex text-title-24-sb gap-1 items-center font-bold">
+              <div className="flex text-title-20-sb gap-1 items-center font-bold">
                 <span className="text-grey-1">정기용돈</span>
                 <span className="text-[#99A1AF]">미등록</span>
               </div>
               <button
                 type="button"
-                className="bg-[#F6F6F6] text-grey-6 rounded-2xl py-2 px-4 h-auto font-medium"
-                aria-label={`${selectedKid.connectMemberName} 정기용돈 등록하기`}
+                className="bg-[#F6F6F6] text-grey-6 rounded-2xl py-2 px-3 h-auto text-body-16-m-2"
+                aria-label={`${displayKid.connectMemberName} 정기용돈 등록하기`}
               >
                 등록하기
               </button>
             </div>
+
+            {/* 계좌 목록 */}
             <ul className="flex flex-col gap-2 w-full mt-2">
-              {selectedDetail.accounts.length > 0 ? (
-                selectedDetail.accounts.map((acc) => (
-                  <li key={acc.id}>
+              {(displayDetail?.accounts?.length ?? 0) > 0 ? (
+                displayDetail?.accounts.map((acc) => (
+                  <li key={acc.accountId}>
                     <ItemCard
-                      title={acc.title}
-                      subTitle={acc.subTitle}
+                      title={acc.nickname || acc.name}
+                      subTitle={acc.accountNumber}
                       rightContent={
                         <Button size={"S"} variant={"smallPurple"}>
-                          {acc.type === "SUBSCRIPTION"
+                          {acc.accountType === "SUBSCRIPTION"
                             ? "청약넣기"
                             : "송금하기"}
                         </Button>
@@ -259,10 +301,8 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
                   </li>
                 ))
               ) : (
-                <li className="flex flex-col items-center justify-center pb-10 pt-6 text-center">
-                  <p className="text-grey-1 text-body-16-m">
-                    등록된 계좌가 없습니다.
-                  </p>
+                <li className="flex flex-col items-center justify-center pb-8 pt-5 text-center text-grey-1 text-body-16-m">
+                  등록된 계좌가 없습니다.
                 </li>
               )}
             </ul>
@@ -278,7 +318,7 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
                 id="activity-title"
                 className="text-[15px] text-[#7D859C] font-bold ml-1"
               >
-                {selectedKid.connectMemberName}님의 활동 0개
+                {displayKid.connectMemberName}님의 활동 0개
               </h2>
               <Image
                 src="/svg/main/ic_main_parents_menu.svg"
@@ -338,8 +378,8 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
           </section>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center p-10">
-          <p className="text-grey-2 text-body-16-m">연결된 아이가 없습니다.</p>
+        <div className="flex flex-col items-center justify-center pt-20 pb-10">
+          <p className="text-grey-6 text-body-16-m">연결된 아이가 없습니다.</p>
         </div>
       )}
     </main>
