@@ -109,15 +109,13 @@ function KidCard({ kid }: KidCardProps) {
       <div className="my-8 border-t border-grey-5" />
 
       <div className="space-y-6">
-        {/* TODO 링크 수정 */}
         <ArrowLinkRow
           label="아이 계좌 추가하기"
           href={`/wallet/add-child-account?kidId=${kid.id}&childName=${encodeURIComponent(kid.name)}`}
         />
-        {/* TODO 링크 수정 */}
         <ArrowLinkRow
           label="아이 계좌번호 요청하기"
-          href={`/kid/${kid.id}/account/request`}
+          href={`/wallet/${kid.id}/request`}
         />
       </div>
     </div>
