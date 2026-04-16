@@ -35,7 +35,7 @@ const PassbookPaper = ({
             {rowIndex !== 0 && rowIndex % 6 === 0 && (
               <div className="h-px w-full bg-grey-5 my-0 shadow-[0_1px_3px_rgba(0,0,0,0.1)]" />
             )}
-            <div className="flex py-2 text-[13px] invisible">
+            <div className="flex py-2 text-[14px] invisible">
               <span className="w-6">&nbsp;</span>
             </div>
           </div>
