@@ -93,7 +93,6 @@ export default function AIAssetAllocation({
                 />
                 {item.label}
               </span>
-              {/* 4. 하드코딩된 글자 대신 실제 데이터를 넣어요! */}
               <span className="font-medium text-black">
                 {formatCurrency(item.value || 0)}원
               </span>
