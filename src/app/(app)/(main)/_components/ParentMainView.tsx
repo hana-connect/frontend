@@ -3,6 +3,7 @@
 import { ArrowRight, ChevronDown, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
@@ -18,6 +19,7 @@ type ParentMainViewProps = {
 };
 
 const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
+  const router = useRouter();
   const [selectedKidId, setSelectedKidId] = useState<number | null>(
     kids.length > 0 ? kids[0].connectMemberId : null,
   );
@@ -291,7 +293,21 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
                         subTitle={acc.accountNumber}
                         // 연결
                         rightContent={
-                          <Button size={"S"} variant={"smallPurple"}>
+                          <Button
+                            size={"S"}
+                            variant={"smallPurple"}
+                            onClick={() => {
+                              if (acc.accountType === "SUBSCRIPTION") {
+                                router.push(
+                                  `/subscription?subscriptionId=${acc.accountId}`,
+                                );
+                              } else {
+                                router.push(
+                                  `/transfer?accountId=${acc.accountId}`,
+                                );
+                              }
+                            }}
+                          >
                             {acc.accountType === "SUBSCRIPTION"
                               ? "청약넣기"
                               : "송금하기"}
@@ -358,7 +374,7 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
               </div>
             </Link>
             <Link
-              href={`/quiz?kidId=${displayKidId}`}
+              href={`/quiz?childId=${displayKidId}`}
               className="w-full block"
               aria-label="아이 퀴즈 페이지로 이동"
             >
