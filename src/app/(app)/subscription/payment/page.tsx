@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { SubscriptionPaymentInfoResponse } from "@/app/api/subscriptions/type";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,18 +18,69 @@ import GuideSection from "@/common/components/GuideSection";
 import Header from "@/common/components/header/Header";
 import Input from "@/common/components/input/Input";
 import TransferAmount from "@/common/components/keypad/TransferAmount";
+import { apiClient } from "@/common/lib/api/api-client";
+import type { ApiResponse } from "@/common/lib/api/types";
 
 const LIMIT_AMOUNT = 250000;
 
+type SubscriptionPaymentDraft = {
+  subscriptionId: number;
+  amount: number;
+  transferExcessToReward: boolean | null;
+};
+
 export default function PaymentDeposit() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const subscriptionId = searchParams.get("subscriptionId");
+
+  const [paymentInfo, setPaymentInfo] =
+    useState<SubscriptionPaymentInfoResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [amount, setAmount] = useState<number | null>(null);
   const [showAmountPad, setShowAmountPad] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [pendingAmount, setPendingAmount] = useState<number | null>(null);
-  const [moveExtraToIrp, setMoveExtraToIrp] = useState(false);
+  const [moveExtraToReward, setMoveExtraToReward] = useState<boolean | null>(
+    null,
+  );
 
   const isDisabled = !amount;
-  const router = useRouter();
+
+  useEffect(() => {
+    const fetchPaymentInfo = async () => {
+      if (!subscriptionId) {
+        setIsLoading(false);
+        return;
+      }
+
+      const subscriptionIdNumber = Number(subscriptionId);
+
+      if (
+        !Number.isInteger(subscriptionIdNumber) ||
+        subscriptionIdNumber <= 0
+      ) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await apiClient.get<
+          ApiResponse<SubscriptionPaymentInfoResponse>
+        >(`/api/subscriptions/${subscriptionIdNumber}/payments/info`);
+
+        setPaymentInfo(response.data);
+      } catch (error) {
+        console.error("청약 납입 정보 조회 실패:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPaymentInfo();
+  }, [subscriptionId]);
 
   const handleNextStep = (nextAmount: number) => {
     if (nextAmount > LIMIT_AMOUNT) {
@@ -38,7 +90,7 @@ export default function PaymentDeposit() {
     }
 
     setAmount(nextAmount);
-    setMoveExtraToIrp(false);
+    setMoveExtraToReward(null);
     setShowAmountPad(false);
   };
 
@@ -46,7 +98,7 @@ export default function PaymentDeposit() {
     if (pendingAmount === null) return;
 
     setAmount(pendingAmount);
-    setMoveExtraToIrp(true);
+    setMoveExtraToReward(true);
     setPendingAmount(null);
     setShowLimitModal(false);
     setShowAmountPad(false);
@@ -56,40 +108,49 @@ export default function PaymentDeposit() {
     if (pendingAmount === null) return;
 
     setAmount(pendingAmount);
-    setMoveExtraToIrp(false);
+    setMoveExtraToReward(false);
     setPendingAmount(null);
     setShowLimitModal(false);
     setShowAmountPad(false);
   };
 
   const handleSubmit = () => {
-    if (!amount) return;
+    if (!amount || !subscriptionId) return;
 
-    const overAmount = Math.max(0, amount - LIMIT_AMOUNT);
-    const subscriptionAmount = moveExtraToIrp ? amount - overAmount : amount;
-    const irpAmount = moveExtraToIrp ? overAmount : 0;
+    const subscriptionIdNumber = Number(subscriptionId);
 
-    localStorage.setItem(
-      "paymentResult",
-      JSON.stringify({
-        subscriptionAccountNumber: "111-2222-3333",
-        irpAccountNumber: "111-2222-3333",
-        subscriptionAmount,
-        irpAmount,
-        date: "2026.04.07",
-      }),
-    );
+    if (!Number.isInteger(subscriptionIdNumber) || subscriptionIdNumber <= 0) {
+      return;
+    }
 
-    router.push("/payment/password");
+    const transferExcessToReward =
+      amount > LIMIT_AMOUNT ? moveExtraToReward : null;
+
+    const draft: SubscriptionPaymentDraft = {
+      subscriptionId: subscriptionIdNumber,
+      amount,
+      transferExcessToReward,
+    };
+
+    sessionStorage.setItem("subscriptionPayment", JSON.stringify(draft));
+    router.push("/subscription/payment/password");
   };
+
+  if (isLoading) {
+    return (
+      <main className="flex h-dvh items-center justify-center bg-white">
+        로딩 중...
+      </main>
+    );
+  }
 
   if (showAmountPad) {
     return (
       <>
         <TransferAmount
-          accountHolder="김채현(김채*)"
-          accountNickname="채현이 입출금 (용돈)"
-          balance={500000}
+          accountHolder={paymentInfo?.displayName ?? "청약 납입"}
+          accountNickname={paymentInfo?.accountNickname ?? "청약 계좌"}
+          balance={paymentInfo?.balance ?? 0}
           onNext={handleNextStep}
         />
 
@@ -102,12 +163,16 @@ export default function PaymentDeposit() {
                 초과분은 가점에 반영되지 않아요.
                 <br />
                 <br />
-                {(pendingAmount ? pendingAmount - 250000 : 0).toLocaleString()}
-                원, 연금 계좌로 옮길까요?
+                {(pendingAmount
+                  ? pendingAmount - LIMIT_AMOUNT
+                  : 0
+                ).toLocaleString()}
+                원, 리워드 계좌로 옮길까요?
               </AlertDialogTitle>
 
               <AlertDialogDescription>
-                현재 설정된 계좌: IRP
+                현재 설정된 계좌:{" "}
+                {paymentInfo?.rewardAccountName ?? "리워드 계좌 없음"}
               </AlertDialogDescription>
             </AlertDialogHeader>
 
@@ -127,7 +192,7 @@ export default function PaymentDeposit() {
 
   return (
     <main className="flex h-dvh flex-col bg-white">
-      <div className="flex-1 overflow-y-auto bg-white">
+      <div className="flex-1 overflow-y-auto bg-[#F6F7F8]">
         <div className="bg-white px-5 pt-6 pb-12">
           <Header type="sub" title="청약 납입하기" />
 
@@ -146,12 +211,12 @@ export default function PaymentDeposit() {
 
         <div className="h-60 bg-white" />
 
-        <section className="bg-[#F6F7F8] px-5 pt-4 pb-10">
+        <section className="px-5 pb-10 pt-4">
           <GuideSection />
         </section>
       </div>
 
-      <div className="shrink-0 bg-[#F6F7F8] px-5 pb-6 pt-3">
+      <div className="shrink-0 bg-white px-5 pb-6 pt-3">
         <Button
           size="L"
           variant={isDisabled ? "disabled" : "active"}

@@ -9,15 +9,15 @@ import {
 } from "@/common/components/select";
 
 type PaymentRoundSelectProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: number | null;
+  onChange: (value: number) => void;
 };
 
 export default function PaymentRoundSelect({
   value,
   onChange,
 }: PaymentRoundSelectProps) {
-  const rounds = Array.from({ length: 25 }, (_, i) => i + 1);
+  const rounds = Array.from({ length: 24 }, (_, i) => i + 1);
 
   return (
     <div className="w-full">
@@ -25,16 +25,19 @@ export default function PaymentRoundSelect({
         납입회차수 선택
       </p>
 
-      <Select value={value} onValueChange={onChange}>
+      <Select
+        value={value !== null ? String(value) : undefined}
+        onValueChange={(selectedValue) => onChange(Number(selectedValue))}
+      >
         <SelectTrigger
           className="
-            w-full rounded-none border-0 border-b 
-            px-0 pb-3 pt-0 h-auto min-h-0
-            text-left shadow-none ring-0 outline-none
+            h-auto min-h-0 w-full rounded-none border-0 border-b
+            px-0 pb-3 pt-0
+            text-left text-xl font-bold text-brand-black
+            shadow-none ring-0 outline-none
             focus:ring-0 focus:ring-offset-0 focus:outline-none
             focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent
             data-[placeholder]:text-[#CCCCCC]
-            font-bold text-xl text-brand-black
           "
         >
           <SelectValue placeholder="선택" className="text-brand-black" />
