@@ -24,17 +24,6 @@ function clampRatio(value: number) {
   return Math.min(MAX_RATIO, Math.max(MIN_RATIO, value));
 }
 
-function getSecondaryComment(aiComment?: string) {
-  if (!aiComment) {
-    return "";
-  }
-
-  const sentences = aiComment.split(".");
-  const rest = sentences.slice(1).filter(Boolean).join(".").trim();
-
-  return rest ? `${rest}.` : "";
-}
-
 function renderCommentParts(
   comment: string,
   lifeExpense: number,
@@ -59,7 +48,7 @@ function renderCommentParts(
       return (
         <span key={key}>
           이번 달 생활비는{" "}
-          <span className="text-gray-800">{formatMoney(lifeExpense)}원</span>
+          <span className="text-gray-800">{formatMoney(lifeExpense)}</span>
         </span>
       );
     }
@@ -101,7 +90,7 @@ export default function AllowanceSliderSection({
 }: AllowanceSliderSectionProps) {
   const recommendRatio = aiRecommendation?.recommendRatio ?? "";
   const lifeExpense = aiRecommendation?.kidAllowance ?? 0;
-  const secondaryComment = getSecondaryComment(aiRecommendation?.aiComment);
+  const comment = aiRecommendation?.aiComment ?? "";
   const currentAllowance = Math.ceil(lifeExpense * (ratio / 100));
   const myRatio = MAX_RATIO - ratio;
 
@@ -128,7 +117,7 @@ export default function AllowanceSliderSection({
 
       <div className="flex flex-col items-center rounded-3xl border border-grey-7 shadow-2xs bg-white p-8">
         <div className="mb-10 text-center text-[14px] font-medium leading-relaxed text-gray-600">
-          {renderCommentParts(secondaryComment, lifeExpense, recommendRatio)}
+          {renderCommentParts(comment, lifeExpense, recommendRatio)}
         </div>
 
         <div className="mb-8 flex w-full items-center justify-between gap-2">
@@ -144,6 +133,7 @@ export default function AllowanceSliderSection({
               type="number"
               value={ratio === 0 ? "" : ratio}
               onChange={handleNumberInputChange}
+              aria-label="아이 용돈 비율"
               placeholder="0"
               className="h-6 w-14 appearance-none rounded border border-gray-200 bg-white text-center text-sm font-semibold text-gray-800 outline-none"
               style={{ MozAppearance: "textfield" }}
