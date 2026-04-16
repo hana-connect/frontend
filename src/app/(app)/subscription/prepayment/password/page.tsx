@@ -17,7 +17,34 @@ export default function PrepaymentPassword() {
       return false;
     }
 
-    const { subscriptionId, amount, prepaymentCount } = JSON.parse(raw);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      console.error("선납 데이터 파싱 실패");
+      return false;
+    }
+
+    const { subscriptionId, amount, prepaymentCount } = parsed as {
+      subscriptionId: unknown;
+      amount: unknown;
+      prepaymentCount: unknown;
+    };
+
+    if (
+      typeof subscriptionId !== "number" ||
+      Number.isNaN(subscriptionId) ||
+      subscriptionId <= 0 ||
+      typeof amount !== "number" ||
+      Number.isNaN(amount) ||
+      amount <= 0 ||
+      typeof prepaymentCount !== "number" ||
+      Number.isNaN(prepaymentCount) ||
+      prepaymentCount <= 0
+    ) {
+      console.error("선납 데이터가 올바르지 않습니다.");
+      return false;
+    }
 
     try {
       await apiClient.post<ApiResponse<SubscriptionPaymentExecuteResponse>>(
@@ -34,7 +61,7 @@ export default function PrepaymentPassword() {
       sessionStorage.removeItem("prepayment");
 
       router.push(
-        `/subscription/payment/result?subscriptionId=${subscriptionId}`,
+        `/subscription/prepayment/result?subscriptionId=${subscriptionId}`,
       );
 
       return true;

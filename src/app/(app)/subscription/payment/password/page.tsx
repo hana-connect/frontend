@@ -6,12 +6,6 @@ import Password from "@/common/components/keypad/Password";
 import { apiClient } from "@/common/lib/api/api-client";
 import type { ApiResponse } from "@/common/lib/api/types";
 
-type SubscriptionPaymentDraft = {
-  subscriptionId: number;
-  amount: number;
-  transferExcessToReward: boolean | null;
-};
-
 export default function PaymentPassword() {
   const router = useRouter();
 
@@ -23,37 +17,49 @@ export default function PaymentPassword() {
       return false;
     }
 
+    let parsed: unknown;
     try {
-      const draft: SubscriptionPaymentDraft = JSON.parse(raw);
+      parsed = JSON.parse(raw);
+    } catch {
+      console.error("청약 납입 데이터 파싱 실패");
+      return false;
+    }
 
-      if (
-        typeof draft.subscriptionId !== "number" ||
-        Number.isNaN(draft.subscriptionId) ||
-        draft.subscriptionId <= 0 ||
-        typeof draft.amount !== "number" ||
-        Number.isNaN(draft.amount) ||
-        draft.amount <= 0 ||
-        (typeof draft.transferExcessToReward !== "boolean" &&
-          draft.transferExcessToReward !== null)
-      ) {
-        console.error("청약 납입 데이터가 올바르지 않습니다.");
-        return false;
-      }
+    const { subscriptionId, amount, transferExcessToReward } = parsed as {
+      subscriptionId: unknown;
+      amount: unknown;
+      transferExcessToReward: unknown;
+    };
 
+    if (
+      typeof subscriptionId !== "number" ||
+      Number.isNaN(subscriptionId) ||
+      subscriptionId <= 0 ||
+      typeof amount !== "number" ||
+      Number.isNaN(amount) ||
+      amount <= 0 ||
+      (typeof transferExcessToReward !== "boolean" &&
+        transferExcessToReward !== null)
+    ) {
+      console.error("청약 납입 데이터가 올바르지 않습니다.");
+      return false;
+    }
+
+    try {
       await apiClient.post<ApiResponse<SubscriptionPaymentExecuteResponse>>(
-        `/api/subscriptions/${draft.subscriptionId}/payments`,
+        `/api/subscriptions/${subscriptionId}/payments`,
         {
-          amount: draft.amount,
+          amount,
           prepaymentCount: null,
           password,
-          transferExcessToReward: draft.transferExcessToReward,
+          transferExcessToReward,
         },
       );
 
       sessionStorage.removeItem("subscriptionPayment");
 
       router.push(
-        `/subscription/payment/result?subscriptionId=${draft.subscriptionId}`,
+        `/subscription/payment/result?subscriptionId=${subscriptionId}`,
       );
       return true;
     } catch (error) {

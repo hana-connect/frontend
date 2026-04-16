@@ -10,8 +10,18 @@ type RouteContext = {
 export async function POST(req: NextRequest, { params }: RouteContext) {
   const { subscriptionId } = await params;
 
+  const subscriptionIdNumber = Number(subscriptionId);
+
+  if (
+    !subscriptionId ||
+    !Number.isInteger(subscriptionIdNumber) ||
+    subscriptionIdNumber <= 0
+  ) {
+    return new Response("유효한 subscriptionId가 필요합니다.", { status: 400 });
+  }
+
   return proxyJsonToSpring(req, {
-    endpoint: `/api/subscriptions/${subscriptionId}/payments`,
+    endpoint: `/api/subscriptions/${subscriptionIdNumber}/payments`,
     method: "POST",
   });
 }

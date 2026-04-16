@@ -6,11 +6,6 @@ import Password from "@/common/components/keypad/Password";
 import { apiClient } from "@/common/lib/api/api-client";
 import type { ApiResponse } from "@/common/lib/api/types";
 
-type TransferDraft = {
-  accountId: number;
-  amount: number;
-};
-
 export default function TransferPasswordPage() {
   const router = useRouter();
 
@@ -22,26 +17,37 @@ export default function TransferPasswordPage() {
       return false;
     }
 
+    let parsed: unknown;
     try {
-      const draft: TransferDraft = JSON.parse(raw);
+      parsed = JSON.parse(raw);
+    } catch {
+      console.error("송금 데이터 파싱 실패");
+      return false;
+    }
 
-      if (
-        typeof draft.accountId !== "number" ||
-        Number.isNaN(draft.accountId) ||
-        draft.accountId <= 0 ||
-        typeof draft.amount !== "number" ||
-        Number.isNaN(draft.amount) ||
-        draft.amount <= 0
-      ) {
-        console.error("송금 요청에 필요한 값이 올바르지 않습니다.");
-        return false;
-      }
+    const { accountId, amount } = parsed as {
+      accountId: unknown;
+      amount: unknown;
+    };
 
+    if (
+      typeof accountId !== "number" ||
+      Number.isNaN(accountId) ||
+      accountId <= 0 ||
+      typeof amount !== "number" ||
+      Number.isNaN(amount) ||
+      amount <= 0
+    ) {
+      console.error("송금 요청에 필요한 값이 올바르지 않습니다.");
+      return false;
+    }
+
+    try {
       const result = await apiClient.post<ApiResponse<TransferExecuteResponse>>(
         "/api/transfer",
         {
-          accountId: draft.accountId,
-          amount: draft.amount,
+          accountId,
+          amount,
           password,
         },
       );

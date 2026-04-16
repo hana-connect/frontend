@@ -48,6 +48,11 @@ export default function PrepaymentResult() {
     fetchPaymentResult();
   }, [subscriptionId]);
 
+  const formatAccountNumber = (value: string | null | undefined) => {
+    if (!value) return "-";
+    return value.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+  };
+
   const formatDate = (value: string | null | undefined) => {
     if (!value) return "-";
     return value.slice(0, 10).replace(/-/g, ".");
@@ -90,7 +95,7 @@ export default function PrepaymentResult() {
           <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
             <span>입금 계좌번호</span>
             <span className="text-brand-black">
-              {result.subscriptionAccountNumber}
+              {formatAccountNumber(result.subscriptionAccountNumber)}
             </span>
           </div>
 
@@ -131,7 +136,7 @@ export default function PrepaymentResult() {
               <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
                 <span>입금 계좌번호</span>
                 <span className="text-brand-black">
-                  {result.rewardAccountNumber || "-"}
+                  {formatAccountNumber(result.rewardAccountNumber)}
                 </span>
               </div>
 

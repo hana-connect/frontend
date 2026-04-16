@@ -48,6 +48,11 @@ export default function PaymentResult() {
     fetchPaymentResult();
   }, [subscriptionId]);
 
+  const formatAccountNumber = (value: string | null | undefined) => {
+    if (!value) return "-";
+    return value.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+  };
+
   const formatDate = (value: string | null | undefined) => {
     if (!value) return "-";
     return value.slice(0, 10).replace(/-/g, ".");
@@ -86,7 +91,7 @@ export default function PaymentResult() {
             <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
               <span>입금 계좌번호</span>
               <span className="text-brand-black">
-                {result.subscriptionAccountNumber}
+                {formatAccountNumber(result.subscriptionAccountNumber)}{" "}
               </span>
             </div>
 
@@ -113,12 +118,12 @@ export default function PaymentResult() {
               />
 
               <section className="w-full pt-6 text-left">
-                <h2 className="mb-4 text-body-14-b text-brand-black">리워드</h2>
+                <h2 className="mb-4 text-body-14-b text-brand-black">연금</h2>
 
                 <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
                   <span>입금 계좌번호</span>
                   <span className="text-brand-black">
-                    {result.rewardAccountNumber || "-"}
+                    {formatAccountNumber(result.rewardAccountNumber)}
                   </span>
                 </div>
 
