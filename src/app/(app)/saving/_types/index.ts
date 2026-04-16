@@ -9,4 +9,5 @@ export type RelayData = {
   productNickname: string;
   accountNumber: string;
   history: RelayHistoryItem[];
+  isLast: boolean;
 };

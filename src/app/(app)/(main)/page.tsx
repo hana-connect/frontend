@@ -5,53 +5,72 @@ import {
   serverSpringFetch,
 } from "@/common/lib/api/server-spring-fetch";
 import type { ApiResponse } from "@/common/lib/api/types";
+import { getUserRole } from "@/common/lib/auth/get-user-role";
 import BottomMenu from "./_components/BottomMenu";
 import MainRoleView from "./_components/MainRoleView";
 import ScrollTopButton from "./_components/ScrollTopButton";
 
-type WalletData = {
+export type WalletData = {
   name: string;
   walletMoney: number;
 };
 
-export default async function Page() {
-  const getWalletData = async () => {
-    try {
-      const result = await serverSpringFetch<ApiResponse<WalletData>>(
-        "/api/wallet",
-        {
-          method: "GET",
-          next: { revalidate: 0 },
-        },
-      );
+export type ParentData = {
+  connectMemberId: number;
+  connectMemberName: string;
+  connectMemberPhoneName: string;
+  connectMemberRole: string;
+};
 
-      if (!result.data) throw new Error("지갑 데이터를 찾을 수 없습니다.");
+async function getWalletData(): Promise<WalletData> {
+  try {
+    const res = await serverSpringFetch<ApiResponse<WalletData>>(
+      "/api/wallet",
+      { cache: "no-store" },
+    );
 
-      return result.data;
-    } catch (error) {
-      if (error instanceof SpringApiError) {
-        if (error.status === 401) {
-          redirect("/login");
-        }
-        if (error.status === 403) {
-          console.error("지갑 접근 권한 없음:", error.message);
-        }
-      }
-      throw error;
+    if (!res.data) throw new Error("지갑 데이터를 찾을 수 없습니다.");
+
+    return res.data;
+  } catch (error) {
+    if (error instanceof SpringApiError && error.status === 401) {
+      redirect("/login");
     }
-  };
+    throw error;
+  }
+}
 
-  const walletData = await getWalletData();
+async function getParents(): Promise<ParentData[]> {
+  try {
+    const res = await serverSpringFetch<ApiResponse<ParentData[]>>(
+      "/api/parents",
+      { cache: "no-store" },
+    );
+
+    return res.data ?? [];
+  } catch (error) {
+    if (error instanceof SpringApiError && error.status === 401) {
+      redirect("/login");
+    }
+    return [];
+  }
+}
+
+export default async function Page() {
+  const memberRole = await getUserRole();
+
+  const [wallet, parents] = await Promise.all([
+    getWalletData(),
+
+    memberRole === "KID" ? getParents() : Promise.resolve([]),
+  ]);
 
   return (
     <div className="relative min-h-screen bg-[#f5f5f5]">
       <Header type="main" />
 
       <div className="pt-15">
-        <MainRoleView
-          userName={walletData.name}
-          balance={walletData.walletMoney}
-        />
+        <MainRoleView wallet={wallet} parents={parents} />
       </div>
 
       <ScrollTopButton />

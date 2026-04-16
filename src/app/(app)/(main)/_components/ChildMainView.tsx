@@ -2,27 +2,14 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/common/components/button/Button";
-
-type ParentData = {
-  id: number;
-  name: string;
-  imageUrl: string;
-};
+import type { ParentData, WalletData } from "../page";
 
 type ChildMainProps = {
-  userName: string;
-  balance: number;
-  parents?: ParentData[];
+  wallet: WalletData;
+  parents: ParentData[];
 };
 
-const ChildMainView = ({
-  userName,
-  balance,
-  parents = [
-    { id: 1, name: "디지털하나로유지현", imageUrl: "/svg/ic_mom1.svg" },
-    { id: 2, name: "하나로아빠", imageUrl: "/svg/ic_mom2.svg" },
-  ],
-}: ChildMainProps) => {
+const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
   return (
     <main className="pb-10">
       <h1 className="sr-only">아이부자 아이 메인 홈</h1>
@@ -72,11 +59,11 @@ const ChildMainView = ({
                 id="wallet-section-title"
                 className="text-[18px] font-semibold text-[#757783]"
               >
-                {userName}님의 지갑
+                {wallet.name}님의 지갑
               </h2>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[33px] font-bold text-black leading-tight">
-                  {balance.toLocaleString()}원
+                  {wallet.walletMoney.toLocaleString()}원
                 </span>
                 <div className="bg-[#676D86] rounded-full w-6 h-6 flex items-center justify-center">
                   <ArrowRight
@@ -184,41 +171,54 @@ const ChildMainView = ({
             </p>
           </div>
 
-          <ul className="flex flex-col">
-            {parents.map((parent, index) => (
-              <li
-                key={parent.id}
-                className={`flex py-2 items-center justify-between ${index > 0 ? "border-t border-gray-50" : ""}`}
-              >
-                <div className="flex items-center">
-                  <Image
-                    src={parent.imageUrl}
-                    alt={`${parent.name} 프로필`}
-                    width={50}
-                    height={50}
-                  />
-                  <div className="flex flex-col ml-4">
-                    <p className="text-grey-1 text-[16px] font-semibold">
-                      {parent.name}
-                    </p>
-                    <p className="text-[14px] font-semibold text-grey-2">
-                      정기용돈 미등록
-                    </p>
-                  </div>
-                </div>
-                {/* 첫 번째 부모 '내역 공유중', 나머지는 '지갑공유' 버튼 */}
-                {index === 0 ? (
-                  <p className="text-body-16-m text-brand-purple-1">
-                    내역 공유중
-                  </p>
-                ) : (
-                  <Button size="S" variant="smallGray">
-                    지갑공유
-                  </Button>
-                )}
-              </li>
-            ))}
-          </ul>
+          {parents.length > 0 ? (
+            <ul className="flex flex-col">
+              {parents.map((parent, index) => {
+                const isOdd = parent.connectMemberId % 2 !== 0;
+                const profileImage = isOdd
+                  ? "/svg/ic_mom1.svg"
+                  : "/svg/ic_mom2.svg";
+
+                return (
+                  <li
+                    key={parent.connectMemberId}
+                    className={"flex py-2 items-center justify-between"}
+                  >
+                    <div className="flex items-center">
+                      <Image
+                        src={profileImage}
+                        alt={`${parent.connectMemberPhoneName} 프로필`}
+                        width={50}
+                        height={50}
+                      />
+                      <div className="flex flex-col ml-4">
+                        <p className="text-grey-1 text-[16px] font-semibold">
+                          {parent.connectMemberPhoneName}
+                        </p>
+                        <p className="text-[14px] font-semibold text-grey-2">
+                          정기용돈 미등록
+                        </p>
+                      </div>
+                    </div>
+                    {/* 첫 번째 부모 '내역 공유중', 나머지는 '지갑공유' 버튼 */}
+                    {index === 0 ? (
+                      <p className="text-body-16-m text-brand-purple-1">
+                        내역 공유중
+                      </p>
+                    ) : (
+                      <Button size="S" variant="smallGray">
+                        지갑공유
+                      </Button>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="py-8 flex flex-col items-center justify-center text-body-14-m text-grey-6">
+              아직 연결된 가족이 없어요.
+            </div>
+          )}
         </section>
 
         {/* 내 활동 섹션 */}

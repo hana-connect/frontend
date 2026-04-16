@@ -58,10 +58,9 @@ export default function RelayHistory({
         }
 
         const result = await res.json();
-        if (result.data) {
-          const history = result.data.history ?? [];
 
-          setIsLastPage(history.length < ITEMS_PER_PAGE);
+        if (result.data) {
+          setIsLastPage(result.data.isLast);
 
           setData({ content: result.data, page });
         }
