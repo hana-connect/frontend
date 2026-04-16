@@ -25,6 +25,11 @@ export default function TransferPasswordPage() {
       return false;
     }
 
+    if (!parsed || typeof parsed !== "object") {
+      console.error("송금 데이터 형식이 올바르지 않습니다.");
+      return false;
+    }
+
     const { accountId, amount } = parsed as {
       accountId: unknown;
       amount: unknown;
