@@ -33,8 +33,7 @@ const LetterPageClient = ({
   const [activeSenderId, setActiveSenderId] = useState<number | "all">("all");
   const [isFetching, setIsFetching] = useState(false);
   const latestRequestId = useRef(0);
-
-  const isLastPage = displayData.content.transactions.length < ITEMS_PER_PAGE;
+  const isLastPage = displayData.content.isLast;
 
   const handleTabChange = (val: string) => {
     const senderId = val === "all" ? "all" : Number(val);
@@ -132,7 +131,7 @@ const LetterPageClient = ({
               {displayData.content.transactions.length === 0 ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-start pt-20 z-50 pointer-events-none">
                   <p className="text-brand-black text-body-14-m px-2">
-                    남겨진 적금 편지가 없습니다.
+                    작성된 편지 없이 조용히 마무리된 적금이에요.
                   </p>
                 </div>
               ) : (

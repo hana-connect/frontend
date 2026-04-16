@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { cn } from "../lib/utils";
 
 export default function GuideSection() {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,14 +18,12 @@ export default function GuideSection() {
           이용안내
         </span>
 
-        <Image
-          src="/svg/ic_down_vector.svg"
-          alt="이용안내 펼치기"
-          width={12}
-          height={12}
-          className={`transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+        <ChevronDown
+          aria-hidden="true"
+          className={cn(
+            "h-4 w-4 text-grey-2 transition-transform duration-200",
+            isOpen ? "rotate-180" : "",
+          )}
         />
       </button>
 

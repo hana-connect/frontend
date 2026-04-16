@@ -18,4 +18,5 @@ export type TerminatedDetailData = {
   accountNumber: string;
   transactions: Transaction[];
   senders: Sender[];
+  isLast: boolean;
 };
