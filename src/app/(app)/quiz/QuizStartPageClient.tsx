@@ -6,8 +6,16 @@ import { useState } from "react";
 import { getTodayQuiz } from "@/app/api/quiz/quiz";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
+import type { RewardAccount } from "@/common/lib/api/accounts/types";
+import { getSubjectParticle } from "@/common/lib/utils";
 
-export default function QuizStartPageClient() {
+type QuizStartPageClientProps = {
+  rewardAccount: RewardAccount | null;
+};
+
+export default function QuizStartPageClient({
+  rewardAccount,
+}: QuizStartPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +58,10 @@ export default function QuizStartPageClient() {
     }
   };
 
+  const rewardAccountText = rewardAccount
+    ? `${rewardAccount.name}(${rewardAccount.accountNumber})${getSubjectParticle(rewardAccount.name)} 리워드 계좌로 설정되어 있어요.`
+    : "리워드 계좌가 아직 설정되지 않았어요.";
+
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[375px] flex-col bg-[#FFFFFF]">
       <Header type="sub" title="퀴즈" />
@@ -85,10 +97,10 @@ export default function QuizStartPageClient() {
           </div>
 
           <div className="mt-6 rounded-2xl bg-amber-100 px-5 py-5">
-            <p className="text-center text-[15px] font-medium leading-[24px] text-gray-700">
+            <p className="text-center text-[15px] font-medium leading-[24px] text-gray-700 break-keep">
               퀴즈를 풀면 연금계좌로 리워드를 드려요.
               <br />
-              개인형 IRP 계좌가 리워드 계좌로 설정되어있어요.
+              {rewardAccountText}
             </p>
           </div>
 
@@ -106,10 +118,12 @@ export default function QuizStartPageClient() {
             <Button
               size="L"
               variant="purpleOutline"
-              onClick={() => router.push("/wallet")}
+              onClick={() => router.push("/wallet/all")}
               className="h-14 rounded-[20px] text-[18px] font-semibold leading-6"
             >
-              리워드 받을 계좌 설정하러 가기
+              {rewardAccount
+                ? "리워드 받을 계좌 변경하기"
+                : "리워드 받을 계좌 설정하러 가기"}
             </Button>
           </div>
         </section>
