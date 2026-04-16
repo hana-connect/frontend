@@ -11,7 +11,7 @@ type AmountHeaderProps = {
   onQuickAdd: (amount: number) => void;
 };
 
-function formatCurrency(value: number) {
+function formatMoney(value: number) {
   return value.toLocaleString("ko-KR");
 }
 
@@ -52,7 +52,7 @@ export default function AmountHeader({
 
       <div className="mt-auto mb-6 flex flex-col items-center">
         <div className="rounded-xl bg-grey-7 px-4 py-2 text-body-16-m text-grey-6">
-          지갑 잔액 {formatCurrency(balance)}원
+          지갑 잔액 {formatMoney(balance)}원
         </div>
         <QuickAddButtons onQuickAdd={onQuickAdd} />
       </div>
