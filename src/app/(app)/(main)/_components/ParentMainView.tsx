@@ -4,7 +4,7 @@ import { ArrowRight, ChevronDown, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
 import {
@@ -27,6 +27,8 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
   const [kidDetailMap, setKidDetailMap] = useState<Map<number, KidDetail>>(
     new Map(),
   );
+  const kidDetailMapRef = useRef(kidDetailMap);
+  kidDetailMapRef.current = kidDetailMap;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,7 +46,7 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
   const fetchKidDetail = useCallback(
     async (kidId: number) => {
       // 이미 캐시에 있으면 바로 화면 전환
-      if (kidDetailMap.has(kidId)) {
+      if (kidDetailMapRef.current.has(kidId)) {
         setDisplayKidId(kidId);
         return;
       }
@@ -71,7 +73,7 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
       }
     },
 
-    [kidDetailMap],
+    [],
   );
 
   useEffect(() => {
