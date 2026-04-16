@@ -27,6 +27,11 @@ export type AssetAIRecommendation = {
   aiComment: string;
   assetHistory: number[];
   increaseRate: number;
+  recommendedDepositSavings?: number;
+  recommendedDepositWithdrawal?: number;
+  recommendedInvestment?: number;
+  recommendedPension?: number;
+  totalAssets?: number;
 };
 
 type HeaderProps = {
@@ -109,6 +114,7 @@ export default function AssetManagementClientPage({
   initialAiData: AssetAIRecommendation | null;
 }) {
   const [assetSummary, setAssetSummary] = useState(initialData);
+  const [aiRecommendation, setAiRecommendation] = useState(initialAiData);
   const [isLinked, setIsLinked] = useState(!!initialData);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -134,6 +140,7 @@ export default function AssetManagementClientPage({
 
       if (assetResult.data && aiResult.data) {
         setAssetSummary(assetResult.data);
+        setAiRecommendation(aiResult.data);
 
         // AI가 추천해준 비율("20:80")을 받아서 슬라이더 위치를 옮겨줌.
         const newRatio = Number(aiResult.data.recommendRatio.split(":")[0]);
@@ -184,13 +191,13 @@ export default function AssetManagementClientPage({
             className="space-y-10 py-6"
           >
             <CurrentAsset assetData={assetSummary} />
-            <RecentAssetChange aiRecommendation={initialAiData} />
-            <AIAssetAllocation assetData={assetSummary} />
+            <RecentAssetChange aiRecommendation={aiRecommendation} />
+            <AIAssetAllocation assetData={aiRecommendation} />
             <AllowanceSliderSection
               ratio={ratio}
               allowanceAmount={allowanceAmount}
               handleRatioChange={handleRatioChange}
-              aiRecommendation={initialAiData}
+              aiRecommendation={aiRecommendation}
             />
           </motion.div>
         )}

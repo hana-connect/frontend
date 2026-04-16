@@ -35,7 +35,7 @@ export default function RecentAssetChange({
         <p className="text-base text-gray-400 mt-1">
           자산 추이 정확도에 영향을 주는
           <br />
-          대출, 투자, 현금은 포함되지 않아요
+          대출, 투자, 현금은 포함되지 않아요.
         </p>
       </div>
 
