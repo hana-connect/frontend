@@ -291,7 +291,6 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
                       <ItemCard
                         title={acc.nickname || acc.name}
                         subTitle={acc.accountNumber}
-                        // 연결
                         rightContent={
                           <Button
                             size={"S"}
