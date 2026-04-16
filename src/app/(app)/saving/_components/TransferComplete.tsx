@@ -8,18 +8,46 @@ type TransferCompleteProps = {
   amount: number;
   message: string;
   onConfirm: () => void;
+  accountNumber?: string;
+  transferDate?: string;
 };
 
 export default function TransferComplete({
   amount,
   message,
   onConfirm,
+  accountNumber,
+  transferDate,
 }: TransferCompleteProps) {
-  const today = "2026.04.11";
-
   const parentProfile = {
     src: "/svg/ic_mom2.svg",
     alt: "엄마 프로필",
+  };
+
+  const formatAccountNumber = (value?: string) => {
+    const target = value ?? "11122223333";
+
+    const onlyNumber = target.replace(/[^0-9]/g, "");
+
+    if (onlyNumber.length === 11) {
+      return onlyNumber.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+    }
+
+    return target;
+  };
+
+  const formatTransferDate = (value?: string) => {
+    const target = value ?? "2026-04-07";
+
+    const date = new Date(target);
+
+    if (Number.isNaN(date.getTime())) return target;
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}.${month}.${day}`;
   };
 
   return (
@@ -28,15 +56,17 @@ export default function TransferComplete({
         <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
 
         <h2 className="text-body-20-m text-brand-black mt-6">
-          송금이 완료되었어요!
+          입금이 완료되었어요!
         </h2>
 
         <div className="w-full h-[0.8px] bg-grey-5 mt-12" aria-hidden="true" />
 
         <div className="w-full mt-6 space-y-4">
           <div className="flex justify-between text-body-16-m text-grey-6">
-            <span>송금 계좌번호</span>
-            <span className="text-brand-black">1002158055957</span>
+            <span>입금 계좌번호</span>
+            <span className="text-brand-black">
+              {formatAccountNumber(accountNumber)}
+            </span>
           </div>
 
           <div className="flex justify-between text-body-16-m text-grey-6">
@@ -48,11 +78,12 @@ export default function TransferComplete({
 
           <div className="flex justify-between text-body-16-m text-grey-6">
             <span>송금일</span>
-            <span className="text-brand-black">{today}</span>
+            <span className="text-brand-black">
+              {formatTransferDate(transferDate)}
+            </span>
           </div>
         </div>
 
-        {/* 메시지 버블 영역 */}
         <div className="w-full mt-10">
           <Bubble message={message} parentProfile={parentProfile} />
         </div>

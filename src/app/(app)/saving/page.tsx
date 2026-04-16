@@ -1,9 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import type {
+  RecentRelayMessage,
+  RecentRelayMessagesResponse,
+  RecentTransfersResponse,
+  SavingTransferRequest,
+  SavingTransferResponse,
+} from "@/app/api/transfer/savings/types";
+import type { TransferPrepareResponse } from "@/app/api/transfer/type";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
+import { apiClient } from "@/common/lib/api/api-client";
+import type { ApiResponse } from "@/common/lib/api/types";
 import AmountInput from "./_components/AmountInput";
 import LimitOverModal from "./_components/LimitOverModal";
 import PasswordInput from "./_components/PasswordInput";
@@ -12,6 +22,7 @@ import RelayMessage from "./_components/RelayMessage";
 import TransferComplete from "./_components/TransferComplete";
 
 type TransferStep = "input" | "password" | "complete" | "history";
+
 type LimitInfo = {
   currentSaving: number;
   inputAmount: number;
@@ -20,23 +31,80 @@ type LimitInfo = {
 
 export default function SavingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const accountId = searchParams.get("accountId");
+  const accountIdNumber = Number(accountId);
 
   const [step, setStep] = useState<TransferStep>("input");
   const [amount, setAmount] = useState(0);
   const [message, setMessage] = useState("");
-
   const [limitInfo, setLimitInfo] = useState<LimitInfo | null>(null);
+  const [recentMessages, setRecentMessages] = useState<RecentRelayMessage[]>(
+    [],
+  );
+  const [recentTransfer, setRecentTransfer] =
+    useState<RecentTransfersResponse | null>(null);
+  const [isRecentOpen, setIsRecentOpen] = useState(false);
+  const [prepareData, setPrepareData] =
+    useState<TransferPrepareResponse | null>(null);
 
   const isTransferReady = amount > 0 && message.trim().length > 0;
 
+  useEffect(() => {
+    if (
+      !accountId ||
+      !Number.isInteger(accountIdNumber) ||
+      accountIdNumber <= 0
+    ) {
+      return;
+    }
+
+    const fetchInitialData = async () => {
+      try {
+        const [prepareResult, relayResult] = await Promise.all([
+          apiClient.get<ApiResponse<TransferPrepareResponse>>(
+            `/api/transfer/prepare?accountId=${accountIdNumber}`,
+          ),
+          apiClient.get<ApiResponse<RecentRelayMessagesResponse>>(
+            `/api/transfer/savings/relay/recent?targetAccountId=${accountIdNumber}`,
+          ),
+        ]);
+
+        setPrepareData(prepareResult.data);
+        setRecentMessages(relayResult.data.history);
+      } catch (error) {
+        console.error("적금 송금 초기 데이터 조회 실패", error);
+      }
+    };
+
+    fetchInitialData();
+  }, [accountId, accountIdNumber]);
+
+  const handleShowRecentTransfer = async () => {
+    if (!accountIdNumber) return;
+
+    try {
+      const result = await apiClient.get<ApiResponse<RecentTransfersResponse>>(
+        `/api/transfer/recent?targetAccountId=${accountIdNumber}`,
+      );
+
+      setRecentTransfer(result.data);
+      setIsRecentOpen(true);
+    } catch (error) {
+      console.error("최근 송금 금액 조회 실패", error);
+    }
+  };
+
   const checkLimit = (inputAmount: number): boolean => {
-    const currentSaving = 250000;
-    const savingLimit = 300000;
+    const currentSaving = prepareData?.currentSaving ?? 250000;
+    const savingLimit = prepareData?.savingLimit ?? 300000;
 
     if (currentSaving + inputAmount > savingLimit) {
       setLimitInfo({ currentSaving, inputAmount, savingLimit });
       return false;
     }
+
     return true;
   };
 
@@ -46,10 +114,40 @@ export default function SavingPage() {
     }
   };
 
+  const handleSavingTransfer = async (password: string) => {
+    if (
+      !accountId ||
+      !Number.isInteger(accountIdNumber) ||
+      accountIdNumber <= 0
+    ) {
+      console.error("유효한 계좌 정보가 없습니다.");
+      return false;
+    }
+
+    try {
+      const payload: SavingTransferRequest = {
+        targetAccountId: accountIdNumber,
+        amount,
+        password,
+        content: message,
+      };
+
+      await apiClient.post<ApiResponse<SavingTransferResponse>>(
+        "/api/transfer/savings",
+        payload,
+      );
+
+      setStep("complete");
+      return true;
+    } catch (error) {
+      console.error("적금 송금 실패", error);
+      return false;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex justify-center">
       <main className="w-full max-w-93.75 h-screen bg-white relative flex flex-col font-['Pretendard'] overflow-hidden">
-        {/* 1. 금액 + 메시지 입력 */}
         {step === "input" && (
           <div className="flex flex-col h-full relative">
             <div className="flex-none border-b border-gray-100">
@@ -61,13 +159,20 @@ export default function SavingPage() {
                 amount={amount}
                 onAmountChange={setAmount}
                 onCheckLimit={checkLimit}
+                onShowRecentTransfer={handleShowRecentTransfer}
+                recentTransfer={recentTransfer}
+                isRecentOpen={isRecentOpen}
+                onCloseRecent={() => setIsRecentOpen(false)}
+                accountHolder={prepareData?.displayName ?? ""}
+                accountNickname={prepareData?.accountAlias ?? ""}
+                balance={prepareData?.balance ?? 0}
               />
 
               <RelayMessage
-                targetAccountId={2}
                 message={message}
                 onMessageChange={setMessage}
                 onShowHistory={() => setStep("history")}
+                recentMessages={recentMessages}
               />
 
               <div className="mt-20 left-0 w-full px-6 bg-white py-4 z-10">
@@ -84,25 +189,22 @@ export default function SavingPage() {
           </div>
         )}
 
-        {/* 2. 릴레이 메시지 지난 작성 내역 */}
         {step === "history" && (
           <div className="flex flex-col h-full bg-white z-50">
             <RelayHistory
-              targetAccountId={2} // TODO: 실제 받아오는 계좌로 교체
+              targetAccountId={accountIdNumber}
               onBack={() => setStep("input")}
             />
           </div>
         )}
 
-        {/* 3. 간편비밀번호 입력 */}
         {step === "password" && (
           <PasswordInput
             onBack={() => setStep("input")}
-            onSuccess={() => setStep("complete")}
+            onComplete={handleSavingTransfer}
           />
         )}
 
-        {/* 4. 송금 완료 */}
         {step === "complete" && (
           <TransferComplete
             amount={amount}
@@ -111,7 +213,6 @@ export default function SavingPage() {
           />
         )}
 
-        {/* 한도 초과 모달 */}
         <LimitOverModal
           isOpen={!!limitInfo}
           limitData={limitInfo}
