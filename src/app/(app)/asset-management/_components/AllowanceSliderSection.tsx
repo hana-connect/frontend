@@ -1,18 +1,21 @@
 "use client";
-
 import Button from "@/common/components/button/Button";
 import { formatCurrency } from "../_utils/formatters";
 
 type AllowanceSliderSectionProps = {
   ratio: number;
-  allowanceAmount: number;
   handleRatioChange: (value: number) => void;
+  aiRecommendation: {
+    aiComment?: string;
+    recommendRatio?: string;
+    kidAllowance?: number;
+  } | null;
 };
 
 export default function AllowanceSliderSection({
   ratio,
-  allowanceAmount,
   handleRatioChange,
+  aiRecommendation,
 }: AllowanceSliderSectionProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -26,6 +29,18 @@ export default function AllowanceSliderSection({
     handleRatioChange(val);
   };
 
+  const getSecondaryComment = () => {
+    if (!aiRecommendation?.aiComment) return "";
+    const sentences = aiRecommendation.aiComment.split(".");
+    return `${sentences.slice(1).filter(Boolean).join(".").trim()}.`;
+  };
+
+  const secondaryComment = getSecondaryComment();
+  const lifeExpense = aiRecommendation?.kidAllowance || 0;
+
+  // 현재 슬라이더 비율(ratio)에 맞춰 실시간 용돈 계산 (올림 처리!)
+  const currentAllowance = Math.ceil(lifeExpense * (ratio / 100));
+
   return (
     <section className="mt-10 mb-10 w-full overflow-hidden">
       <h2 className="text-lg font-bold text-black mb-4">
@@ -34,11 +49,61 @@ export default function AllowanceSliderSection({
 
       <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center">
         <div className="text-center mb-10 text-gray-600 text-[14px] font-medium leading-relaxed">
-          이번 달 생활비는 <span className="text-gray-800">1,000,000원</span>
-          이고,
-          <br />
-          자산 분배 결과 <span className="text-[#9C6FFE]">10:90</span>을
-          추천드려요.
+          {secondaryComment.split(/(이고,|\s*직접)/).map((part) => {
+            // 1. 생활비 안내 부분
+            if (part.includes("생활비는")) {
+              return (
+                <span key="section-expense">
+                  이번 달 생활비는{" "}
+                  <span className="text-gray-800">
+                    {formatCurrency(lifeExpense)}원
+                  </span>
+                </span>
+              );
+            }
+
+            // 2. 구분자 "이고," 처리
+            if (part === "이고,") {
+              return (
+                <span key="sep-and">
+                  이고,
+                  <br />
+                </span>
+              );
+            }
+
+            // 3. "직접" 부분 줄바꿈 처리
+            if (part.trim() === "직접") {
+              return (
+                <span key="sep-direct">
+                  <br />
+                  직접
+                </span>
+              );
+            }
+
+            // 4. 나머지 문장 및 강조 로직
+            const ratio = aiRecommendation?.recommendRatio || "";
+            return (
+              <span key={`content-block-${part.slice(0, 10)}`}>
+                {part.includes(ratio)
+                  ? part.split(ratio).map((text, _, arr) => {
+                      const isLast = text === arr[arr.length - 1];
+                      const uniqueKey = `ratio-fragment-${text.substring(0, 5)}-${text.length}`;
+
+                      return (
+                        <span key={uniqueKey}>
+                          {text}
+                          {!isLast && (
+                            <span className="text-[#9C6FFE]">{ratio}</span>
+                          )}
+                        </span>
+                      );
+                    })
+                  : part}
+              </span>
+            );
+          })}
         </div>
 
         <div className="w-full flex items-center justify-between gap-2 mb-8">
@@ -84,7 +149,7 @@ export default function AllowanceSliderSection({
           <p>
             현재 비율에 맞는 추천 용돈은 <br />
             <span className="text-[#9C6FFE] font-semibold">
-              {formatCurrency(allowanceAmount)}원
+              {formatCurrency(currentAllowance)}원
             </span>
             입니다.
           </p>
