@@ -81,17 +81,63 @@ async function getMyKids(): Promise<KidInfo[]> {
 
   const kidDetails = await Promise.all(
     kidList.map(async (kid) => {
-      const detailResult = await serverSpringFetch<KidDetailResponse>(
-        `/api/kids/${kid.connectMemberId}/linked-accounts`,
-        {
-          method: "GET",
-          cache: "no-store",
-        },
-      );
+      try {
+        const detailResult = await serverSpringFetch<KidDetailResponse>(
+          `/api/kids/${kid.connectMemberId}/linked-accounts`,
+          {
+            method: "GET",
+            cache: "no-store",
+          },
+        );
 
-      const detail = detailResult.data;
+        const detail = detailResult.data;
 
-      if (!detail) {
+        if (!detail) {
+          return {
+            id: kid.connectMemberId,
+            name: kid.connectMemberName,
+            imageSrc: "/images/kid-avatar.png",
+            monthlyAllowance: 0,
+            walletBalanceText: formatMoney(0),
+            regularAllowanceText:
+              "매일, 매주 원하는 날짜에\n용돈을 보낼 수 있어요.",
+            allowancePlanText: "공유한 용돈 계획이 없어요.",
+            accounts: [],
+          };
+        }
+
+        // 청약 맨 위 정렬
+        const sortedAccounts = [...detail.accounts].sort((a, b) => {
+          if (
+            a.accountType === "SUBSCRIPTION" &&
+            b.accountType !== "SUBSCRIPTION"
+          ) {
+            return -1;
+          }
+          if (
+            a.accountType !== "SUBSCRIPTION" &&
+            b.accountType === "SUBSCRIPTION"
+          ) {
+            return 1;
+          }
+          return 0;
+        });
+
+        return {
+          id: detail.kidId,
+          name: detail.kidName,
+          imageSrc: "/images/kid-avatar.png",
+          monthlyAllowance: 0,
+          walletBalanceText: formatMoney(detail.walletMoney),
+          regularAllowanceText:
+            "매일, 매주 원하는 날짜에\n용돈을 보낼 수 있어요.",
+          allowancePlanText: "공유한 용돈 계획이 없어요.",
+          accounts: sortedAccounts,
+        };
+      } catch (error) {
+        console.error(`자녀(${kid.connectMemberId}) 조회 실패`, error);
+
+        // 실패한 kid만 fallback
         return {
           id: kid.connectMemberId,
           name: kid.connectMemberName,
@@ -104,35 +150,6 @@ async function getMyKids(): Promise<KidInfo[]> {
           accounts: [],
         };
       }
-
-      // 청약 맨 위로 오게 정렬
-      const sortedAccounts = [...detail.accounts].sort((a, b) => {
-        if (
-          a.accountType === "SUBSCRIPTION" &&
-          b.accountType !== "SUBSCRIPTION"
-        ) {
-          return -1;
-        }
-        if (
-          a.accountType !== "SUBSCRIPTION" &&
-          b.accountType === "SUBSCRIPTION"
-        ) {
-          return 1;
-        }
-        return 0;
-      });
-
-      return {
-        id: detail.kidId,
-        name: detail.kidName,
-        imageSrc: "/images/kid-avatar.png",
-        monthlyAllowance: 0,
-        walletBalanceText: formatMoney(detail.walletMoney),
-        regularAllowanceText:
-          "매일, 매주 원하는 날짜에\n용돈을 보낼 수 있어요.",
-        allowancePlanText: "공유한 용돈 계획이 없어요.",
-        accounts: sortedAccounts,
-      };
     }),
   );
 

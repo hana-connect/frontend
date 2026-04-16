@@ -1,6 +1,9 @@
+"use client";
+
 import { ChevronRight, CircleHelp, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Button from "@/common/components/button/Button";
 import { formatMoney } from "@/common/lib/utils";
 import type { KidInfo } from "../_types";
@@ -11,12 +14,6 @@ type MyKidSectionProps = {
 
 function getAccountActionLabel(accountType: string) {
   return accountType === "SUBSCRIPTION" ? "청약넣기" : "송금하기";
-}
-
-function getAccountHref(kidId: number, accountId: number, accountType: string) {
-  return accountType === "SUBSCRIPTION"
-    ? `/kid/${kidId}/account/${accountId}/subscription`
-    : `/kid/${kidId}/account/${accountId}/transfer`;
 }
 
 function MyKidSection({ kids = [] }: MyKidSectionProps) {
@@ -66,7 +63,6 @@ function KidCard({ kid }: KidCardProps) {
           title="이번 달 보낸 용돈"
           description={formatMoney(kid.monthlyAllowance)}
           actionLabel="용돈지급"
-          href={`/kid/${kid.id}/allowance`}
         />
 
         <InfoRow
@@ -83,7 +79,6 @@ function KidCard({ kid }: KidCardProps) {
           title="정기용돈"
           description={kid.regularAllowanceText}
           actionLabel="등록하기"
-          href={`/kid/${kid.id}/regular-allowance`}
         />
       </div>
 
@@ -93,7 +88,6 @@ function KidCard({ kid }: KidCardProps) {
         title="용돈 계획"
         description={kid.allowancePlanText}
         actionLabel="내역보기"
-        href={`/kid/${kid.id}/allowance-plan`}
       />
 
       {kid.accounts.length > 0 && (
@@ -102,16 +96,10 @@ function KidCard({ kid }: KidCardProps) {
 
           <div className="space-y-6">
             {kid.accounts.map((account) => (
-              <InfoRow
+              <AccountRow
                 key={account.accountId}
-                title={account.nickname || account.name}
-                description={account.accountNumber}
-                actionLabel={getAccountActionLabel(account.accountType)}
-                href={getAccountHref(
-                  kid.id,
-                  account.accountId,
-                  account.accountType,
-                )}
+                kidId={kid.id}
+                account={account}
               />
             ))}
           </div>
@@ -121,15 +109,54 @@ function KidCard({ kid }: KidCardProps) {
       <div className="my-8 border-t border-grey-5" />
 
       <div className="space-y-6">
+        {/* TODO 링크 수정 */}
         <ArrowLinkRow
           label="아이 계좌 추가하기"
           href={`/kid/${kid.id}/account/add`}
         />
+        {/* TODO 링크 수정 */}
         <ArrowLinkRow
           label="아이 계좌번호 요청하기"
           href={`/kid/${kid.id}/account/request`}
         />
       </div>
+    </div>
+  );
+}
+
+type AccountRowProps = {
+  kidId: number;
+  account: KidInfo["accounts"][number];
+};
+
+function AccountRow({ kidId, account }: AccountRowProps) {
+  const router = useRouter();
+
+  const handleClick = async () => {
+    // TODO 송금하기 api 연동되면 그때 다시 수정
+    if (account.accountType !== "SUBSCRIPTION") {
+      router.push(`/transfer?accountId=${account.accountId}`);
+      return;
+    }
+
+    // 청약, 선납 모두
+    router.push(`/subscription?subscriptionId=${account.accountId}`);
+  };
+
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <div className="min-w-0">
+        <p className="text-body-16-m text-brand-black">
+          {account.nickname || account.name}
+        </p>
+        <p className="mt-1 whitespace-pre-line text-body-16-m text-grey-6">
+          {account.accountNumber}
+        </p>
+      </div>
+
+      <Button size="S" variant="smallGray" onClick={handleClick}>
+        {getAccountActionLabel(account.accountType)}
+      </Button>
     </div>
   );
 }

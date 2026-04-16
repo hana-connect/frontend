@@ -7,6 +7,8 @@ import {
   serverSpringFetch,
 } from "@/common/lib/api/server-spring-fetch";
 import type { ApiResponse } from "@/common/lib/api/types";
+import { formatMoney } from "@/common/lib/utils";
+import TransferButton from "./TransferButton";
 
 type WalletData = {
   name: string;
@@ -51,7 +53,7 @@ async function WalletBalance({ role }: { role: "PARENT" | "KID" }) {
             <CircleQuestionMark size={18} className="text-[#333]" />
           </div>
           <span className="text-[32px] text-heading-24-b text-brand-black">
-            {walletData.walletMoney}원
+            {formatMoney(walletData.walletMoney)}
           </span>
         </div>
 
@@ -65,9 +67,7 @@ async function WalletBalance({ role }: { role: "PARENT" | "KID" }) {
       </div>
       {role === "PARENT" && (
         <section className="flex items-center gap-2">
-          <Button variant="smallGray" size="M" className="flex-1">
-            송금
-          </Button>
+          <TransferButton />
           <Button variant="smallGray" size="M" className="flex-1">
             용돈 지급
           </Button>
