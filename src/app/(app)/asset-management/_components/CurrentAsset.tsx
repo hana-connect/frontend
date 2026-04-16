@@ -1,5 +1,5 @@
+import { formatMoney } from "@/common/lib/utils";
 import { ASSET_COLORS } from "../_constants/assetCategories";
-import { formatCurrency } from "../_utils/formatters";
 
 type CurrentAssetProps = {
   assetData: {
@@ -13,7 +13,7 @@ type CurrentAssetProps = {
 
 export default function CurrentAsset({ assetData }: CurrentAssetProps) {
   const total = assetData?.totalAssets || 1;
-  const getWidth = (value?: number) => `${((value || 0) / total) * 100}%`;
+  const getWidth = (value?: number) => `${((value ?? 0) / total) * 100}%`;
 
   const assetList = [
     {
@@ -34,7 +34,7 @@ export default function CurrentAsset({ assetData }: CurrentAssetProps) {
     <section className="mt-2">
       <h2 className="text-lg font-bold mb-4 text-black">현재 자산</h2>
 
-      <div className="bg-white p-6 rounded-3xl border border-gray-50 shadow-sm">
+      <div className="bg-white p-6 rounded-3xl border border-grey-7 shadow-2xs">
         <div className="h-4 w-full flex rounded-full overflow-hidden mb-6 bg-gray-200">
           <div
             style={{
@@ -76,14 +76,14 @@ export default function CurrentAsset({ assetData }: CurrentAssetProps) {
                 {item.label}
               </span>
               <span className="font-medium text-black">
-                {formatCurrency(item.value || 0)}원
+                {formatMoney(item.value ?? 0)}
               </span>
             </div>
           ))}
 
           <div className="flex justify-between font-bold pt-3 border-t text-black">
             <span>총 자산</span>
-            <span>{formatCurrency(assetData?.totalAssets || 0)}원</span>
+            <span>{formatMoney(assetData?.totalAssets ?? 0)}</span>
           </div>
         </div>
       </div>

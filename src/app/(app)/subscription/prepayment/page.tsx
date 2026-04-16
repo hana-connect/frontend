@@ -1,28 +1,80 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { SubscriptionPaymentInfoResponse } from "@/app/api/subscriptions/type";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
+import { apiClient } from "@/common/lib/api/api-client";
+import type { ApiResponse } from "@/common/lib/api/types";
 
 export default function PrepaymentHome() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // TODO 경로 수정
+  const subscriptionId = searchParams.get("subscriptionId");
+
+  const [paymentInfo, setPaymentInfo] =
+    useState<SubscriptionPaymentInfoResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPaymentInfo = async () => {
+      if (!subscriptionId) {
+        setIsLoading(false);
+        return;
+      }
+
+      const subscriptionIdNumber = Number(subscriptionId);
+
+      if (
+        !Number.isInteger(subscriptionIdNumber) ||
+        subscriptionIdNumber <= 0
+      ) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await apiClient.get<
+          ApiResponse<SubscriptionPaymentInfoResponse>
+        >(`/api/subscriptions/${subscriptionIdNumber}/payments/info`);
+
+        setPaymentInfo(response.data);
+      } catch (error) {
+        console.error("청약 납입 정보 조회 실패:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPaymentInfo();
+  }, [subscriptionId]);
+
   const handlePensionDeposit = () => {
-    router.push("/pension");
+    router.push("/wallet");
   };
 
   const handleSubscriptionDeposit = () => {
-    router.push("/prepayment/deposit");
+    if (!subscriptionId) return;
+    router.push(
+      `/subscription/prepayment/deposit?subscriptionId=${subscriptionId}`,
+    );
   };
+
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-white">
+        로딩 중...
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-white px-5 pt-6">
-      {/* 서브 헤더 */}
       <Header type="sub" title="청약 납입하기" />
 
-      {/* 본문 */}
       <section className="mt-10 flex flex-col items-center text-center">
         <div className="w-full max-w-37.5">
           <Image
@@ -31,14 +83,15 @@ export default function PrepaymentHome() {
             width={150}
             height={150}
             priority
-            className="w-full h-auto"
+            className="h-auto w-full"
           />
         </div>
 
         <h1 className="mt-10 text-xl font-semibold leading-8 text-brand-black">
-          이번 달 아이 청약에
+          이번 달 {paymentInfo?.displayName ?? "아이"} 청약에
           <br />
-          n만원이 이미 입금되었어요.
+          {(paymentInfo?.alreadyPaidAmount ?? 0).toLocaleString()}원이 이미
+          입금되었어요.
         </h1>
 
         <p className="mt-4 text-xl font-semibold text-brand-black">
@@ -46,7 +99,6 @@ export default function PrepaymentHome() {
         </p>
       </section>
 
-      {/* 버튼 영역 */}
       <section className="mt-18 flex flex-col gap-3">
         <Button size="L" variant="active" onClick={handlePensionDeposit}>
           내 연금 계좌에 넣을래요
@@ -61,9 +113,8 @@ export default function PrepaymentHome() {
         </Button>
       </section>
 
-      {/* 설명 */}
       <section className="mt-8 -mx-5 bg-[#F6F7F8] px-4 py-4 text-left">
-        <p className="mt-4 mb-3.5 text-xl font-semibold leading-6 text-brand-black">
+        <p className="mb-3.5 mt-4 text-xl font-semibold leading-6 text-brand-black">
           납입회차는 국민주택 청약 시 순위 산정과 관련이 있습니다.
         </p>
 
