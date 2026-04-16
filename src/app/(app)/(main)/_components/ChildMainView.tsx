@@ -193,7 +193,8 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
                       />
                       <div className="flex flex-col ml-4">
                         <p className="text-grey-1 text-[16px] font-semibold">
-                          {parent.connectMemberPhoneName}
+                          {parent.connectMemberPhoneName ||
+                            parent.connectMemberName}
                         </p>
                         <p className="text-[14px] font-semibold text-grey-2">
                           정기용돈 미등록

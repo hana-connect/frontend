@@ -27,10 +27,12 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
   const [kidDetailMap, setKidDetailMap] = useState<Map<number, KidDetail>>(
     new Map(),
   );
+
   const kidDetailMapRef = useRef(kidDetailMap);
   kidDetailMapRef.current = kidDetailMap;
 
-  const [isLoading, setIsLoading] = useState(false);
+  const needsInitialFetch = kids.length > 0;
+  const [isLoading, setIsLoading] = useState(needsInitialFetch);
 
   // 화면에 실제로 보여줄 아이 ID
   const [displayKidId, setDisplayKidId] = useState<number | null>(
@@ -42,6 +44,9 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
   const displayDetail = displayKidId
     ? (kidDetailMap.get(displayKidId) ?? null)
     : null;
+
+  const selectedKidIdRef = useRef(selectedKidId);
+  selectedKidIdRef.current = selectedKidId;
 
   const fetchKidDetail = useCallback(
     async (kidId: number) => {
@@ -62,14 +67,20 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
           return next;
         });
 
-        // 데이터 도착 후에만 화면 전환
-        setDisplayKidId(kidId);
+        // API 응답이 왔을 때, 사용자가 아직 이 아이를 선택하고 있는지 확인
+        if (selectedKidIdRef.current === kidId) {
+          setDisplayKidId(kidId);
+        }
       } catch (e) {
         console.error("아이 상세 조회 실패:", e);
-        // 실패해도 일단 전환
-        setDisplayKidId(kidId);
+        // 실패 시에도 현재 선택된 아이라면 화면 전환
+        if (selectedKidIdRef.current === kidId) {
+          setDisplayKidId(kidId);
+        }
       } finally {
-        setIsLoading(false);
+        if (selectedKidIdRef.current === kidId) {
+          setIsLoading(false);
+        }
       }
     },
 
@@ -254,7 +265,11 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
                 <div className="flex text-title-20-sb gap-1 items-center">
                   <span className="text-grey-1">잔액 </span>
                   <span className="text-[#7746DD]">
-                    {(displayDetail?.walletMoney ?? 0).toLocaleString()}원
+                    {displayDetail
+                      ? `${displayDetail.walletMoney.toLocaleString()}원`
+                      : isLoading
+                        ? ""
+                        : "조회 실패"}
                   </span>
                   <ChevronRight
                     className="w-5 text-[#7746DD]"
@@ -286,9 +301,10 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
             </div>
 
             {/* 계좌 목록 */}
-            <ul className="flex flex-col gap-2 w-full mt-2">
-              {(displayDetail?.accounts?.length ?? 0) > 0
-                ? displayDetail?.accounts.map((acc) => (
+            <ul className="flex flex-col gap-2 w-full mt-2 min-h-19">
+              {displayDetail ? (
+                displayDetail.accounts?.length > 0 ? (
+                  displayDetail.accounts.map((acc) => (
                     <li key={acc.accountId}>
                       <ItemCard
                         title={acc.nickname || acc.name}
@@ -322,11 +338,18 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
                       />
                     </li>
                   ))
-                : displayDetail !== null && (
-                    <li className="flex flex-col items-center justify-center pb-8 pt-5 text-center text-grey-1 text-body-16-m">
-                      등록된 계좌가 없습니다.
-                    </li>
-                  )}
+                ) : (
+                  <li className="flex flex-col items-center justify-center pb-8 pt-5 text-center text-grey-1 text-body-16-m">
+                    등록된 계좌가 없습니다.
+                  </li>
+                )
+              ) : (
+                !isLoading && (
+                  <li className="flex flex-col items-center justify-center pb-8 pt-5 text-center text-grey-1 text-body-16-m">
+                    계좌 정보를 불러오지 못했어요.
+                  </li>
+                )
+              )}
             </ul>
           </section>
 
@@ -375,7 +398,7 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
                   아이를 위한 집이 <br />
                   어떻게 만들어지고 있을까요?
                 </p>
-                <Image src="svg/ic_house.svg" alt="" width={59} height={52} />
+                <Image src="/svg/ic_house.svg" alt="" width={59} height={52} />
               </div>
             </Link>
             <Link
