@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import RegisterStepHeader from "@/common/components/header/RegisterStepHeader";
 import PassbookLayout from "@/common/components/passbook-layout/PassbookLayout";
 import PassbookPaper from "@/common/components/passbook-layout/PassbookPaper";
@@ -17,14 +17,21 @@ export default function RelayHistory({
   targetAccountId,
   onBack,
 }: RelayHistoryProps) {
-  const [currentPage, setCurrentPage] = useState(0);
-  const [data, setData] = useState<RelayData | null>(null);
+  const [requestedPage, setRequestedPage] = useState(0);
+  const [data, setData] = useState<{ content: RelayData; page: number } | null>(
+    null,
+  );
+
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLastPage, setIsLastPage] = useState(false);
+
+  const latestRequestId = useRef(0);
 
   const fetchData = useCallback(
     async (page: number) => {
+      const requestId = ++latestRequestId.current;
       setIsFetching(true);
       setError(null);
 
@@ -43,27 +50,39 @@ export default function RelayHistory({
           return;
         }
 
+        if (requestId !== latestRequestId.current) return;
+
         if (!res.ok) {
           setError("데이터를 불러오지 못했습니다.");
           return;
         }
 
         const result = await res.json();
-        if (result.data) setData(result.data);
+        if (result.data) {
+          const history = result.data.history ?? [];
+
+          setIsLastPage(history.length < ITEMS_PER_PAGE);
+
+          setData({ content: result.data, page });
+        }
       } catch (e) {
-        console.error("릴레이 내역 조회 에러:", e);
-        setError("데이터를 불러오지 못했습니다.");
+        if (requestId === latestRequestId.current) {
+          console.error("릴레이 내역 조회 에러:", e);
+          setError("데이터를 불러오지 못했습니다.");
+        }
       } finally {
-        setIsFetching(false);
-        setIsInitialLoading(false);
+        if (requestId === latestRequestId.current) {
+          setIsFetching(false);
+          setIsInitialLoading(false);
+        }
       }
     },
     [targetAccountId],
   );
 
   useEffect(() => {
-    fetchData(currentPage);
-  }, [currentPage, fetchData]);
+    fetchData(requestedPage);
+  }, [requestedPage, fetchData]);
 
   if (isInitialLoading) {
     return (
@@ -89,16 +108,22 @@ export default function RelayHistory({
     );
   }
 
+  const { content, page: renderedPage } = data;
+
   return (
     <div className="min-h-screen bg-white">
       <RegisterStepHeader title={"지난 작성 내역"} onBack={onBack} />
       <PassbookLayout
-        title={data.productNickname}
-        subTitle={data.accountNumber}
-        onPrev={() => setCurrentPage((p) => Math.max(0, p - 1))}
-        onNext={() => setCurrentPage((p) => p + 1)}
-        isFirstPage={currentPage === 0}
-        isLastPage={data.history.length < ITEMS_PER_PAGE}
+        title={content.productNickname}
+        subTitle={content.accountNumber}
+        onPrev={() => {
+          if (!isFetching) setRequestedPage((p) => Math.max(0, p - 1));
+        }}
+        onNext={() => {
+          if (!isFetching && !isLastPage) setRequestedPage((p) => p + 1);
+        }}
+        isFirstPage={requestedPage === 0}
+        isLastPage={isLastPage}
       >
         <div className="w-full">
           <div className="flex justify-between border-y border-grey-5 py-1 text-black text-[16px] font-semibold text-center">
@@ -109,20 +134,22 @@ export default function RelayHistory({
           </div>
 
           <div
-            className={`transition-opacity duration-200 ${isFetching ? "opacity-60 pointer-events-none" : "opacity-100"}`}
+            className={`transition-opacity duration-200 ${
+              isFetching ? "opacity-60 pointer-events-none" : "opacity-100"
+            }`}
           >
             <PassbookPaper
-              currentCount={data.history.length}
+              currentCount={content.history.length}
               highlightRangeClass="left-[28%] w-[50%]"
             >
-              {data.history.length === 0 ? (
+              {content.history.length === 0 ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-start pt-20 z-50 pointer-events-none">
                   <p className="text-brand-black text-body-14-m px-2">
                     작성 내역이 없습니다.
                   </p>
                 </div>
               ) : (
-                data.history.map((item, index) => (
+                content.history.map((item, index) => (
                   <div key={item.letterId} className="relative z-10">
                     {index !== 0 && index % 6 === 0 && (
                       <div className="h-px w-full bg-grey-5 my-0 shadow-[0_1px_3px_rgba(0,0,0,0.1)]" />
@@ -130,7 +157,7 @@ export default function RelayHistory({
                     <div className="flex justify-between items-center py-2 text-[14px] font-medium text-[#2E2E36]">
                       <span className="w-6 text-center text-grey-6">
                         {String(
-                          currentPage * ITEMS_PER_PAGE + index + 1,
+                          renderedPage * ITEMS_PER_PAGE + index + 1,
                         ).padStart(2, "0")}
                       </span>
                       <span className="w-20 text-center">{item.date}</span>

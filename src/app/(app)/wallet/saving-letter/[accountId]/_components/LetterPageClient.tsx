@@ -21,70 +21,89 @@ const LetterPageClient = ({
   accountId: string;
   initialData: TerminatedDetailData;
 }) => {
-  const [data, setData] = useState(initialData);
+  const [requestedPage, setRequestedPage] = useState(0);
+  const [displayData, setDisplayData] = useState<{
+    content: TerminatedDetailData;
+    page: number;
+  }>({
+    content: initialData,
+    page: 0,
+  });
+
   const [activeSenderId, setActiveSenderId] = useState<number | "all">("all");
-  const [currentPage, setCurrentPage] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
   const latestRequestId = useRef(0);
+
+  const isLastPage = displayData.content.transactions.length < ITEMS_PER_PAGE;
 
   const handleTabChange = (val: string) => {
     const senderId = val === "all" ? "all" : Number(val);
     setActiveSenderId(senderId);
-    setCurrentPage(0);
+    setRequestedPage(0);
   };
 
-  const fetchData = useCallback(async () => {
-    const requestId = ++latestRequestId.current;
+  const fetchData = useCallback(
+    async (page: number) => {
+      const requestId = ++latestRequestId.current;
 
-    if (currentPage === 0 && activeSenderId === "all") {
-      setData(initialData);
-      return;
-    }
-
-    try {
-      const query = new URLSearchParams({ page: currentPage.toString() });
-      if (activeSenderId !== "all")
-        query.append("senderId", activeSenderId.toString());
-
-      const res = await fetch(
-        `/api/terminated-savings/${accountId}?${query.toString()}`,
-      );
-      if (res.status === 401) {
-        window.location.href = "/login";
+      if (page === 0 && activeSenderId === "all") {
+        setDisplayData({ content: initialData, page: 0 });
         return;
       }
-      if (!res.ok) return;
 
-      const result = await res.json();
+      setIsFetching(true);
+      try {
+        const query = new URLSearchParams({ page: page.toString() });
+        if (activeSenderId !== "all")
+          query.append("senderId", activeSenderId.toString());
 
-      if (requestId !== latestRequestId.current) return;
+        const res = await fetch(
+          `/api/terminated-savings/${accountId}?${query.toString()}`,
+        );
 
-      if (result.data) {
-        if (currentPage > 0 && result.data.transactions.length === 0) {
-          setCurrentPage((p) => Math.max(0, p - 1));
+        if (res.status === 401) {
+          window.location.href = "/login";
           return;
         }
-        setData(result.data);
+
+        if (!res.ok) return;
+        const result = await res.json();
+
+        if (requestId !== latestRequestId.current) return;
+
+        if (result.data) {
+          setDisplayData({ content: result.data, page });
+        }
+      } catch (e) {
+        console.error("Fetch 에러:", e);
+      } finally {
+        if (requestId === latestRequestId.current) {
+          setIsFetching(false);
+        }
       }
-    } catch (e) {
-      console.error("Fetch 에러:", e);
-    }
-  }, [accountId, currentPage, activeSenderId, initialData]);
+    },
+    [accountId, activeSenderId, initialData],
+  );
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchData(requestedPage);
+  }, [requestedPage, fetchData]);
 
   return (
     <div className="min-h-screen bg-white">
       <Header type="sub" title={"적금 편지"} />
 
       <PassbookLayout
-        title={data.productName}
-        subTitle={data.accountNumber}
-        onPrev={() => setCurrentPage((p) => Math.max(0, p - 1))}
-        onNext={() => setCurrentPage((p) => p + 1)}
-        isFirstPage={currentPage === 0}
-        isLastPage={data.transactions.length < ITEMS_PER_PAGE}
+        title={displayData.content.productName}
+        subTitle={displayData.content.accountNumber}
+        onPrev={() => {
+          if (!isFetching) setRequestedPage((p) => Math.max(0, p - 1));
+        }}
+        onNext={() => {
+          if (!isFetching && !isLastPage) setRequestedPage((p) => p + 1);
+        }}
+        isFirstPage={requestedPage === 0}
+        isLastPage={isLastPage}
         tabs={
           <LetterTabs
             activeSenderId={activeSenderId.toString()}
@@ -102,43 +121,47 @@ const LetterPageClient = ({
             <span className="w-18">잔액</span>
           </div>
 
-          <PassbookPaper
-            currentCount={data.transactions.length}
-            highlightRangeClass="left-[25%] w-[38%]"
+          <div
+            className={`transition-opacity duration-200 ${isFetching ? "opacity-60" : "opacity-100"}`}
           >
-            {data.transactions.length === 0 ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-start pt-20 z-50 pointer-events-none">
-                <p className="text-brand-black text-body-14-m px-2">
-                  남겨진 적금 편지가 없습니다.
-                </p>
-              </div>
-            ) : (
-              data.transactions.map((item, index) => (
-                <div key={item.transactionId} className="relative z-10">
-                  {index !== 0 && index % 6 === 0 && (
-                    <div className="h-px w-full bg-grey-5 my-0" />
-                  )}
-                  <div className="flex justify-between items-center py-2 text-[14px] font-medium text-brand-black">
-                    <span className="w-6 text-center text-grey-6">
-                      {String(
-                        currentPage * ITEMS_PER_PAGE + index + 1,
-                      ).padStart(2, "0")}
-                    </span>
-                    <span className="w-17 text-center">{item.date}</span>
-                    <div className="flex-1 px-1 text-left truncate">
-                      {item.message}
-                    </div>
-                    <span className="w-16 text-right">
-                      {item.amount.toLocaleString()}
-                    </span>
-                    <span className="w-18 text-right">
-                      {item.balance.toLocaleString()}
-                    </span>
-                  </div>
+            <PassbookPaper
+              currentCount={displayData.content.transactions.length}
+              highlightRangeClass="left-[25%] w-[38%]"
+            >
+              {displayData.content.transactions.length === 0 ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-start pt-20 z-50 pointer-events-none">
+                  <p className="text-brand-black text-body-14-m px-2">
+                    남겨진 적금 편지가 없습니다.
+                  </p>
                 </div>
-              ))
-            )}
-          </PassbookPaper>
+              ) : (
+                displayData.content.transactions.map((item, index) => (
+                  <div key={item.transactionId} className="relative z-10">
+                    {index !== 0 && index % 6 === 0 && (
+                      <div className="h-px w-full bg-grey-5 my-0" />
+                    )}
+                    <div className="flex justify-between items-center py-2 text-[14px] font-medium text-brand-black">
+                      <span className="w-6 text-center text-grey-6">
+                        {String(
+                          displayData.page * ITEMS_PER_PAGE + index + 1,
+                        ).padStart(2, "0")}
+                      </span>
+                      <span className="w-17 text-center">{item.date}</span>
+                      <div className="flex-1 px-1 text-left truncate">
+                        {item.message}
+                      </div>
+                      <span className="w-16 text-right">
+                        {item.amount.toLocaleString()}
+                      </span>
+                      <span className="w-18 text-right">
+                        {item.balance.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </PassbookPaper>
+          </div>
         </div>
       </PassbookLayout>
     </div>

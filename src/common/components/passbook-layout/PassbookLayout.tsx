@@ -48,7 +48,7 @@ const PassbookLayout = ({
         {children}
       </div>
       <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
-        <div className="max-w-93.75 mx-auto flex gap-3 px-4 pb-9 pointer-events-none">
+        <div className="max-w-93.75 mx-auto flex gap-3 px-4 pb-9 pointer-events-auto">
           <div className="flex-1">
             <Button
               size="M"
