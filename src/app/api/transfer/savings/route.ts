@@ -30,7 +30,14 @@ export async function POST(req: NextRequest) {
         method: "POST",
       },
     );
-  } catch {
+  } catch (error) {
+    // JSON 파싱 에러(클라이언트 잘못)인 경우 400 반환
+    if (error instanceof SyntaxError) {
+      return new Response("올바른 JSON 형식이 아닙니다.", { status: 400 });
+    }
+
+    // 진짜 서버 내부에서 터진 경우만 500 반환
+    console.error("BFF 서버 에러:", error);
     return new Response("요청 처리 중 오류가 발생했습니다.", { status: 500 });
   }
 }
