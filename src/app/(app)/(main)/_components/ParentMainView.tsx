@@ -297,7 +297,11 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
                             size={"S"}
                             variant={"smallPurple"}
                             onClick={() => {
-                              if (acc.accountType === "SUBSCRIPTION") {
+                              if (acc.accountType === "SAVINGS") {
+                                router.push(
+                                  `/saving?accountId=${acc.accountId}`,
+                                );
+                              } else if (acc.accountType === "SUBSCRIPTION") {
                                 router.push(
                                   `/subscription?subscriptionId=${acc.accountId}`,
                                 );
