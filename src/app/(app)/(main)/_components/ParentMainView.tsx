@@ -344,7 +344,7 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
               />
             </div>
             <Link
-              href="/house"
+              href={`/house?kidId=${displayKidId}`}
               className="w-full block"
               aria-label="청약 리포트 페이지로 이동"
             >
@@ -357,7 +357,7 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
               </div>
             </Link>
             <Link
-              href="/quiz"
+              href={`/quiz?kidId=${displayKidId}`}
               className="w-full block"
               aria-label="아이 퀴즈 페이지로 이동"
             >

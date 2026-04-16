@@ -12,7 +12,7 @@ export default function QuizStartPageClient() {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
-  const childIdParam = searchParams.get("childId");
+  const childIdParam = searchParams.get("kidId");
   const childId =
     childIdParam &&
     Number.isInteger(Number(childIdParam)) &&
