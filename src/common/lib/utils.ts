@@ -21,3 +21,27 @@ export const getTodayDateKST = () => {
 export function formatMoney(value: number) {
   return `${value.toLocaleString()}원`;
 }
+
+function hasJongseong(word: string) {
+  const trimmedWord = word.trim();
+
+  if (!trimmedWord) {
+    return false;
+  }
+
+  const lastChar = trimmedWord[trimmedWord.length - 1];
+  const code = lastChar.charCodeAt(0);
+
+  const HANGUL_BASE = 0xac00;
+  const HANGUL_LAST = 0xd7a3;
+
+  if (code < HANGUL_BASE || code > HANGUL_LAST) {
+    return false;
+  }
+
+  return (code - HANGUL_BASE) % 28 !== 0;
+}
+
+export function getSubjectParticle(word: string) {
+  return hasJongseong(word) ? "이" : "가";
+}
