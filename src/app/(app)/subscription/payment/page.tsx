@@ -47,7 +47,7 @@ export default function PaymentDeposit() {
     null,
   );
 
-  const isDisabled = !amount;
+  const isDisabled = !amount || !paymentInfo;
 
   useEffect(() => {
     const fetchPaymentInfo = async () => {
@@ -115,7 +115,7 @@ export default function PaymentDeposit() {
   };
 
   const handleSubmit = () => {
-    if (!amount || !subscriptionId) return;
+    if (!amount || !subscriptionId || !paymentInfo) return;
 
     const subscriptionIdNumber = Number(subscriptionId);
 
@@ -144,13 +144,21 @@ export default function PaymentDeposit() {
     );
   }
 
+  if (!paymentInfo) {
+    return (
+      <main className="flex h-dvh items-center justify-center bg-white">
+        청약 납입 정보를 불러올 수 없습니다.
+      </main>
+    );
+  }
+
   if (showAmountPad) {
     return (
       <>
         <TransferAmount
-          accountHolder={paymentInfo?.displayName ?? "청약 납입"}
-          accountNickname={paymentInfo?.accountNickname ?? "청약 계좌"}
-          balance={paymentInfo?.balance ?? 0}
+          accountHolder={paymentInfo.displayName}
+          accountNickname={paymentInfo.accountNickname}
+          balance={paymentInfo.balance}
           onNext={handleNextStep}
         />
 
@@ -172,7 +180,7 @@ export default function PaymentDeposit() {
 
               <AlertDialogDescription>
                 현재 설정된 계좌:{" "}
-                {paymentInfo?.rewardAccountName ?? "리워드 계좌 없음"}
+                {paymentInfo.rewardAccountName ?? "리워드 계좌 없음"}
               </AlertDialogDescription>
             </AlertDialogHeader>
 

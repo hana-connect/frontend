@@ -19,7 +19,7 @@ export default function PaymentResult() {
 
   const [result, setResult] =
     useState<SubscriptionPaymentExecuteResponse | null>(null);
-  const [_loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (
@@ -57,6 +57,10 @@ export default function PaymentResult() {
     router.push("/wallet");
   };
 
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+
   if (!result) {
     return <div>납입 결과를 불러올 수 없습니다.</div>;
   }
@@ -64,7 +68,7 @@ export default function PaymentResult() {
   return (
     <main className="flex h-dvh flex-col overflow-hidden bg-white">
       <div className="flex-1 overflow-y-auto">
-        <div className="flex w-full flex-col items-center px-6 pt-25 pb-10 text-center">
+        <div className="flex w-full flex-col items-center px-6 pb-10 pt-25 text-center">
           <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
 
           <h1 className="mt-6 text-xl font-medium text-brand-black">

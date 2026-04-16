@@ -26,7 +26,7 @@ export default function PrepaymentDeposit() {
   const [round, setRound] = useState<number | null>(null);
   const [showAmountPad, setShowAmountPad] = useState(false);
 
-  const isDisabled = !amount || !round;
+  const isDisabled = !amount || !round || !paymentInfo;
 
   useEffect(() => {
     const fetchPaymentInfo = async () => {
@@ -67,7 +67,7 @@ export default function PrepaymentDeposit() {
   };
 
   const handleSubmit = () => {
-    if (!amount || !round || !subscriptionId) return;
+    if (!amount || !round || !subscriptionId || !paymentInfo) return;
 
     sessionStorage.setItem(
       "prepayment",
@@ -85,6 +85,14 @@ export default function PrepaymentDeposit() {
     return (
       <main className="flex h-dvh items-center justify-center bg-white">
         로딩 중...
+      </main>
+    );
+  }
+
+  if (!paymentInfo) {
+    return (
+      <main className="flex h-dvh items-center justify-center bg-white">
+        납입 정보를 불러올 수 없습니다.
       </main>
     );
   }

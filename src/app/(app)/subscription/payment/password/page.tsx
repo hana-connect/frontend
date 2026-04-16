@@ -32,7 +32,9 @@ export default function PaymentPassword() {
         draft.subscriptionId <= 0 ||
         typeof draft.amount !== "number" ||
         Number.isNaN(draft.amount) ||
-        draft.amount <= 0
+        draft.amount <= 0 ||
+        (typeof draft.transferExcessToReward !== "boolean" &&
+          draft.transferExcessToReward !== null)
       ) {
         console.error("청약 납입 데이터가 올바르지 않습니다.");
         return false;
