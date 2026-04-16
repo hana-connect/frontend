@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
+import type { WalletData } from "../page";
 
 type ParentMainViewProps = {
-  userName: string;
-  balance: number;
+  wallet: WalletData;
 };
 
 type Account = {
@@ -25,7 +25,7 @@ type Child = {
   accounts: Account[];
 };
 
-const ParentMainView = ({ userName, balance }: ParentMainViewProps) => {
+const ParentMainView = ({ wallet }: ParentMainViewProps) => {
   const childrenData: Child[] = [
     {
       id: 1,
@@ -101,11 +101,11 @@ const ParentMainView = ({ userName, balance }: ParentMainViewProps) => {
           >
             <div className="bg-white rounded-[20px] p-5 flex flex-col gap-1 shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_-1px_rgba(0,0,0,0.1)] relative">
               <h2 className="text-[18px] font-semibold text-[#757783]">
-                {userName}님의 지갑
+                {wallet.name}님의 지갑
               </h2>
               <div className="flex items-center gap-2">
                 <span className="text-[33px] font-bold text-black leading-tight">
-                  {balance.toLocaleString()}원
+                  {wallet.walletMoney.toLocaleString()}원
                 </span>
               </div>
               <div className="text-body-16-m text-[#676D86] flex flex-row items-center gap-0.5 justify-end font-medium">

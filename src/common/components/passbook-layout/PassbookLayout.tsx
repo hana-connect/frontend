@@ -41,34 +41,36 @@ const PassbookLayout = ({
       {tabs && <div className="px-1">{tabs}</div>}
 
       <div
-        className={`bg-[#FAFAFA] px-1 ${
-          tabs ? "min-h-[459.5px]" : "min-h-119.75"
+        className={`bg-[#FAFAFA] px-1 mb-32 ${
+          tabs ? "min-h-[459.5px]" : "mt-5 min-h-119.75"
         }`}
       >
         {children}
       </div>
-      <div className="flex gap-3 mt-6 px-4 pb-9">
-        <div className="flex-1">
-          <Button
-            size="M"
-            variant={isFirstPage ? "disabled" : "lightPurple"}
-            onClick={onPrev}
-            className="w-full"
-            disabled={isFirstPage}
-          >
-            이전
-          </Button>
-        </div>
-        <div className="flex-1">
-          <Button
-            size="M"
-            variant={isLastPage ? "disabled" : "lightPurple"}
-            onClick={onNext}
-            className="w-full"
-            disabled={isLastPage}
-          >
-            다음
-          </Button>
+      <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
+        <div className="max-w-93.75 mx-auto flex gap-3 px-4 pb-9 pointer-events-auto">
+          <div className="flex-1">
+            <Button
+              size="M"
+              variant={isFirstPage ? "disabled" : "lightPurple"}
+              onClick={onPrev}
+              className="w-full"
+              disabled={isFirstPage}
+            >
+              이전
+            </Button>
+          </div>
+          <div className="flex-1">
+            <Button
+              size="M"
+              variant={isLastPage ? "disabled" : "lightPurple"}
+              onClick={onNext}
+              className="w-full"
+              disabled={isLastPage}
+            >
+              다음
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -31,12 +31,12 @@ function SavingMailboxList({ mailboxes }: SavingMailboxListProps) {
         {visibleMailboxes.map((mailbox) => {
           return (
             <Link
-              key={mailbox.id}
-              href={`/wallet/saving-letter`} // TODO: 추후 id로 연결
+              key={mailbox.accountId}
+              href={`/wallet/saving-letter/${mailbox.accountId}`}
               className="block"
             >
               <ItemCard
-                key={mailbox.id}
+                key={mailbox.accountId}
                 title={mailbox.name}
                 subTitle={mailbox.number}
                 className="h-18 rounded-[22px] px-5 py-4"
