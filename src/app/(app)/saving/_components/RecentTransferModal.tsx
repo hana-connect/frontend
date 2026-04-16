@@ -18,7 +18,7 @@ export default function RecentTransferModal({
 }: RecentTransferModalProps) {
   if (!isOpen) return null;
 
-  // 날짜 포맷 (YYYYMMDD → YYYY년 M월 D일)
+  // 날짜 포맷 (ISO Date → YYYY년 M월 D일)
   const formatDate = (value: string) => {
     if (!value) return "";
 
