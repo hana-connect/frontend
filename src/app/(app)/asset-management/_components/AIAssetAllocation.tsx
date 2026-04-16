@@ -91,14 +91,16 @@ export default function AIAssetAllocation({
                 {item.label}
               </span>
               <span className="font-medium text-black">
-                {formatCurrency(item.value || 0)}원
+                {formatCurrency(item.value ?? 0)}원
               </span>
             </div>
           ))}
 
           <div className="flex justify-between font-bold pt-3 border-t text-black">
             <span>총 자산</span>
-            <span>{formatCurrency(assetData?.totalAssets || 0)}원</span>
+            <span>
+              <span>{formatCurrency(assetData?.totalAssets ?? 0)}원</span>
+            </span>
           </div>
         </div>
       </div>
