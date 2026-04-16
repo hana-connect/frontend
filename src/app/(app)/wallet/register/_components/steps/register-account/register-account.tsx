@@ -3,7 +3,7 @@
 import Button from "@/common/components/button/Button";
 import RegisterStepHeader from "@/common/components/header/RegisterStepHeader";
 import AccountNumberInput from "@/common/components/input/AccountNumberInput";
-import { verifyAccount } from "@/common/lib/api/accounts";
+import { verifyAccount } from "@/common/lib/api/accounts/api-client";
 import { useAlert } from "@/common/providers/alertProvider";
 
 type RegisterAccountProps = {

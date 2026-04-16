@@ -1,7 +1,7 @@
 "use client";
 
 import Password from "@/common/components/keypad/Password";
-import { linkAccount } from "@/common/lib/api/accounts";
+import { linkAccount } from "@/common/lib/api/accounts/api-client";
 
 type AccountPasswordProps = {
   accountNumber: string;

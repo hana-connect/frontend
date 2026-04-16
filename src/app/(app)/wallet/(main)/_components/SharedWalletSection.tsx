@@ -1,6 +1,12 @@
 import { CircleQuestionMark } from "lucide-react";
 import Image from "next/image";
 import Button from "@/common/components/button/Button";
+import { serverSpringFetch } from "@/common/lib/api/server-spring-fetch";
+import type { ApiResponse } from "@/common/lib/api/types";
+
+type ParentResponseItem = {
+  connectMemberName: string;
+};
 
 type SharedWallet = {
   id: number;
@@ -9,46 +15,63 @@ type SharedWallet = {
 };
 
 async function getSharedWallets(): Promise<SharedWallet[]> {
-  return [
+  const result = await serverSpringFetch<ApiResponse<ParentResponseItem[]>>(
+    "/api/parents",
     {
-      id: 1,
-      name: "김엄마",
-      statusText: "잔액과 내역 공유 중",
+      method: "GET",
+      next: { revalidate: 0 },
     },
-    {
-      id: 2,
-      name: "김엄마",
-      statusText: "잔액과 내역 공유 중",
-    },
-    {
-      id: 3,
-      name: "김엄마",
-      statusText: "잔액과 내역 공유 중",
-    },
-  ];
+  );
+
+  if (!result.data) return [];
+
+  return result.data.map((item, index) => ({
+    id: index, // id 필요하니까 index로 대체
+    name: item.connectMemberName,
+    statusText: "잔액과 내역 공유 중",
+  }));
 }
 
 async function SharedWalletSection() {
-  const wallets = await getSharedWallets();
+  try {
+    const wallets = await getSharedWallets();
 
-  if (wallets.length === 0) {
-    return null;
+    if (wallets.length === 0) {
+      return null;
+    }
+
+    return (
+      <section className="pb-8">
+        <div className="flex items-center gap-3">
+          <h2 className="text-heading-24-b">내 지갑 같이보기</h2>
+          <CircleQuestionMark size={20} className="mt-1 text-grey-1" />
+        </div>
+
+        <div className="mt-6 space-y-5">
+          {wallets.map((wallet) => (
+            <SharedWalletRow key={wallet.id} wallet={wallet} />
+          ))}
+        </div>
+      </section>
+    );
+  } catch (error) {
+    console.error("공유 지갑 조회 실패", error);
+
+    return (
+      <section className="pb-8">
+        <div className="flex items-center gap-3">
+          <h2 className="text-heading-24-b">내 지갑 같이보기</h2>
+          <CircleQuestionMark size={20} className="mt-1 text-grey-1" />
+        </div>
+
+        <div className="mt-6 rounded-2xl bg-grey-6 px-4 py-5">
+          <p className="text-body-14-m text-grey-1">
+            공유 지갑 정보를 불러오지 못했어요.
+          </p>
+        </div>
+      </section>
+    );
   }
-
-  return (
-    <section className="pb-8">
-      <div className="flex items-center gap-3">
-        <h2 className="text-heading-24-b">내 지갑 같이보기</h2>
-        <CircleQuestionMark size={20} className="mt-1 text-grey-1" />
-      </div>
-
-      <div className="mt-6 space-y-5">
-        {wallets.map((wallet) => (
-          <SharedWalletRow key={wallet.id} wallet={wallet} />
-        ))}
-      </div>
-    </section>
-  );
 }
 
 type SharedWalletRowProps = {
@@ -69,7 +92,7 @@ function SharedWalletRow({ wallet }: SharedWalletRowProps) {
         </div>
 
         <div className="min-w-0">
-          <p className="text-body-16-m text-black">{wallet.name}</p>
+          <p className="text-body-16-m text-brand-black">{wallet.name}</p>
           <p className="mt-2 text-body-16-m text-brand-purple-1">
             {wallet.statusText}
           </p>

@@ -1,25 +1,30 @@
-import { type NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { bffFetch, toNextResponse } from "@/common/lib/api/bff-fetch";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const targetAccountId = searchParams.get("targetAccountId");
-  const page = searchParams.get("page") || "0";
 
-  if (!targetAccountId) {
-    return NextResponse.json(
-      { message: "targetAccountId는 필수입니다." },
+  const targetAccountId = searchParams.get("targetAccountId");
+  const page = searchParams.get("page");
+
+  if (!targetAccountId || !page) {
+    return new Response(
+      JSON.stringify({ message: "필수 파라미터가 없습니다." }),
       { status: 400 },
     );
   }
 
-  const queryParams = new URLSearchParams({
+  const query = new URLSearchParams({
     targetAccountId,
     page,
   });
 
-  const endpoint = `/api/transfer/savings/relay?${queryParams.toString()}`;
+  const springRes = await bffFetch(
+    `/api/transfer/savings/relay?${query.toString()}`,
+    {
+      method: "GET",
+    },
+  );
 
-  const springRes = await bffFetch(endpoint, { method: "GET" });
   return toNextResponse(springRes);
 }

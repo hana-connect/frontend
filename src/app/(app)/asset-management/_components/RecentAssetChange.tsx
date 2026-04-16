@@ -39,7 +39,7 @@ export default function RecentAssetChange({
         </p>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+      <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-2xs">
         <div className="flex items-end justify-between h-32 px-2 mb-2">
           {history.map((value, index) => {
             const isCurrent = index === history.length - 1;
@@ -61,7 +61,7 @@ export default function RecentAssetChange({
                     delay: index * 0.1,
                     ease: [0.34, 1.56, 0.64, 1],
                   }}
-                  className={`w-8 rounded-t-lg ${isCurrent ? "bg-violet-400 shadow-sm" : "bg-gray-200"}`}
+                  className={`w-8 rounded-t-lg ${isCurrent ? "bg-violet-400 shadow-2xs" : "bg-gray-200"}`}
                 />
                 <span
                   className={`text-xs ${isCurrent ? "font-bold text-black" : "text-gray-500"}`}

@@ -1,21 +1,37 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { getRecentRelayMessages } from "@/common/lib/api/savings/api-client";
+import { formatDate } from "@/common/lib/utils";
+import type { RelayHistoryItem } from "../_types";
+
 type RelayMessageProps = {
+  targetAccountId: number;
   message: string;
   onMessageChange: (val: string) => void;
   onShowHistory: () => void;
 };
 
 export default function RelayMessage({
+  targetAccountId,
   message,
   onMessageChange,
   onShowHistory,
 }: RelayMessageProps) {
-  const recentMessages = [
-    { id: 1, date: "2026.04.10", content: "우리 예쁜 손주" },
-    { id: 2, date: "2026.04.10", content: "생일축하해~" },
-    { id: 3, date: "2026.04.10", content: "파이팅!" },
-  ];
+  const [recentMessages, setRecentMessages] = useState<RelayHistoryItem[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getRecentRelayMessages(targetAccountId);
+        setRecentMessages(data.history);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchData();
+  }, [targetAccountId]);
 
   return (
     <section className="mt-10 px-6">
@@ -44,12 +60,15 @@ export default function RelayMessage({
         </h3>
         <div className="bg-[#F9F9F9] rounded-[20px] p-5 space-y-3">
           {recentMessages.map((item) => (
-            <div key={item.id} className="flex justify-between items-center">
+            <div
+              key={item.letterId}
+              className="flex justify-between items-center"
+            >
               <span className="text-neutral-500 text-base font-normal leading-7">
-                {item.date}
+                {formatDate(item.date)}
               </span>
               <span className="text-neutral-900 text-base font-normal leading-7">
-                {item.content}
+                {item.message}
               </span>
             </div>
           ))}
