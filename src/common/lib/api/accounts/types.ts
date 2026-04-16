@@ -7,6 +7,7 @@ export type VerifyAccountRequest = {
 
 export type VerifyAccountData = {
   accountNumber: string;
+  accountType: AccountType;
 };
 
 export type LinkAccountRequest = {
@@ -17,6 +18,18 @@ export type LinkAccountRequest = {
 export type LinkAccountData = {
   accountNumber: string;
   linkedAt: string;
+};
+
+export type AddKidAccountRequest = {
+  nickname: string;
+  accountNumber: string;
+};
+
+export type AddKidAccountData = {
+  kidName: string;
+  accountNumber: string;
+  accountType: AccountType;
+  requestDate: string;
 };
 
 export type AccountItem = {

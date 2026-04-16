@@ -1,3 +1,4 @@
+import Header from "@/common/components/header/Header";
 import {
   getAccounts,
   getRewardAccount,
@@ -11,9 +12,12 @@ export default async function Page() {
   ]);
 
   return (
-    <RewardAccountPageClient
-      accounts={accounts}
-      rewardAccount={rewardAccount}
-    />
+    <>
+      <Header type="sub" title="내 지갑" rightActionText="거래내역" />
+      <RewardAccountPageClient
+        accounts={accounts}
+        rewardAccount={rewardAccount}
+      />
+    </>
   );
 }

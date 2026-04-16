@@ -124,7 +124,7 @@ async function getMyKids(): Promise<KidInfo[]> {
         });
 
         return {
-          id: detail.kidId,
+          id: kid.connectMemberId,
           name: detail.kidName,
           imageSrc: "/images/kid-avatar.png",
           monthlyAllowance: 0,

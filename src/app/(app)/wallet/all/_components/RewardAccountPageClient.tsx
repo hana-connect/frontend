@@ -117,7 +117,7 @@ function RewardAccountPageClient({
   };
 
   return (
-    <main className="min-h-screen bg-white px-6 pb-9 pt-4">
+    <main className="min-h-screen bg-white px-6 pb-9">
       <section className="mt-8">
         <h2 className="text-heading-24-b text-black">내 계좌</h2>
 
