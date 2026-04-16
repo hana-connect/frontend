@@ -41,7 +41,7 @@ function AccountList({
     <section className="pb-8">
       <TopRegisterSection role={userRole} mainAccountInfo={mainAccountInfo} />
 
-      <div className="mt-12">
+      <div className="mt-12 text-brand-black">
         <h2 className="text-heading-24-b">내 계좌 모아보기</h2>
 
         {!hasAccounts ? (
@@ -59,7 +59,7 @@ function AccountList({
                     subTitle={account.accountNumber}
                     isPurple={false}
                     rightContent={
-                      <span className="text-body-16-m font-bold">
+                      <span className="text-body-16-m font-bold text-brand-black">
                         {formatMoney(account.balance)}
                       </span>
                     }

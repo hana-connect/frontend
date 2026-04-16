@@ -21,3 +21,24 @@ export type SavingMailbox = {
   name: string;
   number: string;
 };
+
+export type KidLinkedAccount = {
+  accountId: number;
+  accountNumber: string;
+  accountType: string;
+  balance: number;
+  linkedAccountId: number;
+  name: string;
+  nickname: string | null;
+};
+
+export type KidInfo = {
+  id: number;
+  name: string;
+  imageSrc: string;
+  monthlyAllowance: number;
+  walletBalanceText: string;
+  regularAllowanceText: string;
+  allowancePlanText: string;
+  accounts: KidLinkedAccount[];
+};
