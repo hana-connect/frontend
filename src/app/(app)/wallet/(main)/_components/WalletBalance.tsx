@@ -8,6 +8,7 @@ import {
 } from "@/common/lib/api/server-spring-fetch";
 import type { ApiResponse } from "@/common/lib/api/types";
 import { formatMoney } from "@/common/lib/utils";
+import type { UserRole } from "../_types";
 import TransferButton from "./TransferButton";
 
 type WalletData = {
@@ -15,7 +16,7 @@ type WalletData = {
   walletMoney: number;
 };
 
-async function WalletBalance({ role }: { role: "PARENT" | "KID" }) {
+async function WalletBalance({ role }: { role: UserRole }) {
   const getWalletData = async () => {
     try {
       const result = await serverSpringFetch<ApiResponse<WalletData>>(
