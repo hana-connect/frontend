@@ -1,22 +1,19 @@
 import { ASSET_COLORS } from "../_constants/assetCategories";
 import { formatCurrency } from "../_utils/formatters";
+import type { AssetAIRecommendation } from "../AssetManagementClientPage";
 
 type AIAssetAllocationProps = {
-  assetData: {
-    recommendedDepositSavings?: number;
-    recommendedDepositWithdrawal?: number;
-    recommendedInvestment?: number;
-    recommendedPension?: number;
-    totalAssets?: number;
-    aiComment?: string;
-  } | null;
+  assetData: AssetAIRecommendation | null;
 };
 
 export default function AIAssetAllocation({
   assetData,
 }: AIAssetAllocationProps) {
-  const total = assetData?.totalAssets || 1;
-  const getWidth = (value?: number) => `${((value || 0) / total) * 100}%`;
+  const total = assetData?.totalAssets || 0;
+  const getWidth = (value?: number) => {
+    if (total === 0) return "0%";
+    return `${((value || 0) / total) * 100}%`;
+  };
 
   const aiDescription = assetData?.aiComment
     ? `${assetData.aiComment.split(".")[0]}.`

@@ -1,10 +1,19 @@
-// src/app/api/assets/summary/route.ts
-import type { NextRequest } from "next/server";
-import { proxyJsonToSpring } from "@/common/lib/api/bff-proxy";
+import { NextResponse } from "next/server";
+import type { AssetSummary } from "@/app/(app)/asset-management/AssetManagementClientPage";
+import { serverSpringFetch } from "@/common/lib/api/server-spring-fetch";
 
-export async function GET(req: NextRequest) {
-  return await proxyJsonToSpring(req, {
-    endpoint: "/api/assets/summary",
-    method: "GET" as any,
-  });
+export async function GET() {
+  try {
+    const res = await serverSpringFetch<AssetSummary>("/api/assets/summary", {
+      method: "GET",
+      cache: "no-store",
+    });
+    return NextResponse.json(res);
+  } catch (error) {
+    console.error("Summary Fetch Error:", error);
+    return NextResponse.json(
+      { message: "자산 정보를 가져오지 못했습니다." },
+      { status: 500 },
+    );
+  }
 }
