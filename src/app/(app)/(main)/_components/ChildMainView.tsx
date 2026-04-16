@@ -28,7 +28,7 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
         ) : (
           <Image
             src="/svg/main/ic_main_kids_sub_banner.svg"
-            alt="아이 추가 홍보 배너"
+            alt="가족 추가 홍보 배너"
             width={400}
             height={200}
             className="w-full h-auto"
@@ -189,6 +189,8 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
                 const profileImage = isOdd
                   ? "/svg/ic_mom1.svg"
                   : "/svg/ic_mom2.svg";
+                const displayName =
+                  parent.connectMemberPhoneName || parent.connectMemberName;
 
                 return (
                   <li
@@ -198,14 +200,13 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
                     <div className="flex items-center">
                       <Image
                         src={profileImage}
-                        alt={`${parent.connectMemberPhoneName} 프로필`}
+                        alt={`${displayName} 프로필`}
                         width={50}
                         height={50}
                       />
                       <div className="flex flex-col ml-4">
                         <p className="text-grey-1 text-[16px] font-semibold">
-                          {parent.connectMemberPhoneName ||
-                            parent.connectMemberName}
+                          {displayName}
                         </p>
                         <p className="text-[14px] font-semibold text-grey-2">
                           정기용돈 미등록

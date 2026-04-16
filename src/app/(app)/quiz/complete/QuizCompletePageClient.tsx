@@ -74,7 +74,7 @@ export default function QuizCompletePageClient() {
                   sessionStorage.removeItem("quizToday");
                   sessionStorage.removeItem("quizCurrentQuestion");
                   sessionStorage.removeItem("quizAnswerResult");
-                  router.push(childId ? `/quiz?childId=${childId}` : "/quiz");
+                  router.push(childId ? `/quiz?childId=${childId}` : "/");
                 }}
                 className="h-14 rounded-[20px] text-[20px] font-semibold leading-6"
               >

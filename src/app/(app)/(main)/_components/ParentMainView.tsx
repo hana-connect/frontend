@@ -109,7 +109,7 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
       ) : (
         <Image
           src="/svg/main/ic_main_parents_sub_banner.svg"
-          alt="아이를 추가하고 생일을 준비해봐요"
+          alt="아이 추가 홍보 배너"
           width={400}
           height={200}
           className="w-full h-auto"
