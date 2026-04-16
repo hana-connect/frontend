@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
 import { RadioGroup } from "@/common/components/radio-group/RadioGroup";
@@ -53,12 +53,15 @@ function RewardAccountPageClient({
     return accounts.filter((account) => account.accountType === "PENSION");
   }, [accounts]);
 
-  const [initialRewardId, setInitialRewardId] = useState(
-    rewardAccount ? String(rewardAccount.accountId) : "",
-  );
-  const [selectedRewardId, setSelectedRewardId] = useState(
-    rewardAccount ? String(rewardAccount.accountId) : "",
-  );
+  const rewardIdFromProp = rewardAccount ? String(rewardAccount.accountId) : "";
+  const [initialRewardId, setInitialRewardId] = useState(rewardIdFromProp);
+  const [selectedRewardId, setSelectedRewardId] = useState(rewardIdFromProp);
+
+  useEffect(() => {
+    setInitialRewardId(rewardIdFromProp);
+    setSelectedRewardId(rewardIdFromProp);
+  }, [rewardIdFromProp]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedRewardAccount = useMemo(() => {
