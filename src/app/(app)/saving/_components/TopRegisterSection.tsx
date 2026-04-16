@@ -52,14 +52,16 @@ function TopRegisterSection({
           <div className="min-w-0">
             {isChild ? (
               <>
-                <p className="text-body-16-m text-black">아이부자카드</p>
+                <p className="text-body-16-m text-brand-black">아이부자카드</p>
                 <p className="mt-1 text-body-16-m text-grey-6">
                   아직 카드가 없어요.
                 </p>
               </>
             ) : mainAccountInfo ? (
               <>
-                <p className="text-body-16-m text-black">충전계좌 하나은행</p>
+                <p className="text-body-16-m text-brand-black">
+                  충전계좌 하나은행
+                </p>
                 <p className="mt-1 text-body-16-m text-grey-6">
                   {mainAccountInfo.accountNumber}
                 </p>

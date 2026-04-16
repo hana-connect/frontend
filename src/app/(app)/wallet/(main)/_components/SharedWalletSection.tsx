@@ -77,7 +77,7 @@ function SharedWalletRow({ wallet }: SharedWalletRowProps) {
         </div>
 
         <div className="min-w-0">
-          <p className="text-body-16-m text-black">{wallet.name}</p>
+          <p className="text-body-16-m text-brand-black">{wallet.name}</p>
           <p className="mt-2 text-body-16-m text-brand-purple-1">
             {wallet.statusText}
           </p>
