@@ -20,6 +20,18 @@ export type LinkAccountData = {
   linkedAt: string;
 };
 
+export type AddKidAccountRequest = {
+  nickname: string;
+  accountNumber: string;
+};
+
+export type AddKidAccountData = {
+  kidName: string;
+  accountNumber: string;
+  accountType: AccountType;
+  requestDate: string;
+};
+
 export type AccountItem = {
   accountId: number;
   name: string;
