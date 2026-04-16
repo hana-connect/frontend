@@ -8,6 +8,7 @@ import { RadioGroup } from "@/common/components/radio-group/RadioGroup";
 import { apiClient } from "@/common/lib/api/api-client";
 import type { ApiResponse } from "@/common/lib/api/types";
 import { formatMoney } from "@/common/lib/utils";
+import { useAlert } from "@/common/providers/alertProvider";
 import type { AccountType } from "../../(main)/_types";
 
 type AccountItem = {
@@ -41,6 +42,7 @@ function RewardAccountPageClient({
   rewardAccount,
 }: RewardAccountPageClientProps) {
   const router = useRouter();
+  const { alert } = useAlert();
 
   const depositAccounts = useMemo(() => {
     return accounts.filter((account) => account.accountType === "DEPOSIT");
@@ -84,7 +86,10 @@ function RewardAccountPageClient({
     }
 
     if (!selectedRewardAccount.accountId) {
-      alert("계좌 정보를 다시 확인해 주세요.");
+      alert({
+        title: "오류",
+        description: "계좌 정보를 다시 확인해 주세요.",
+      });
       return;
     }
 
@@ -97,12 +102,20 @@ function RewardAccountPageClient({
 
       setInitialRewardId(selectedRewardId);
 
-      alert("리워드 계좌가 변경되었습니다.");
+      alert({
+        title: "완료",
+        description: "리워드 계좌가 변경되었습니다.",
+      });
 
       router.refresh();
     } catch (error) {
       const err = error as Error & { status?: number; data?: unknown };
-      alert(err.message ?? "리워드 계좌 변경에 실패했습니다.");
+
+      alert({
+        title: "실패",
+        description: err.message ?? "리워드 계좌 변경에 실패했습니다.",
+      });
+
       console.error("리워드 계좌 변경 실패:", err);
     } finally {
       setIsSubmitting(false);
