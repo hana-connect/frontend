@@ -60,7 +60,7 @@ export default function AllowanceSliderSection({
         아이 용돈 비율 설정하기
       </h2>
 
-      <div className="flex flex-col items-center rounded-3xl border border-grey-7 shadow-2xs bg-white p-8">
+      <div className="flex flex-col items-center rounded-3xl border border-grey-7 shadow-2xs bg-white p-6">
         <div className="mb-10 text-center text-body-16-m-2 text-gray-700">
           {SLIDER_MESSAGES.DESCRIPTION(lifeExpense, recommendRatio)}
         </div>
@@ -84,7 +84,7 @@ export default function AllowanceSliderSection({
             />
           </div>
 
-          <div className="flex flex-1 flex-col items-center px-4">
+          <div className="flex flex-1 flex-col items-center">
             <div className="relative flex w-full items-center h-3">
               <div className="absolute inset-x-0 h-3 rounded-full bg-[#E7E3F0]" />
 
@@ -96,7 +96,7 @@ export default function AllowanceSliderSection({
               />
 
               <div
-                className="absolute pointer-events-none rounded-full bg-white border-3 border-[#E1D3F3] z-10"
+                className="absolute pointer-events-none rounded-full bg-white border-[6px] border-[#E1D3F3] z-10"
                 style={{
                   left: `${ratio}%`,
                   transform: "translateX(-50%)",
@@ -115,7 +115,7 @@ export default function AllowanceSliderSection({
                 value={ratio}
                 onChange={handleRangeChange}
                 aria-label="아이 용돈 비율 슬라이더"
-                className="absolute inset-0 w-full cursor-pointer opacity-0 touch-none z-10"
+                className="absolute inset-0 w-full cursor-pointer opacity-0 z-10"
               />
             </div>
             <span className="mt-4 text-lg font-light text-black">:</span>
