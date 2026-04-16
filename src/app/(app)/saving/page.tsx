@@ -36,6 +36,11 @@ export default function SavingPage() {
   const accountId = searchParams.get("accountId");
   const accountIdNumber = Number(accountId);
 
+  const isValidAccountId =
+    accountId !== null &&
+    Number.isInteger(accountIdNumber) &&
+    accountIdNumber > 0;
+
   const [step, setStep] = useState<TransferStep>("input");
   const [amount, setAmount] = useState(0);
   const [message, setMessage] = useState("");
@@ -52,11 +57,9 @@ export default function SavingPage() {
   const isTransferReady = amount > 0 && message.trim().length > 0;
 
   useEffect(() => {
-    if (
-      !accountId ||
-      !Number.isInteger(accountIdNumber) ||
-      accountIdNumber <= 0
-    ) {
+    if (!isValidAccountId) {
+      alert("유효하지 않은 접근입니다.");
+      router.back();
       return;
     }
 
@@ -79,11 +82,9 @@ export default function SavingPage() {
     };
 
     fetchInitialData();
-  }, [accountId, accountIdNumber]);
+  }, [isValidAccountId, accountIdNumber, router]);
 
   const handleShowRecentTransfer = async () => {
-    if (!accountIdNumber) return;
-
     try {
       const result = await apiClient.get<ApiResponse<RecentTransfersResponse>>(
         `/api/transfer/recent?targetAccountId=${accountIdNumber}`,
@@ -115,15 +116,6 @@ export default function SavingPage() {
   };
 
   const handleSavingTransfer = async (password: string) => {
-    if (
-      !accountId ||
-      !Number.isInteger(accountIdNumber) ||
-      accountIdNumber <= 0
-    ) {
-      console.error("유효한 계좌 정보가 없습니다.");
-      return false;
-    }
-
     try {
       const payload: SavingTransferRequest = {
         targetAccountId: accountIdNumber,
