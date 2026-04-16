@@ -1,21 +1,22 @@
 "use client";
 
 import { useUserRole } from "@/common/providers/user-role-provider";
+import type { ParentData, WalletData } from "../page";
 import ChildMainView from "./ChildMainView";
 import ParentMainView from "./ParentMainView";
 
 type MainRoleViewProps = {
-  userName: string;
-  balance: number;
+  wallet: WalletData;
+  parents: ParentData[];
 };
 
-const MainRoleView = ({ userName, balance }: MainRoleViewProps) => {
+const MainRoleView = ({ wallet, parents }: MainRoleViewProps) => {
   const userRole = useUserRole();
 
   return userRole === "KID" ? (
-    <ChildMainView userName={userName} balance={balance} />
+    <ChildMainView wallet={wallet} parents={parents} />
   ) : (
-    <ParentMainView userName={userName} balance={balance} />
+    <ParentMainView wallet={wallet} />
   );
 };
 

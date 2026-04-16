@@ -9,10 +9,29 @@ import BottomMenu from "./_components/BottomMenu";
 import MainRoleView from "./_components/MainRoleView";
 import ScrollTopButton from "./_components/ScrollTopButton";
 
-type WalletData = {
+export type WalletData = {
   name: string;
   walletMoney: number;
 };
+
+export type ParentData = {
+  connectMemberId: number;
+  connectMemberName: string;
+  connectMemberPhoneName: string;
+  connectMemberRole: string;
+};
+
+function handleApiError(error: unknown, context: string): never {
+  if (error instanceof SpringApiError) {
+    if (error.status === 401) {
+      redirect("/login");
+    }
+    if (error.status === 403) {
+      console.error(`${context} 접근 권한 없음:`, error.message);
+    }
+  }
+  throw error;
+}
 
 export default async function Page() {
   const getWalletData = async () => {
@@ -29,29 +48,36 @@ export default async function Page() {
 
       return result.data;
     } catch (error) {
-      if (error instanceof SpringApiError) {
-        if (error.status === 401) {
-          redirect("/login");
-        }
-        if (error.status === 403) {
-          console.error("지갑 접근 권한 없음:", error.message);
-        }
-      }
-      throw error;
+      handleApiError(error, "지갑");
     }
   };
 
-  const walletData = await getWalletData();
+  const getParents = async () => {
+    try {
+      const result = await serverSpringFetch<ApiResponse<ParentData[]>>(
+        "/api/parents",
+        {
+          method: "GET",
+          next: { revalidate: 0 },
+        },
+      );
+      return result.data || [];
+    } catch (error) {
+      handleApiError(error, "부모 조회");
+    }
+  };
+
+  const [walletData, parents] = await Promise.all([
+    getWalletData(),
+    getParents(),
+  ]);
 
   return (
     <div className="relative min-h-screen bg-[#f5f5f5]">
       <Header type="main" />
 
       <div className="pt-15">
-        <MainRoleView
-          userName={walletData.name}
-          balance={walletData.walletMoney}
-        />
+        <MainRoleView wallet={walletData} parents={parents} />
       </div>
 
       <ScrollTopButton />
