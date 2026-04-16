@@ -40,7 +40,10 @@ export default function RecentTransferModal({
           {data ? (
             <p className="text-neutral-500 text-base font-medium leading-5 mt-4">
               {formatDate(data.transactionDate)}에 <br />
-              {data.amount.toLocaleString()}원을 송금하셨어요.
+              <span className="font-bold text-black">
+                {data.amount.toLocaleString()}원
+              </span>
+              을 송금하셨어요.
             </p>
           ) : (
             <p className="text-neutral-500 text-base font-medium leading-5 mt-4">
