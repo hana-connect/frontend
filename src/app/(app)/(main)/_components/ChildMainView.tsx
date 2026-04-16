@@ -16,14 +16,25 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
 
       {/* 상단 메인 배너 */}
       <section aria-label="메인 이벤트 배너">
-        <Image
-          src="/svg/main/ic_main_kids_banner.svg"
-          alt="아이부자 메인 배너"
-          width={400}
-          height={200}
-          priority
-          className="w-full h-auto"
-        />
+        {parents.length > 0 ? (
+          <Image
+            src="/svg/main/ic_main_kids_banner.svg"
+            alt="아이부자 메인 배너"
+            width={400}
+            height={200}
+            priority
+            className="w-full h-auto"
+          />
+        ) : (
+          <Image
+            src="/svg/main/ic_main_kids_sub_banner.svg"
+            alt="아이 추가 홍보 배너"
+            width={400}
+            height={200}
+            className="w-full h-auto"
+            priority
+          />
+        )}
       </section>
 
       <div className="flex flex-col gap-4 p-4">

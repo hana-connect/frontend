@@ -97,14 +97,25 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
     <main className="pb-10">
       <h1 className="sr-only">부모 홈화면</h1>
 
-      <Image
-        src="/svg/main/ic_main_parents_banner.svg"
-        alt="가족 생일 안내"
-        width={400}
-        height={200}
-        className="w-full h-auto"
-        priority
-      />
+      {kids.length > 0 ? (
+        <Image
+          src="/svg/main/ic_main_parents_banner.svg"
+          alt="가족 생일 안내"
+          width={400}
+          height={200}
+          className="w-full h-auto"
+          priority
+        />
+      ) : (
+        <Image
+          src="/svg/main/ic_main_parents_sub_banner.svg"
+          alt="아이를 추가하고 생일을 준비해봐요"
+          width={400}
+          height={200}
+          className="w-full h-auto"
+          priority
+        />
+      )}
 
       <div className="flex flex-col gap-4 p-4">
         {/* 지갑 정보 */}
