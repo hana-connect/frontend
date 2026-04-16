@@ -47,6 +47,7 @@ const LetterPageClient = ({
       const requestId = ++latestRequestId.current;
 
       if (page === 0 && activeSenderId === "all") {
+        setIsFetching(false);
         setDisplayData({ content: initialData, page: 0 });
         return;
       }
