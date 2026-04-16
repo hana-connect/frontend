@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
@@ -39,6 +40,8 @@ function RewardAccountPageClient({
   accounts,
   rewardAccount,
 }: RewardAccountPageClientProps) {
+  const router = useRouter();
+
   const depositAccounts = useMemo(() => {
     return accounts.filter((account) => account.accountType === "DEPOSIT");
   }, [accounts]);
@@ -55,17 +58,21 @@ function RewardAccountPageClient({
     return accounts.filter((account) => account.accountType === "PENSION");
   }, [accounts]);
 
-  const initialRewardId = rewardAccount ? String(rewardAccount.accountId) : "";
-  const [selectedRewardId, setSelectedRewardId] = useState(initialRewardId);
+  const [initialRewardId, setInitialRewardId] = useState(
+    rewardAccount ? String(rewardAccount.accountId) : "",
+  );
+  const [selectedRewardId, setSelectedRewardId] = useState(
+    rewardAccount ? String(rewardAccount.accountId) : "",
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const isRewardAccountChanged = selectedRewardId !== initialRewardId;
 
   const selectedRewardAccount = useMemo(() => {
     return rewardCandidateAccounts.find(
       (account) => String(account.accountId) === selectedRewardId,
     );
   }, [rewardCandidateAccounts, selectedRewardId]);
+
+  const isRewardAccountChanged = selectedRewardId !== initialRewardId;
 
   const handleRewardChange = (value: string) => {
     setSelectedRewardId(value);
@@ -76,6 +83,11 @@ function RewardAccountPageClient({
       return;
     }
 
+    if (!selectedRewardAccount.accountId) {
+      alert("계좌 정보를 다시 확인해 주세요.");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
@@ -83,9 +95,13 @@ function RewardAccountPageClient({
         `/api/accounts/reward/${selectedRewardAccount.accountId}`,
       );
 
+      setInitialRewardId(selectedRewardId);
+
       alert("리워드 계좌가 변경되었습니다.");
+
+      router.refresh();
     } catch (error) {
-      const err = error as Error & { status?: number };
+      const err = error as Error & { status?: number; data?: unknown };
       alert(err.message ?? "리워드 계좌 변경에 실패했습니다.");
       console.error("리워드 계좌 변경 실패:", err);
     } finally {
@@ -107,11 +123,7 @@ function RewardAccountPageClient({
               연금/리워드 계좌
             </h3>
 
-            {rewardCandidateAccounts.length === 0 ? (
-              <p className="my-9 text-center text-body-16-m text-[#555]">
-                연결된 계좌가 없어요.
-              </p>
-            ) : (
+            {rewardCandidateAccounts.length > 0 ? (
               <RadioGroup
                 value={selectedRewardId}
                 onValueChange={handleRewardChange}
@@ -130,13 +142,21 @@ function RewardAccountPageClient({
                   ))}
                 </div>
               </RadioGroup>
+            ) : (
+              <p className="my-9 text-center text-body-16-m text-[#555]">
+                연결된 연금 계좌가 없어요.
+              </p>
             )}
 
             <Button
               size="L"
               variant={isRewardAccountChanged ? "active" : "disabled"}
               onClick={handleSubmit}
-              disabled={!isRewardAccountChanged || isSubmitting}
+              disabled={
+                !isRewardAccountChanged ||
+                isSubmitting ||
+                rewardCandidateAccounts.length === 0
+              }
             >
               {isSubmitting ? "변경 중..." : "리워드 계좌 변경하기"}
             </Button>
@@ -157,7 +177,7 @@ function AccountSection({ title, accounts }: AccountSectionProps) {
     <section>
       <h3 className="mb-4 text-title-24-sb text-black">{title}</h3>
 
-      {accounts && accounts.length > 0 ? (
+      {accounts.length > 0 ? (
         <div className="space-y-4">
           {accounts.map((account) => (
             <AccountCard key={account.accountId} account={account} />
