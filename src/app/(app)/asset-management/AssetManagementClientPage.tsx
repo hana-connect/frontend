@@ -122,7 +122,7 @@ export default function AssetManagementClientPage({
     ? Number(initialAiData.recommendRatio.split(":")[0])
     : 10;
 
-  const { ratio, allowanceAmount, handleRatioChange } = useAllowanceSlider(
+  const { ratio, handleRatioChange } = useAllowanceSlider(
     initialRatio,
     1000000,
   );
@@ -195,7 +195,6 @@ export default function AssetManagementClientPage({
             <AIAssetAllocation assetData={aiRecommendation} />
             <AllowanceSliderSection
               ratio={ratio}
-              allowanceAmount={allowanceAmount}
               handleRatioChange={handleRatioChange}
               aiRecommendation={aiRecommendation}
             />

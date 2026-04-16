@@ -4,7 +4,6 @@ import { formatCurrency } from "../_utils/formatters";
 
 type AllowanceSliderSectionProps = {
   ratio: number;
-  allowanceAmount: number;
   handleRatioChange: (value: number) => void;
   aiRecommendation: {
     aiComment?: string;
