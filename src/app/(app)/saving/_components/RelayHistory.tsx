@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import RegisterStepHeader from "@/common/components/header/RegisterStepHeader";
 import PassbookLayout from "@/common/components/passbook-layout/PassbookLayout";
 import PassbookPaper from "@/common/components/passbook-layout/PassbookPaper";
+import { getRelayHistory } from "@/common/lib/api/accounts/api-client";
+import { isApiError } from "@/common/lib/api/types";
 import type { RelayData } from "../_types";
 
 type RelayHistoryProps = {
@@ -36,38 +38,22 @@ export default function RelayHistory({
       setError(null);
 
       try {
-        const query = new URLSearchParams({
-          targetAccountId: targetAccountId.toString(),
-          page: page.toString(),
-        });
-
-        const res = await fetch(
-          `/api/transfer/savings/relay?${query.toString()}`,
-        );
-
-        if (res.status === 401) {
-          window.location.href = "/login";
-          return;
-        }
+        const result = await getRelayHistory(targetAccountId, page);
 
         if (requestId !== latestRequestId.current) return;
 
-        if (!res.ok) {
-          setError("데이터를 불러오지 못했습니다.");
-          return;
-        }
+        setIsLastPage(result.isLast);
+        setData({ content: result, page });
+      } catch (error: unknown) {
+        if (isApiError(error)) {
+          if (error.status === 401) {
+            window.location.href = "/login";
+            return;
+          }
 
-        const result = await res.json();
-
-        if (result.data) {
-          setIsLastPage(result.data.isLast);
-
-          setData({ content: result.data, page });
-        }
-      } catch (e) {
-        if (requestId === latestRequestId.current) {
-          console.error("릴레이 내역 조회 에러:", e);
-          setError("데이터를 불러오지 못했습니다.");
+          setError(error.message);
+        } else {
+          setError("알 수 없는 오류가 발생했습니다.");
         }
       } finally {
         if (requestId === latestRequestId.current) {

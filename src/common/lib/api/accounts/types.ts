@@ -39,3 +39,15 @@ export type PatchRewardAccountResponse = ApiResponse<{
   name: string;
   accountNumber: string;
 }>;
+
+export type RelayData = {
+  productNickname: string;
+  accountNumber: string;
+  history: {
+    letterId: number;
+    date: string;
+    amount: number;
+    message: string;
+  }[];
+  isLast: boolean;
+};
