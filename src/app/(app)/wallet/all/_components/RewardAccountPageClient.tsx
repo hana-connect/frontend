@@ -5,10 +5,10 @@ import { useMemo, useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
 import { RadioGroup } from "@/common/components/radio-group/RadioGroup";
+import { updateRewardAccount } from "@/common/lib/api/accounts/api-client";
 import { formatMoney } from "@/common/lib/utils";
 import { useAlert } from "@/common/providers/alertProvider";
 import type { AccountType } from "../../(main)/_types";
-import { updateRewardAccount } from "../_lib/api";
 
 type AccountItem = {
   accountId: number;

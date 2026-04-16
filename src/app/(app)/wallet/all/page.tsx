@@ -1,5 +1,8 @@
+import {
+  getAccounts,
+  getRewardAccount,
+} from "@/common/lib/api/accounts/api-server";
 import RewardAccountPageClient from "./_components/RewardAccountPageClient";
-import { getAccounts, getRewardAccount } from "./_lib/api";
 
 export default async function Page() {
   const [accounts, rewardAccount] = await Promise.all([
