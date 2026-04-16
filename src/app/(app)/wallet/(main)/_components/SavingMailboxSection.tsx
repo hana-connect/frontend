@@ -8,6 +8,7 @@ import type { SavingMailbox } from "../_types";
 import SavingMailboxList from "./SavingMailboxList";
 
 type TerminatedAccount = {
+  accountId: number;
   name: string;
   accountNumber: string;
 };
@@ -20,12 +21,12 @@ async function getExpiredSavings(): Promise<SavingMailbox[] | null> {
       "/api/accounts/terminated-savings",
       {
         method: "GET",
-        next: { revalidate: 3600 },
+        next: { revalidate: 0 },
       },
     );
 
-    return (response.data || []).map((item, index) => ({
-      id: index,
+    return (response.data || []).map((item) => ({
+      accountId: item.accountId,
       name: item.name,
       number: item.accountNumber,
     }));

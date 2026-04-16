@@ -17,7 +17,7 @@ export type MainAccountInfo = {
 };
 
 export type SavingMailbox = {
-  id: number;
+  accountId: number;
   name: string;
   number: string;
 };

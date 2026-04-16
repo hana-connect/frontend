@@ -86,7 +86,10 @@ export default function SavingPage() {
         {/* 2. 릴레이 메시지 지난 작성 내역 */}
         {step === "history" && (
           <div className="flex flex-col h-full bg-white z-50">
-            <RelayHistory onBack={() => setStep("input")} />
+            <RelayHistory
+              targetAccountId={2} // TODO: 실제 받아오는 계좌로 교체
+              onBack={() => setStep("input")}
+            />
           </div>
         )}
 
