@@ -128,6 +128,7 @@ export default function AssetManagementClientPage({
   );
 
   const handleLinkAssets = async () => {
+    if (isLoading) return;
     try {
       setIsLoading(true);
       // [첫 번째 택배] 자산 요약 정보 가져오기
@@ -178,6 +179,7 @@ export default function AssetManagementClientPage({
                 size="L"
                 variant="active"
                 onClick={handleLinkAssets}
+                disabled={isLoading}
                 className="w-full active:scale-[0.95] transition-all"
               >
                 {isLoading ? "AI 분석 중..." : "자산 불러오기"}
