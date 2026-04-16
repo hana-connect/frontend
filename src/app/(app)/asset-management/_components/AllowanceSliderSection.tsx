@@ -4,6 +4,7 @@ import Image from "next/image";
 import type React from "react";
 import Button from "@/common/components/button/Button";
 import { formatMoney } from "@/common/lib/utils";
+import { SLIDER_MESSAGES } from "../_constants/messages";
 
 type AiRecommendation = {
   aiComment?: string;
@@ -24,65 +25,6 @@ function clampRatio(value: number) {
   return Math.min(MAX_RATIO, Math.max(MIN_RATIO, value));
 }
 
-function renderCommentParts(
-  comment: string,
-  lifeExpense: number,
-  recommendRatio: string,
-) {
-  if (!comment) return null;
-
-  const ratioPattern = recommendRatio ? `|${recommendRatio}` : "";
-  const tokenizerRegex = new RegExp(
-    `(생활비는.*?원|이고,|직접${ratioPattern})`,
-    "g",
-  );
-
-  const tokens = comment.split(tokenizerRegex);
-
-  return tokens.map((token, index) => {
-    if (!token) return null;
-
-    const key = `token-${index}`;
-
-    if (token.startsWith("생활비는") && token.endsWith("원")) {
-      return (
-        <span key={key}>
-          이번 달 생활비는{" "}
-          <span className="text-gray-800">{formatMoney(lifeExpense)}</span>
-        </span>
-      );
-    }
-
-    if (token === "이고,") {
-      return (
-        <span key={key}>
-          {token}
-          <br />
-        </span>
-      );
-    }
-
-    if (token === "직접") {
-      return (
-        <span key={key}>
-          <br />
-          {token}
-        </span>
-      );
-    }
-
-    if (recommendRatio && token === recommendRatio) {
-      return (
-        <span key={key} className="text-brand-purple-1">
-          {token}
-        </span>
-      );
-    }
-
-    return <span key={key}>{token}</span>;
-  });
-}
-
 export default function AllowanceSliderSection({
   ratio,
   handleRatioChange,
@@ -90,7 +32,6 @@ export default function AllowanceSliderSection({
 }: AllowanceSliderSectionProps) {
   const recommendRatio = aiRecommendation?.recommendRatio ?? "";
   const lifeExpense = aiRecommendation?.kidAllowance ?? 0;
-  const comment = aiRecommendation?.aiComment ?? "";
   const currentAllowance = Math.ceil(lifeExpense * (ratio / 100));
   const myRatio = MAX_RATIO - ratio;
 
@@ -116,8 +57,8 @@ export default function AllowanceSliderSection({
       </h2>
 
       <div className="flex flex-col items-center rounded-3xl border border-grey-7 shadow-2xs bg-white p-8">
-        <div className="mb-10 text-center text-[14px] font-medium leading-relaxed text-gray-600">
-          {renderCommentParts(comment, lifeExpense, recommendRatio)}
+        <div className="mb-10 text-center text-body-16-m-2 text-gray-700">
+          {SLIDER_MESSAGES.DESCRIPTION(lifeExpense, recommendRatio)}
         </div>
 
         <div className="mb-8 flex w-full items-center justify-between gap-2">
