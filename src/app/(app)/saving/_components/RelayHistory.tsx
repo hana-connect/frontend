@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import RegisterStepHeader from "@/common/components/header/RegisterStepHeader";
 import PassbookLayout from "@/common/components/passbook-layout/PassbookLayout";
 import PassbookPaper from "@/common/components/passbook-layout/PassbookPaper";
-import { getRelayHistory } from "@/common/lib/api/accounts/api-client";
+import { getRelayHistory } from "@/common/lib/api/savings/api-client";
 import { isApiError } from "@/common/lib/api/types";
 import type { RelayData } from "../_types";
 

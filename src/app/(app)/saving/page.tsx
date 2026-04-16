@@ -64,6 +64,7 @@ export default function SavingPage() {
               />
 
               <RelayMessage
+                targetAccountId={2}
                 message={message}
                 onMessageChange={setMessage}
                 onShowHistory={() => setStep("history")}
