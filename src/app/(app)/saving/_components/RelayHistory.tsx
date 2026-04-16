@@ -101,7 +101,7 @@ export default function RelayHistory({
         isLastPage={data.history.length < ITEMS_PER_PAGE}
       >
         <div className="w-full">
-          <div className="flex justify-between border-y border-grey-5 py-1 text-black text-[16px] font-semibold text-left">
+          <div className="flex justify-between border-y border-grey-5 py-1 text-black text-[16px] font-semibold text-center">
             <span className="w-6"></span>
             <span className="w-20">거래일</span>
             <span className="flex-1">메시지</span>
@@ -117,7 +117,7 @@ export default function RelayHistory({
             >
               {data.history.length === 0 ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-start pt-20 z-50 pointer-events-none">
-                  <p className="text-black text-body-14-m px-2">
+                  <p className="text-brand-black text-body-14-m px-2">
                     작성 내역이 없습니다.
                   </p>
                 </div>
@@ -134,7 +134,7 @@ export default function RelayHistory({
                         ).padStart(2, "0")}
                       </span>
                       <span className="w-20 text-center">{item.date}</span>
-                      <div className="flex-1 px-1 text-right truncate">
+                      <div className="flex-1 px-1 text-left truncate">
                         {item.message}
                       </div>
                       <span className="w-20 text-right">
