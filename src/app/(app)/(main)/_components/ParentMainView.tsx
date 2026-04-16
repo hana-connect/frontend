@@ -283,28 +283,29 @@ const ParentMainView = ({ wallet, kids }: ParentMainViewProps) => {
 
             {/* 계좌 목록 */}
             <ul className="flex flex-col gap-2 w-full mt-2">
-              {(displayDetail?.accounts?.length ?? 0) > 0 ? (
-                displayDetail?.accounts.map((acc) => (
-                  <li key={acc.accountId}>
-                    <ItemCard
-                      title={acc.nickname || acc.name}
-                      subTitle={acc.accountNumber}
-                      rightContent={
-                        <Button size={"S"} variant={"smallPurple"}>
-                          {acc.accountType === "SUBSCRIPTION"
-                            ? "청약넣기"
-                            : "송금하기"}
-                        </Button>
-                      }
-                      isPurple
-                    />
-                  </li>
-                ))
-              ) : (
-                <li className="flex flex-col items-center justify-center pb-8 pt-5 text-center text-grey-1 text-body-16-m">
-                  등록된 계좌가 없습니다.
-                </li>
-              )}
+              {(displayDetail?.accounts?.length ?? 0) > 0
+                ? displayDetail?.accounts.map((acc) => (
+                    <li key={acc.accountId}>
+                      <ItemCard
+                        title={acc.nickname || acc.name}
+                        subTitle={acc.accountNumber}
+                        // 연결
+                        rightContent={
+                          <Button size={"S"} variant={"smallPurple"}>
+                            {acc.accountType === "SUBSCRIPTION"
+                              ? "청약넣기"
+                              : "송금하기"}
+                          </Button>
+                        }
+                        isPurple
+                      />
+                    </li>
+                  ))
+                : displayDetail !== null && (
+                    <li className="flex flex-col items-center justify-center pb-8 pt-5 text-center text-grey-1 text-body-16-m">
+                      등록된 계좌가 없습니다.
+                    </li>
+                  )}
             </ul>
           </section>
 
