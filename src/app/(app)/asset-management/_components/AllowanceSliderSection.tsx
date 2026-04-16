@@ -85,16 +85,21 @@ export default function AllowanceSliderSection({
             // 4. 나머지 문장 및 강조 로직
             const ratio = aiRecommendation?.recommendRatio || "";
             return (
-              <span key={`content-${part.slice(0, 15)}`}>
+              <span key={`content-block-${part.slice(0, 10)}`}>
                 {part.includes(ratio)
-                  ? part.split(ratio).map((text, i, arr) => (
-                      <span key={`ratio-text-${text.length}-${i}`}>
-                        {text}
-                        {i < arr.length - 1 && (
-                          <span className="text-[#9C6FFE]">{ratio}</span>
-                        )}
-                      </span>
-                    ))
+                  ? part.split(ratio).map((text, _, arr) => {
+                      const isLast = text === arr[arr.length - 1];
+                      const uniqueKey = `ratio-fragment-${text.substring(0, 5)}-${text.length}`;
+
+                      return (
+                        <span key={uniqueKey}>
+                          {text}
+                          {!isLast && (
+                            <span className="text-[#9C6FFE]">{ratio}</span>
+                          )}
+                        </span>
+                      );
+                    })
                   : part}
               </span>
             );
