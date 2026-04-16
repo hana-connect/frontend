@@ -1,6 +1,12 @@
 import { CircleQuestionMark } from "lucide-react";
 import Image from "next/image";
 import Button from "@/common/components/button/Button";
+import { serverSpringFetch } from "@/common/lib/api/server-spring-fetch";
+import type { ApiResponse } from "@/common/lib/api/types";
+
+type ParentResponseItem = {
+  connectMemberName: string;
+};
 
 type SharedWallet = {
   id: number;
@@ -9,23 +15,25 @@ type SharedWallet = {
 };
 
 async function getSharedWallets(): Promise<SharedWallet[]> {
-  return [
-    {
-      id: 1,
-      name: "김엄마",
+  try {
+    const result = await serverSpringFetch<ApiResponse<ParentResponseItem[]>>(
+      "/api/parents",
+      {
+        method: "GET",
+        next: { revalidate: 0 },
+      },
+    );
+
+    if (!result.data) return [];
+
+    return result.data.map((item, index) => ({
+      id: index, // id 필요하니까 index로 대체
+      name: item.connectMemberName,
       statusText: "잔액과 내역 공유 중",
-    },
-    {
-      id: 2,
-      name: "김엄마",
-      statusText: "잔액과 내역 공유 중",
-    },
-    {
-      id: 3,
-      name: "김엄마",
-      statusText: "잔액과 내역 공유 중",
-    },
-  ];
+    }));
+  } catch (_error) {
+    return [];
+  }
 }
 
 async function SharedWalletSection() {

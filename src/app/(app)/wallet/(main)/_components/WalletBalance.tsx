@@ -1,9 +1,46 @@
 import { CircleQuestionMark } from "lucide-react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import Button from "@/common/components/button/Button";
+import {
+  SpringApiError,
+  serverSpringFetch,
+} from "@/common/lib/api/server-spring-fetch";
+import type { ApiResponse } from "@/common/lib/api/types";
 
-function WalletBalance({ role }: { role: "PARENT" | "KID" }) {
-  const amount = 1234567;
+type WalletData = {
+  name: string;
+  walletMoney: number;
+};
+
+async function WalletBalance({ role }: { role: "PARENT" | "KID" }) {
+  const getWalletData = async () => {
+    try {
+      const result = await serverSpringFetch<ApiResponse<WalletData>>(
+        "/api/wallet",
+        {
+          method: "GET",
+          next: { revalidate: 0 },
+        },
+      );
+
+      if (!result.data) throw new Error("지갑 데이터를 찾을 수 없습니다.");
+
+      return result.data;
+    } catch (error) {
+      if (error instanceof SpringApiError) {
+        if (error.status === 401) {
+          redirect("/login");
+        }
+        if (error.status === 403) {
+          console.error("지갑 접근 권한 없음:", error.message);
+        }
+      }
+      throw error;
+    }
+  };
+
+  const walletData = await getWalletData();
 
   return (
     <>
@@ -14,7 +51,7 @@ function WalletBalance({ role }: { role: "PARENT" | "KID" }) {
             <CircleQuestionMark size={18} className="text-[#333]" />
           </div>
           <span className="text-[32px] text-heading-24-b">
-            {amount.toLocaleString()}원
+            {walletData.walletMoney}원
           </span>
         </div>
 
