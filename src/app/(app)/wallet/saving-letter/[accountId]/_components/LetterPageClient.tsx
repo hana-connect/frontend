@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Header from "@/common/components/header/Header";
 import PassbookLayout from "@/common/components/passbook-layout/PassbookLayout";
 import PassbookPaper from "@/common/components/passbook-layout/PassbookPaper";
@@ -24,6 +24,7 @@ const LetterPageClient = ({
   const [data, setData] = useState(initialData);
   const [activeSenderId, setActiveSenderId] = useState<number | "all">("all");
   const [currentPage, setCurrentPage] = useState(0);
+  const latestRequestId = useRef(0);
 
   const handleTabChange = (val: string) => {
     const senderId = val === "all" ? "all" : Number(val);
@@ -32,6 +33,8 @@ const LetterPageClient = ({
   };
 
   const fetchData = useCallback(async () => {
+    const requestId = ++latestRequestId.current;
+
     if (currentPage === 0 && activeSenderId === "all") {
       setData(initialData);
       return;
@@ -52,7 +55,16 @@ const LetterPageClient = ({
       if (!res.ok) return;
 
       const result = await res.json();
-      if (result.data) setData(result.data);
+
+      if (requestId !== latestRequestId.current) return;
+
+      if (result.data) {
+        if (currentPage > 0 && result.data.transactions.length === 0) {
+          setCurrentPage((p) => Math.max(0, p - 1));
+          return;
+        }
+        setData(result.data);
+      }
     } catch (e) {
       console.error("Fetch 에러:", e);
     }

@@ -21,7 +21,7 @@ async function getExpiredSavings(): Promise<SavingMailbox[] | null> {
       "/api/accounts/terminated-savings",
       {
         method: "GET",
-        next: { revalidate: 3600 },
+        next: { revalidate: 0 },
       },
     );
 

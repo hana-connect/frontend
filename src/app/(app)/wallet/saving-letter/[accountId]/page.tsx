@@ -18,7 +18,7 @@ async function Page({ params }: { params: Promise<{ accountId: string }> }) {
         `/api/accounts/terminated-savings/${accountId}`,
         {
           method: "GET",
-          cache: "force-cache",
+          cache: "no-store",
         },
       );
       return result.data;
