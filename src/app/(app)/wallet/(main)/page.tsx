@@ -17,7 +17,6 @@ type GetMyAccountsResponse = ApiResponse<Account[]>;
 const walletPageData: Record<
   UserRole,
   {
-    mainAccountInfo?: MainAccountInfo;
     extraSections: React.ReactNode[];
   }
 > = {
@@ -28,13 +27,22 @@ const walletPageData: Record<
     ],
   },
   PARENT: {
-    mainAccountInfo: {
-      bankName: "하나은행",
-      accountNumber: "589-910061-78107",
-    },
     extraSections: [<MyKidSection key="my-kid" />],
   },
 };
+
+function getMainAccountInfo(accounts: Account[]): MainAccountInfo | undefined {
+  const freeAccount = accounts.find(
+    (account) => account.accountType === "FREE",
+  );
+
+  if (!freeAccount) return undefined;
+
+  return {
+    bankName: freeAccount.name,
+    accountNumber: freeAccount.accountNumber,
+  };
+}
 
 async function Page() {
   const userRole = await getUserRole();
@@ -59,6 +67,8 @@ async function Page() {
   }
 
   const pageData = walletPageData[userRole];
+  const mainAccountInfo =
+    userRole === "PARENT" ? getMainAccountInfo(accounts) : undefined;
 
   return (
     <main className="space-y-6 px-6 py-4">
@@ -66,7 +76,7 @@ async function Page() {
       <AccountList
         userRole={userRole}
         accounts={accounts}
-        mainAccountInfo={pageData.mainAccountInfo}
+        mainAccountInfo={mainAccountInfo}
       />
       {pageData.extraSections}
     </main>

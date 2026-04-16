@@ -59,9 +59,7 @@ function TopRegisterSection({
               </>
             ) : mainAccountInfo ? (
               <>
-                <p className="text-body-16-m text-black">
-                  충전계좌 {mainAccountInfo.bankName}
-                </p>
+                <p className="text-body-16-m text-black">충전계좌 하나은행</p>
                 <p className="mt-1 text-body-16-m text-grey-6">
                   {mainAccountInfo.accountNumber}
                 </p>
