@@ -22,6 +22,7 @@ const MIN_RATIO = 0;
 const MAX_RATIO = 100;
 
 function clampRatio(value: number) {
+  if (!Number.isFinite(value)) return MIN_RATIO;
   return Math.min(MAX_RATIO, Math.max(MIN_RATIO, value));
 }
 
@@ -42,12 +43,15 @@ export default function AllowanceSliderSection({
       handleRatioChange(0);
       return;
     }
-
-    handleRatioChange(clampRatio(Number(value)));
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return;
+    handleRatioChange(clampRatio(numeric));
   };
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleRatioChange(clampRatio(Number(e.target.value)));
+    const numeric = Number(e.target.value);
+    if (!Number.isFinite(numeric)) return;
+    handleRatioChange(clampRatio(numeric));
   };
 
   return (
@@ -111,6 +115,7 @@ export default function AllowanceSliderSection({
                 step={1}
                 value={ratio}
                 onChange={handleRangeChange}
+                aria-label="아이 용돈 비율 슬라이더"
                 className="absolute inset-0 w-full cursor-pointer opacity-0 touch-none z-10"
               />
             </div>
