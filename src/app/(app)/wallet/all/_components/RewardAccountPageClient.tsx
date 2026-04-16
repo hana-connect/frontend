@@ -5,11 +5,10 @@ import { useMemo, useState } from "react";
 import Button from "@/common/components/button/Button";
 import ItemCard from "@/common/components/item-card/ItemCard";
 import { RadioGroup } from "@/common/components/radio-group/RadioGroup";
-import { apiClient } from "@/common/lib/api/api-client";
-import type { ApiResponse } from "@/common/lib/api/types";
 import { formatMoney } from "@/common/lib/utils";
 import { useAlert } from "@/common/providers/alertProvider";
 import type { AccountType } from "../../(main)/_types";
+import { updateRewardAccount } from "../_lib/api";
 
 type AccountItem = {
   accountId: number;
@@ -30,12 +29,6 @@ type RewardAccountPageClientProps = {
   accounts: AccountItem[];
   rewardAccount: RewardAccount | null;
 };
-
-type PatchRewardAccountResponse = ApiResponse<{
-  accountId: number;
-  name: string;
-  accountNumber: string;
-}>;
 
 function RewardAccountPageClient({
   accounts,
@@ -96,9 +89,7 @@ function RewardAccountPageClient({
     try {
       setIsSubmitting(true);
 
-      await apiClient.patch<PatchRewardAccountResponse>(
-        `/api/accounts/reward/${selectedRewardAccount.accountId}`,
-      );
+      await updateRewardAccount(selectedRewardAccount.accountId);
 
       setInitialRewardId(selectedRewardId);
 

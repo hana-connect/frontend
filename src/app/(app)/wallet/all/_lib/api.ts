@@ -1,24 +1,14 @@
+import { apiClient } from "@/common/lib/api/api-client";
 import {
   SpringApiError,
   serverSpringFetch,
 } from "@/common/lib/api/server-spring-fetch";
 import type { ApiResponse } from "@/common/lib/api/types";
-import type { AccountType } from "../../(main)/_types";
-
-export type AccountItem = {
-  accountId: number;
-  name: string;
-  accountNumber: string;
-  balance: number;
-  accountType: AccountType;
-  createdAt: string;
-};
-
-export type RewardAccount = {
-  accountId: number;
-  name: string;
-  accountNumber: string;
-};
+import type {
+  AccountItem,
+  PatchRewardAccountResponse,
+  RewardAccount,
+} from "./types";
 
 export async function getAccounts() {
   const res =
@@ -38,4 +28,10 @@ export async function getRewardAccount() {
     }
     throw error;
   }
+}
+
+export async function updateRewardAccount(accountId: number) {
+  return apiClient.patch<PatchRewardAccountResponse>(
+    `/api/accounts/reward/${accountId}`,
+  );
 }
