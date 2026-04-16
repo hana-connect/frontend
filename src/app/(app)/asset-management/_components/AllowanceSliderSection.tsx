@@ -81,7 +81,6 @@ export default function AllowanceSliderSection({
               aria-label="아이 용돈 비율"
               placeholder="0"
               className="h-6 w-14 appearance-none rounded border border-gray-200 bg-white text-center text-sm font-semibold text-gray-800 outline-none"
-              style={{ MozAppearance: "textfield" }}
             />
           </div>
 
