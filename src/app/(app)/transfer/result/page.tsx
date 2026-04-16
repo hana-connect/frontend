@@ -45,6 +45,11 @@ export default function TransferResultPage() {
     return `${value.toLocaleString()}원`;
   };
 
+  const formatAccountNumber = (value: string | null | undefined) => {
+    if (!value) return "-";
+    return value.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+  };
+
   const formatDate = (date: string | undefined) => {
     if (!date) return "-";
     return date.slice(0, 10).replace(/-/g, ".");
@@ -70,7 +75,9 @@ export default function TransferResultPage() {
 
         <div className="mt-6 w-full flex justify-between text-body-16-m text-grey-6 pb-4">
           <span>입금 계좌번호</span>
-          <span className="text-brand-black">{data.toAccountNumber}</span>
+          <span className="text-brand-black">
+            {formatAccountNumber(data.toAccountNumber)}
+          </span>
         </div>
 
         <div className="w-full flex justify-between text-body-16-m text-grey-6 pb-4">

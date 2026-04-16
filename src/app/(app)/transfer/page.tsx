@@ -8,6 +8,11 @@ import TransferAmount from "@/common/components/keypad/TransferAmount";
 import { apiClient } from "@/common/lib/api/api-client";
 import type { ApiResponse } from "@/common/lib/api/types";
 
+type TransferDraft = {
+  accountId: number;
+  amount: number;
+};
+
 export default function TransferPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -41,7 +46,19 @@ export default function TransferPage() {
   }, [accountId]);
 
   const handleNext = (amount: number) => {
-    router.push(`/transfer/password?amount=${amount}&accountId=${accountId}`);
+    if (!accountId) return;
+
+    const accountIdNumber = Number(accountId);
+
+    if (!Number.isInteger(accountIdNumber) || accountIdNumber <= 0) return;
+
+    const draft: TransferDraft = {
+      accountId: accountIdNumber,
+      amount,
+    };
+
+    sessionStorage.setItem("transferDraft", JSON.stringify(draft));
+    router.push("/transfer/password");
   };
 
   if (loading) return <div>로딩 중...</div>;
@@ -56,7 +73,7 @@ export default function TransferPage() {
           accountHolder={data.displayName}
           accountNickname={data.accountAlias}
           balance={data.balance}
-          maxAmount={data.balance} // 송금 초과 : 현재 잔액
+          maxAmount={data.balance}
           onNext={handleNext}
         />
       </div>

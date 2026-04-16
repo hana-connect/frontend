@@ -1,43 +1,79 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import type { SubscriptionPaymentExecuteResponse } from "@/app/api/subscriptions/type";
 import Button from "@/common/components/button/Button";
-
-type PrepaymentResultData = {
-  subscriptionAccountNumber: string;
-  irpAccountNumber: string;
-  subscriptionAmount: number;
-  irpAmount: number;
-  date: string;
-};
+import { apiClient } from "@/common/lib/api/api-client";
+import type { ApiResponse } from "@/common/lib/api/types";
 
 export default function PaymentResult() {
   const router = useRouter();
-  const [result, setResult] = useState<PrepaymentResultData | null>(null);
+  const searchParams = useSearchParams();
+
+  const subscriptionIdParam = searchParams.get("subscriptionId");
+  const subscriptionId = subscriptionIdParam
+    ? Number(subscriptionIdParam)
+    : null;
+
+  const [result, setResult] =
+    useState<SubscriptionPaymentExecuteResponse | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem("paymentResult");
-
-    if (!saved) return;
-
-    try {
-      const parsed = JSON.parse(saved) as PrepaymentResultData;
-      setResult(parsed);
-    } catch (error) {
-      console.error("paymentResult 파싱 실패", error);
+    if (
+      subscriptionId === null ||
+      Number.isNaN(subscriptionId) ||
+      subscriptionId <= 0
+    ) {
+      setLoading(false);
+      return;
     }
-  }, []);
+
+    const fetchPaymentResult = async () => {
+      try {
+        const response = await apiClient.get<
+          ApiResponse<SubscriptionPaymentExecuteResponse>
+        >(`/api/subscriptions/${subscriptionId}/payments/result`);
+
+        setResult(response.data);
+      } catch (error) {
+        console.error("청약 납입 결과 조회 실패", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPaymentResult();
+  }, [subscriptionId]);
+
+  const formatAccountNumber = (value: string | null | undefined) => {
+    if (!value) return "-";
+    return value.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+  };
+
+  const formatDate = (value: string | null | undefined) => {
+    if (!value) return "-";
+    return value.slice(0, 10).replace(/-/g, ".");
+  };
 
   const handleSubmit = () => {
-    router.push("/payment");
+    router.push("/wallet");
   };
+
+  if (loading) {
+    return <div>로딩 중...</div>;
+  }
+
+  if (!result) {
+    return <div>납입 결과를 불러올 수 없습니다.</div>;
+  }
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden bg-white">
       <div className="flex-1 overflow-y-auto">
-        <div className="w-full px-6 pt-25 pb-10 flex flex-col items-center text-center">
+        <div className="flex w-full flex-col items-center px-6 pb-10 pt-25 text-center">
           <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
 
           <h1 className="mt-6 text-xl font-medium text-brand-black">
@@ -49,34 +85,32 @@ export default function PaymentResult() {
             aria-hidden="true"
           />
 
-          {/* 청약 */}
           <section className="w-full pt-6 text-left">
             <h2 className="mb-4 text-base text-brand-black">청약</h2>
 
             <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
               <span>입금 계좌번호</span>
               <span className="text-brand-black">
-                {result?.subscriptionAccountNumber || "111-2222-3333"}
+                {formatAccountNumber(result.subscriptionAccountNumber)}{" "}
               </span>
             </div>
 
             <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
               <span>납입 금액</span>
               <span className="text-brand-black">
-                {(result?.subscriptionAmount ?? 250000).toLocaleString()}원
+                {result.subscriptionAmount.toLocaleString()}원
               </span>
             </div>
 
             <div className="flex w-full justify-between text-body-16-m text-grey-6">
               <span>납입일</span>
               <span className="text-brand-black">
-                {result?.date || "2026.04.07"}
+                {formatDate(result.paidAt)}
               </span>
             </div>
           </section>
 
-          {/* IRP */}
-          {(result?.irpAmount ?? 0) > 0 && (
+          {result.rewardAmount > 0 && (
             <>
               <div
                 className="mt-8 h-[0.8px] w-full bg-grey-5"
@@ -84,26 +118,26 @@ export default function PaymentResult() {
               />
 
               <section className="w-full pt-6 text-left">
-                <h2 className="mb-4 text-body-14-b text-brand-black">IRP</h2>
+                <h2 className="mb-4 text-body-14-b text-brand-black">연금</h2>
 
                 <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
                   <span>입금 계좌번호</span>
                   <span className="text-brand-black">
-                    {result?.irpAccountNumber || "111-2222-3333"}
+                    {formatAccountNumber(result.rewardAccountNumber)}
                   </span>
                 </div>
 
                 <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
-                  <span>송금 금액</span>
+                  <span>입금 금액</span>
                   <span className="text-brand-black">
-                    {(result?.irpAmount ?? 0).toLocaleString()}원
+                    {result.rewardAmount.toLocaleString()}원
                   </span>
                 </div>
 
                 <div className="flex w-full justify-between text-body-16-m text-grey-6">
-                  <span>송금일</span>
+                  <span>입금일</span>
                   <span className="text-brand-black">
-                    {result?.date || "2026.04.07"}
+                    {formatDate(result.paidAt)}
                   </span>
                 </div>
               </section>

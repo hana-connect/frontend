@@ -1,21 +1,65 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { SubscriptionPaymentInfoResponse } from "@/app/api/subscriptions/type";
 import Button from "@/common/components/button/Button";
 import GuideSection from "@/common/components/GuideSection";
 import Header from "@/common/components/header/Header";
 import Input from "@/common/components/input/Input";
 import TransferAmount from "@/common/components/keypad/TransferAmount";
+import { apiClient } from "@/common/lib/api/api-client";
+import type { ApiResponse } from "@/common/lib/api/types";
 import PaymentRoundSelect from "./_components/PaymentRoundSelect";
 
-export default function prepaymentDeposit() {
+export default function PrepaymentDeposit() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const subscriptionId = searchParams.get("subscriptionId");
+
+  const [paymentInfo, setPaymentInfo] =
+    useState<SubscriptionPaymentInfoResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [amount, setAmount] = useState<number | null>(null);
-  const [round, setRound] = useState("");
+  const [round, setRound] = useState<number | null>(null);
   const [showAmountPad, setShowAmountPad] = useState(false);
 
-  const isDisabled = !amount || !round;
-  const router = useRouter();
+  const isDisabled = !amount || !round || !paymentInfo;
+
+  useEffect(() => {
+    const fetchPaymentInfo = async () => {
+      if (!subscriptionId) {
+        setIsLoading(false);
+        return;
+      }
+
+      const subscriptionIdNumber = Number(subscriptionId);
+
+      if (
+        !Number.isInteger(subscriptionIdNumber) ||
+        subscriptionIdNumber <= 0
+      ) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await apiClient.get<
+          ApiResponse<SubscriptionPaymentInfoResponse>
+        >(`/api/subscriptions/${subscriptionIdNumber}/payments/info`);
+
+        setPaymentInfo(response.data);
+      } catch (error) {
+        console.error("청약 납입 정보 조회 실패:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPaymentInfo();
+  }, [subscriptionId]);
 
   const handleNextStep = (nextAmount: number) => {
     setAmount(nextAmount);
@@ -23,25 +67,42 @@ export default function prepaymentDeposit() {
   };
 
   const handleSubmit = () => {
-    if (!amount || !round) return;
+    if (!amount || !round || !subscriptionId || !paymentInfo) return;
 
-    localStorage.setItem(
-      "prepaymentDraft",
+    sessionStorage.setItem(
+      "prepayment",
       JSON.stringify({
+        subscriptionId: Number(subscriptionId),
         amount,
-        round,
+        prepaymentCount: round,
       }),
     );
 
-    router.push("/prepayment/password");
+    router.push("/subscription/prepayment/password");
   };
+
+  if (isLoading) {
+    return (
+      <main className="flex h-dvh items-center justify-center bg-white">
+        로딩 중...
+      </main>
+    );
+  }
+
+  if (!paymentInfo) {
+    return (
+      <main className="flex h-dvh items-center justify-center bg-white">
+        납입 정보를 불러올 수 없습니다.
+      </main>
+    );
+  }
 
   if (showAmountPad) {
     return (
       <TransferAmount
-        accountHolder="김채현(김채*)"
-        accountNickname="채현이 입출금 (용돈)"
-        balance={500000}
+        accountHolder={paymentInfo?.displayName ?? "청약 납입"}
+        accountNickname={paymentInfo?.accountNickname ?? "청약 계좌"}
+        balance={paymentInfo?.balance ?? 0}
         onNext={handleNextStep}
       />
     );
