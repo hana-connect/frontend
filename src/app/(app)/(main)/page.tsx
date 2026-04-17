@@ -22,6 +22,11 @@ export type ParentData = {
   connectMemberRole: string;
 };
 
+export type KidData = {
+  connectMemberId: number;
+  connectMemberName: string;
+};
+
 async function getWalletData(): Promise<WalletData> {
   try {
     const res = await serverSpringFetch<ApiResponse<WalletData>>(
@@ -56,13 +61,32 @@ async function getParents(): Promise<ParentData[]> {
   }
 }
 
+async function getKids(): Promise<KidData[]> {
+  try {
+    const res = await serverSpringFetch<ApiResponse<KidData[]>>(
+      "/api/kids",
+
+      { cache: "no-store" },
+    );
+
+    return res.data ?? [];
+  } catch (error) {
+    if (error instanceof SpringApiError && error.status === 401) {
+      redirect("/login");
+    }
+
+    return [];
+  }
+}
+
 export default async function Page() {
   const memberRole = await getUserRole();
 
-  const [wallet, parents] = await Promise.all([
+  const [wallet, parents, kids] = await Promise.all([
     getWalletData(),
 
     memberRole === "KID" ? getParents() : Promise.resolve([]),
+    memberRole === "PARENT" ? getKids() : Promise.resolve([]),
   ]);
 
   return (
@@ -70,7 +94,7 @@ export default async function Page() {
       <Header type="main" />
 
       <div className="pt-15">
-        <MainRoleView wallet={wallet} parents={parents} />
+        <MainRoleView wallet={wallet} parents={parents} kids={kids} />
       </div>
 
       <ScrollTopButton />

@@ -16,14 +16,25 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
 
       {/* 상단 메인 배너 */}
       <section aria-label="메인 이벤트 배너">
-        <Image
-          src="/svg/main/ic_main_kids_banner.svg"
-          alt="아이부자 메인 배너"
-          width={400}
-          height={200}
-          priority
-          className="w-full h-auto"
-        />
+        {parents.length > 0 ? (
+          <Image
+            src="/svg/main/ic_main_kids_banner.svg"
+            alt="아이부자 메인 배너"
+            width={400}
+            height={200}
+            priority
+            className="w-full h-auto"
+          />
+        ) : (
+          <Image
+            src="/svg/main/ic_main_kids_sub_banner.svg"
+            alt="가족 추가 홍보 배너"
+            width={400}
+            height={200}
+            className="w-full h-auto"
+            priority
+          />
+        )}
       </section>
 
       <div className="flex flex-col gap-4 p-4">
@@ -178,6 +189,8 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
                 const profileImage = isOdd
                   ? "/svg/ic_mom1.svg"
                   : "/svg/ic_mom2.svg";
+                const displayName =
+                  parent.connectMemberPhoneName || parent.connectMemberName;
 
                 return (
                   <li
@@ -187,13 +200,13 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
                     <div className="flex items-center">
                       <Image
                         src={profileImage}
-                        alt={`${parent.connectMemberPhoneName} 프로필`}
+                        alt={`${displayName} 프로필`}
                         width={50}
                         height={50}
                       />
                       <div className="flex flex-col ml-4">
                         <p className="text-grey-1 text-[16px] font-semibold">
-                          {parent.connectMemberPhoneName}
+                          {displayName}
                         </p>
                         <p className="text-[14px] font-semibold text-grey-2">
                           정기용돈 미등록
