@@ -120,7 +120,7 @@ export default function AssetManagementClientPage({
 
   useEffect(() => {
     if (userRole === "KID") {
-      router.replace("/main");
+      router.replace("/");
     }
   }, [userRole, router]);
 
