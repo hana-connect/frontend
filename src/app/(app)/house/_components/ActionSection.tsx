@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Button from "@/common/components/button/Button";
 import { useUserRole } from "@/common/providers/user-role-provider";
 
@@ -10,6 +10,7 @@ type ActionSectionProps = {
 
 export default function ActionSection({ isLevelZero }: ActionSectionProps) {
   const role = useUserRole();
+  const router = useRouter();
 
   const isParent = role === "PARENT";
 
@@ -39,8 +40,12 @@ export default function ActionSection({ isLevelZero }: ActionSectionProps) {
         {getMessage()}
       </p>
 
-      <Button size="L" variant="active">
-        <Link href={getButtonInfo().href}>{getButtonInfo().text}</Link>
+      <Button
+        size="L"
+        variant="active"
+        onClick={() => router.push(getButtonInfo().href)}
+      >
+        {getButtonInfo().text}
       </Button>
     </section>
   );

@@ -64,9 +64,11 @@ async function Page({ searchParams }: PageProps) {
           />
         </div>
 
-        <div className="mb-5 rounded-2xl bg-[#FFF2CA] break-keep p-4 text-center text-body-16-m-2">
-          {report.message}
-        </div>
+        {report.message && (
+          <div className="mb-5 rounded-2xl bg-[#FFF2CA] break-keep p-4 text-center text-body-16-m-2">
+            {report.message}
+          </div>
+        )}
 
         <ReportHistory histories={histories} kidId={kidId} />
 
