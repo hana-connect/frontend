@@ -52,9 +52,9 @@ async function Page({ searchParams }: PageProps) {
             </h1>
             <ProgressBar level={0} gauge={0} />
             <ReportHouse level={0} season={getCurrentSeason(paidAt)} />
-
             <ActionSection isLevelZero={true} />
           </div>
+          <ActionSection isLevelZero={true} kid={kidId} />
         </main>
       );
     }

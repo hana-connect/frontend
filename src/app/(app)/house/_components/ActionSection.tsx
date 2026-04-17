@@ -6,9 +6,13 @@ import { useUserRole } from "@/common/providers/user-role-provider";
 
 type ActionSectionProps = {
   isLevelZero?: boolean;
+  kid?: string;
 };
 
-export default function ActionSection({ isLevelZero }: ActionSectionProps) {
+export default function ActionSection({
+  isLevelZero,
+  kid,
+}: ActionSectionProps) {
   const role = useUserRole();
   const router = useRouter();
 
@@ -28,7 +32,10 @@ export default function ActionSection({ isLevelZero }: ActionSectionProps) {
   const getButtonInfo = () => {
     if (isParent) {
       return isLevelZero
-        ? { text: "청약 계좌 등록하기", href: "/wallet/add-child-account" }
+        ? {
+            text: "청약 계좌 등록하기",
+            href: `/wallet/add-child-account?kidId=${kid}`,
+          }
         : { text: "청약 솔루션 보러가기", href: "/solution" };
     }
     return { text: "금융 퀴즈 풀러가기", href: "/quiz" };
