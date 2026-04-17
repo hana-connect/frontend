@@ -27,12 +27,9 @@ function MyKidSection({ kids = [] }: MyKidSectionProps) {
         })}
       </div>
 
-      <Link
-        href="/"
-        className="mt-3 flex h-[60px] w-full items-center justify-center rounded-[18px] border border-grey-5 text-body-16-m text-grey-6"
-      >
+      <div className="mt-3 flex h-15 w-full items-center justify-center rounded-[18px] border border-grey-5 text-body-16-m text-grey-6">
         <Plus size={20} className="mr-5 text-brand-purple-1" />내 아이 추가하기
-      </Link>
+      </div>
     </section>
   );
 }

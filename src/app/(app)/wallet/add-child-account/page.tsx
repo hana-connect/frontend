@@ -6,8 +6,8 @@ import { useState } from "react";
 import Button from "@/common/components/button/Button";
 import Header from "@/common/components/header/Header";
 import Input from "@/common/components/input/Input";
-import { addKidAccount } from "@/common/lib/api/kids";
-import { useAlert } from "@/common/providers/alertProvider";
+import { addKidAccount } from "@/common/lib/api/kids/api-client";
+import { useAlert } from "@/common/providers/alert-provider";
 
 type ApiError = Error & { status?: number };
 
