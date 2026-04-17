@@ -1,38 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getRecentRelayMessages } from "@/common/lib/api/savings/api-client";
-import { formatDate } from "@/common/lib/utils";
-import type { RelayHistoryItem } from "../_types";
+import type { RecentRelayMessage } from "@/app/api/transfer/savings/types";
 
 type RelayMessageProps = {
-  targetAccountId: number;
   message: string;
   onMessageChange: (val: string) => void;
   onShowHistory: () => void;
+  recentMessages: RecentRelayMessage[];
+};
+
+const formatDate = (value: string) => {
+  if (!value || value.length !== 8) return value;
+  return `${value.slice(0, 4)}.${value.slice(4, 6)}.${value.slice(6, 8)}`;
 };
 
 export default function RelayMessage({
-  targetAccountId,
   message,
   onMessageChange,
   onShowHistory,
+  recentMessages,
 }: RelayMessageProps) {
-  const [recentMessages, setRecentMessages] = useState<RelayHistoryItem[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getRecentRelayMessages(targetAccountId);
-        setRecentMessages(data.history);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    fetchData();
-  }, [targetAccountId]);
-
   return (
     <section className="mt-10 px-6">
       <div className="flex justify-between items-center mb-1">

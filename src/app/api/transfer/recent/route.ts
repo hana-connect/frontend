@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import type { RecentRelayMessagesResponse } from "@/app/api/transfer/savings/types";
+import type { RecentTransfersResponse } from "@/app/api/transfer/savings/types";
 import {
   SpringApiError,
   serverSpringFetch,
@@ -9,6 +9,7 @@ import type { ApiResponse } from "@/common/lib/api/types";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+
     const targetAccountId = searchParams.get("targetAccountId");
 
     const targetAccountIdNumber = Number(targetAccountId);
@@ -24,10 +25,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const data = await serverSpringFetch<
-      ApiResponse<RecentRelayMessagesResponse>
-    >(
-      `/api/transfer/savings/relay/recent?targetAccountId=${targetAccountIdNumber}`,
+    const data = await serverSpringFetch<ApiResponse<RecentTransfersResponse>>(
+      `/api/transfer/recent?targetAccountId=${targetAccountIdNumber}`,
       {
         method: "GET",
         cache: "no-store",

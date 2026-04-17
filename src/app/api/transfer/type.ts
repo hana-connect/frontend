@@ -6,6 +6,8 @@ export type TransferPrepareResponse = {
   displayName: string;
   accountAlias: string;
   balance: number;
+  currentSaving: number;
+  savingLimit: number;
 };
 
 // 송금 실행

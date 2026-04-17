@@ -8,16 +8,32 @@ import RecentTransferModal from "./RecentTransferModal";
 type AmountInputProps = {
   amount: number;
   onAmountChange: (val: number) => void;
-  onCheckLimit: (inputAmount: number) => boolean;
+  onCheckLimit: (val: number) => boolean;
+  onShowRecentTransfer: () => void;
+  recentTransfer: {
+    transactionDate: string;
+    amount: number;
+  } | null;
+  isRecentOpen: boolean;
+  onCloseRecent: () => void;
+  accountHolder: string;
+  accountNickname: string;
+  balance: number;
 };
 
 export default function AmountInput({
   amount,
   onAmountChange,
   onCheckLimit,
+  onShowRecentTransfer,
+  recentTransfer,
+  isRecentOpen,
+  onCloseRecent,
+  accountHolder,
+  accountNickname,
+  balance,
 }: AmountInputProps) {
   const [isKeypadVisible, setIsKeypadVisible] = useState(false);
-  const [isRecentModalOpen, setIsRecentModalOpen] = useState(false);
 
   if (isKeypadVisible) {
     return (
@@ -30,9 +46,9 @@ export default function AmountInput({
         </div>
         <div className="flex-1 overflow-y-auto pt-10 pb-10">
           <TransferAmount
-            accountHolder="김채현(김채*)"
-            accountNickname="채현이 적금 (용돈)"
-            balance={800000}
+            accountHolder={accountHolder}
+            accountNickname={accountNickname}
+            balance={balance}
             onNext={(inputAmount) => {
               if (onCheckLimit(inputAmount)) {
                 onAmountChange(inputAmount);
@@ -51,27 +67,31 @@ export default function AmountInput({
         <h2 className="text-black text-xl font-bold leading-8">송금 금액</h2>
         <button
           type="button"
-          onClick={() => setIsRecentModalOpen(true)}
+          onClick={onShowRecentTransfer}
           className="text-zinc-400 text-base font-normal underline decoration-zinc-300"
         >
           [최근 송금 금액]
         </button>
       </div>
+
       <button
         type="button"
         onClick={() => setIsKeypadVisible(true)}
         className="w-full border-b border-stone-300 py-3 text-left mb-6"
       >
         <span
-          className={`text-xl font-bold ${amount > 0 ? "text-black" : "text-stone-300"}`}
+          className={`text-xl font-bold ${
+            amount > 0 ? "text-black" : "text-stone-300"
+          }`}
         >
           {amount > 0 ? `${amount.toLocaleString()}원` : "송금 금액"}
         </span>
       </button>
 
       <RecentTransferModal
-        isOpen={isRecentModalOpen}
-        onClose={() => setIsRecentModalOpen(false)}
+        isOpen={isRecentOpen}
+        onClose={onCloseRecent}
+        data={recentTransfer}
       />
     </section>
   );
