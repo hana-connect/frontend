@@ -120,7 +120,7 @@ const RequestPageClient = ({ initialParents }: RequestPageProps) => {
           />
         </section>
 
-        <div className="fixed bottom-9 left-6 right-6">
+        <div className="fixed bottom-9 left-1/2 -translate-x-1/2 w-full max-w-93.75 px-6">
           <Button
             size="L"
             variant={isEnabled ? "active" : "disabled"}
@@ -162,7 +162,7 @@ const RequestPageClient = ({ initialParents }: RequestPageProps) => {
           }}
         />
       </div>
-      <div className="fixed bottom-9 left-6 right-6">
+      <div className="fixed bottom-9 left-1/2 -translate-x-1/2 w-full max-w-93.75 px-6">
         <Button
           size="L"
           variant="active"

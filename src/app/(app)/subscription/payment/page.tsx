@@ -196,11 +196,10 @@ export default function PaymentDeposit() {
 
   return (
     <main className="flex h-dvh flex-col bg-white">
-      <div className="custom-scroll flex-1 overflow-y-auto bg-[#F6F7F8]">
+      <div className="flex-1 overflow-y-auto bg-[#F6F7F8]">
+        <Header type="sub" title="청약 납입하기" />
         <div className="bg-white px-5 pt-6 pb-12">
-          <Header type="sub" title="청약 납입하기" />
-
-          <section className="mt-10">
+          <section className="mt-4">
             <p className="mb-6 text-xl font-bold text-brand-black">납입금액</p>
 
             <Input
@@ -217,6 +216,7 @@ export default function PaymentDeposit() {
 
         <section className="px-5 pb-10 pt-4">
           <GuideSection />
+          <div className="h-20" />
         </section>
       </div>
 
