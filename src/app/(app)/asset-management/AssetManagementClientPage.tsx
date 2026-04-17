@@ -113,10 +113,11 @@ export default function AssetManagementClientPage({
   initialData: AssetSummary | null;
   initialAiData: AssetAIRecommendation | null;
 }) {
-  const [assetSummary, setAssetSummary] = useState(initialData);
-  const [aiRecommendation, setAiRecommendation] = useState(initialAiData);
-  const [isLinked, setIsLinked] = useState(!!initialData);
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const [assetSummary] = useState(initialData);
+  const [aiRecommendation] = useState(initialAiData);
+  const [isLinked] = useState(!!initialData);
+  const [isLoading] = useState(false);
 
   const initialRatio = initialAiData?.recommendRatio
     ? Number(initialAiData.recommendRatio.split(":")[0])
@@ -127,33 +128,15 @@ export default function AssetManagementClientPage({
     1000000,
   );
 
-  const handleLinkAssets = async () => {
-    if (isLoading) return;
+  const handleLinkAssets = () => {
     try {
-      setIsLoading(true);
-      // [첫 번째 택배] 자산 요약 정보 가져오기
-      const response = await fetch("/api/assets/summary");
-      const assetResult = await response.json();
+      fetch("/api/assets/summary");
+      fetch("/api/assets/recommendation");
 
-      // [두 번째 택배] AI 추천 정보 가져오기
-      const aiRes = await fetch("/api/assets/recommendation");
-      const aiResult = await aiRes.json();
-
-      if (assetResult.data && aiResult.data) {
-        setAssetSummary(assetResult.data);
-        setAiRecommendation(aiResult.data);
-
-        // AI가 추천해준 비율("20:80")을 받아서 슬라이더 위치를 옮겨줌.
-        const newRatio = Number(aiResult.data.recommendRatio.split(":")[0]);
-        handleRatioChange(newRatio);
-
-        setIsLinked(true);
-      }
+      router.push("/wallet");
     } catch (error) {
       console.error("연동 에러:", error);
-      alert("자산을 불러오지 못했습니다.");
-    } finally {
-      setIsLoading(false);
+      router.push("/wallet");
     }
   };
 
