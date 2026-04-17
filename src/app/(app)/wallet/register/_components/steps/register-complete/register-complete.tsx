@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Button from "@/common/components/button/Button";
 
 type RegisterCompleteProps = {
@@ -10,6 +13,8 @@ const RegisterComplete = ({
   accountNumber,
   linkedAt,
 }: RegisterCompleteProps) => {
+  const router = useRouter();
+
   return (
     <main className="min-h-screen bg-white flex flex-col">
       <div className="flex-1 w-full px-6 flex flex-col items-center pt-25 text-center">
@@ -31,7 +36,11 @@ const RegisterComplete = ({
       </div>
 
       <div className="w-full px-6 pb-9">
-        <Button size="L" variant="active">
+        <Button
+          size="L"
+          variant="active"
+          onClick={() => router.push("/wallet")}
+        >
           확인
         </Button>
       </div>
