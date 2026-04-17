@@ -83,7 +83,7 @@ const Header = ({
   }
 
   return (
-    <header className="sticky top-0 z-50 flex h-15 w-full items-center justify-center bg-white px-4 text-black border-b border-gray-100">
+    <header className="sticky top-0 z-50 flex h-15 w-full items-center justify-center bg-white px-4 text-black">
       <button
         type="button"
         aria-label="뒤로 가기"
