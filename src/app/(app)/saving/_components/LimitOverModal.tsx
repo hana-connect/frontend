@@ -26,9 +26,9 @@ export default function LimitOverModal({
   const { currentSaving, inputAmount, savingLimit } = limitData;
   const overAmount = currentSaving + inputAmount - savingLimit;
 
-  const displayName = targetName.includes("(")
-    ? targetName.split("(")[0]
-    : targetName;
+  const displayName = (
+    targetName.includes("(") ? targetName.split("(")[0] : targetName
+  ).trim();
 
   return (
     <div
