@@ -219,6 +219,7 @@ export default function PaymentDeposit() {
           <div className="h-20" />
         </section>
       </div>
+
       <div className="fixed bottom-0 left-1/2 z-50 w-full max-w-93.75 -translate-x-1/2 bg-transparent px-5 pb-6 pt-3">
         <Button
           size="L"
