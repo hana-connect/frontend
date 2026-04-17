@@ -63,11 +63,7 @@ export default function PrepaymentResult() {
   };
 
   if (loading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-white">
-        로딩 중...
-      </main>
-    );
+    return null;
   }
 
   if (!result) {

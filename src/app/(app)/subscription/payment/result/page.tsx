@@ -19,7 +19,6 @@ export default function PaymentResult() {
 
   const [result, setResult] =
     useState<SubscriptionPaymentExecuteResponse | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (
@@ -27,7 +26,6 @@ export default function PaymentResult() {
       Number.isNaN(subscriptionId) ||
       subscriptionId <= 0
     ) {
-      setLoading(false);
       return;
     }
 
@@ -40,8 +38,6 @@ export default function PaymentResult() {
         setResult(response.data);
       } catch (error) {
         console.error("청약 납입 결과 조회 실패", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -59,21 +55,17 @@ export default function PaymentResult() {
   };
 
   const handleSubmit = () => {
-    router.push("/wallet");
+    router.push("/");
   };
 
-  if (loading) {
-    return <div>로딩 중...</div>;
-  }
-
   if (!result) {
-    return <div>납입 결과를 불러올 수 없습니다.</div>;
+    return null;
   }
 
   return (
-    <main className="flex h-dvh flex-col overflow-hidden bg-white">
-      <div className="flex-1 overflow-y-auto">
-        <div className="flex w-full flex-col items-center px-6 pb-10 pt-25 text-center">
+    <main className="flex h-dvh flex-col justify-between bg-white overflow-hidden">
+      <div className="flex-1 pt-25">
+        <div className="flex w-full flex-col items-center px-6 pb-10 pt-1 text-center">
           <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
 
           <h1 className="mt-6 text-xl font-medium text-brand-black">
@@ -91,7 +83,7 @@ export default function PaymentResult() {
             <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
               <span>입금 계좌번호</span>
               <span className="text-brand-black">
-                {formatAccountNumber(result.subscriptionAccountNumber)}{" "}
+                {formatAccountNumber(result.subscriptionAccountNumber)}
               </span>
             </div>
 
@@ -145,8 +137,7 @@ export default function PaymentResult() {
           )}
         </div>
       </div>
-
-      <div className="shrink-0 bg-white px-6 pb-9 pt-3">
+      <div className="bg-white px-6 pb-9 pt-3">
         <Button size="L" variant="active" onClick={handleSubmit}>
           확인
         </Button>

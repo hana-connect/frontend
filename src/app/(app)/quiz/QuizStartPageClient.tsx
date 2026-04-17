@@ -112,7 +112,7 @@ export default function QuizStartPageClient({
               disabled={isLoading}
               className="h-14 rounded-[20px] text-[18px] font-semibold leading-6"
             >
-              {isLoading ? "확인 중..." : "퀴즈 시작하기"}
+              {isLoading ? "퀴즈 생성 중" : "퀴즈 시작하기"}
             </Button>
 
             <Button
