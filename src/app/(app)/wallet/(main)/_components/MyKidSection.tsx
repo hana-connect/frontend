@@ -96,11 +96,7 @@ function KidCard({ kid }: KidCardProps) {
 
           <div className="space-y-6">
             {kid.accounts.map((account) => (
-              <AccountRow
-                key={account.accountId}
-                kidId={kid.id}
-                account={account}
-              />
+              <AccountRow key={account.accountId} account={account} />
             ))}
           </div>
         </>
@@ -123,22 +119,24 @@ function KidCard({ kid }: KidCardProps) {
 }
 
 type AccountRowProps = {
-  kidId: number;
   account: KidInfo["accounts"][number];
 };
 
-function AccountRow({ kidId, account }: AccountRowProps) {
+function AccountRow({ account }: AccountRowProps) {
   const router = useRouter();
 
   const handleClick = async () => {
-    // TODO 송금하기 api 연동되면 그때 다시 수정
-    if (account.accountType !== "SUBSCRIPTION") {
-      router.push(`/transfer?accountId=${account.accountId}`);
+    if (account.accountType === "SUBSCRIPTION") {
+      router.push(`/subscription?subscriptionId=${account.accountId}`);
       return;
     }
 
-    // 청약, 선납 모두
-    router.push(`/subscription?subscriptionId=${account.accountId}`);
+    if (account.accountType === "SAVINGS") {
+      router.push(`/saving?accountId=${account.accountId}`);
+      return;
+    }
+
+    router.push(`/transfer?accountId=${account.accountId}`);
   };
 
   return (
