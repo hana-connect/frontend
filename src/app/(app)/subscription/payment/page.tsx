@@ -220,7 +220,7 @@ export default function PaymentDeposit() {
         </section>
       </div>
 
-      <div className="shrink-0 bg-white px-5 pb-6 pt-3">
+      <div className="shrink-0 bg-[#F6F7F8] px-5 pb-6 pt-3">
         <Button
           size="L"
           variant={isDisabled ? "disabled" : "active"}

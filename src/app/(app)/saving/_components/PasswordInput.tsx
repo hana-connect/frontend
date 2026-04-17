@@ -19,7 +19,7 @@ export default function PasswordInput({
       </div>
       <div className="flex-1 overflow-y-auto pt-10">
         <Password
-          title="결제 비밀번호 입력"
+          title="아이부자 앱 간편비밀번호를 입력해 주세요"
           length={6}
           onComplete={onComplete}
         />
