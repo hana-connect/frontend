@@ -22,9 +22,7 @@ export default function QuizCompletePageClient() {
           <div className="relative z-10 flex flex-1 flex-col">
             <div className="mt-1">
               <h1 className="text-[20px] font-bold leading-8 text-brand-black">
-                오늘 퀴즈를
-                <br />
-                모두 풀었어요!
+                오늘 퀴즈를 모두 풀었어요!
               </h1>
             </div>
 

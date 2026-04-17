@@ -1,5 +1,8 @@
+"use client";
+
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import type {
   MainAccountInfo,
   UserRole,
@@ -15,19 +18,21 @@ function TopRegisterSection({
   role,
   mainAccountInfo,
 }: TopRegisterSectionProps) {
+  const router = useRouter();
   const isChild = role === "KID";
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <button
-          type="button"
-          className="flex h-[74px] w-[74px] shrink-0 items-center justify-center rounded-full border border-grey-5 bg-white"
-        >
+      <button
+        type="button"
+        onClick={() => router.push(`/wallet/register?role=${role}`)}
+        className="flex items-center gap-4"
+      >
+        <div className="flex h-[74px] w-[74px] shrink-0 items-center justify-center rounded-full border border-grey-5 bg-white">
           <PlusIcon className="text-brand-purple-1" strokeWidth={3} />
-        </button>
+        </div>
         <p className="text-body-16-m text-grey-6">계좌 등록하기</p>
-      </div>
+      </button>
 
       <div className="flex items-center justify-between">
         <div className="flex min-w-0 items-center gap-4">
