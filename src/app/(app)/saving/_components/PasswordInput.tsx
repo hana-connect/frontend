@@ -14,7 +14,7 @@ export default function PasswordInput({
 }: PasswordInputProps) {
   return (
     <div className="flex flex-col h-full bg-white z-50">
-      <div className="flex-none border-b border-gray-100">
+      <div className="flex-none">
         <RegisterStepHeader title="비밀번호 입력" onBack={onBack} />
       </div>
       <div className="flex-1 overflow-y-auto pt-10">

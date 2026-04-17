@@ -73,9 +73,7 @@ export default function RelayHistory({
     return (
       <div className="min-h-screen bg-white">
         <RegisterStepHeader title="지난 작성 내역" onBack={onBack} />
-        <div className="flex items-center justify-center pt-40">
-          <p className="text-body-14-m text-grey-6">...</p>
-        </div>
+        <div className="flex items-center justify-center pt-40" />
       </div>
     );
   }

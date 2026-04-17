@@ -7,7 +7,7 @@ import ItemCard from "@/common/components/item-card/ItemCard";
 import { RadioGroup } from "@/common/components/radio-group/RadioGroup";
 import { updateRewardAccount } from "@/common/lib/api/accounts/api-client";
 import { formatMoney } from "@/common/lib/utils";
-import { useAlert } from "@/common/providers/alertProvider";
+import { useAlert } from "@/common/providers/alert-provider";
 import type { AccountType } from "../../(main)/_types";
 
 type AccountItem = {

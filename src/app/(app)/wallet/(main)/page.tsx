@@ -186,7 +186,9 @@ async function Page() {
       return 0;
     });
 
-    kids = await getMyKids();
+    if (userRole === "PARENT") {
+      kids = await getMyKids();
+    }
   } catch (error) {
     if (error instanceof SpringApiError && error.status === 401) {
       redirect("/login");
@@ -209,8 +211,7 @@ async function Page() {
           accounts={accounts}
           mainAccountInfo={mainAccountInfo}
         />
-        {/* 아이도 아이 리스트 볼 수 있음 */}
-        <MyKidSection kids={kids} />
+        {userRole === "PARENT" && <MyKidSection kids={kids} />}
         {pageData.extraSections}
       </main>
     </>

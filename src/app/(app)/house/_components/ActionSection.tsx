@@ -22,7 +22,7 @@ export default function ActionSection({ isLevelZero }: ActionSectionProps) {
     }
     return isLevelZero
       ? "미리미리 집을 준비하기 위한 퀴즈에 도전해볼까요?"
-      : "이번 달도 소중한 집을 지켰어요!\n진정한 내 집 마련 박사가 되기 위한 퀴즈에 도전해볼까요?";
+      : "이번 달도 소중한 집을 지켰어요!\n내 집 마련 박사가 되기 위한 퀴즈에 도전해볼까요?";
   };
 
   const getButtonInfo = () => {
