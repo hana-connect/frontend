@@ -86,7 +86,9 @@ export default function PaymentResult() {
           />
 
           <section className="w-full pt-6 text-left">
-            <h2 className="mb-4 text-base text-brand-black">청약</h2>
+            {result.rewardAmount > 0 && (
+              <h2 className="mb-4 text-base text-brand-black">청약</h2>
+            )}
 
             <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
               <span>입금 계좌번호</span>

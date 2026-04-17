@@ -70,10 +70,10 @@ export default function PrepaymentHome() {
   }
 
   return (
-    <main className="min-h-screen bg-white px-5 pt-6">
+    <main className="min-h-screen bg-white">
       <Header type="sub" title="청약 납입하기" />
 
-      <section className="mt-10 flex flex-col items-center text-center">
+      <section className="px-5 mt-10 flex flex-col items-center text-center">
         <div className="w-full max-w-37.5">
           <Image
             src="/svg/ic_house.svg"
@@ -97,7 +97,7 @@ export default function PrepaymentHome() {
         </p>
       </section>
 
-      <section className="mt-18 flex flex-col gap-3">
+      <section className="mt-18 px-5 flex flex-col gap-3">
         <Button size="L" variant="active" onClick={handlePensionDeposit}>
           내 연금 계좌에 넣을래요
         </Button>
@@ -111,7 +111,7 @@ export default function PrepaymentHome() {
         </Button>
       </section>
 
-      <section className="mt-8 -mx-5 bg-[#F6F7F8] px-4 py-4 text-left">
+      <section className="mt-8 -mx-5 px-9 bg-[#F6F7F8] py-4 text-left">
         <p className="mb-3.5 mt-4 text-xl font-semibold leading-6 text-brand-black">
           납입회차는 국민주택 청약 시 순위 산정과 관련이 있습니다.
         </p>

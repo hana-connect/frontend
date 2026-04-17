@@ -107,10 +107,9 @@ export default function PrepaymentDeposit() {
   return (
     <main className="flex h-dvh flex-col bg-[#F6F7F8]">
       <div className="flex-1 overflow-y-auto">
+        <Header type="sub" title="청약 납입하기" />
         <div className="bg-white px-5 pt-6 pb-12">
-          <Header type="sub" title="청약 납입하기" />
-
-          <section className="mt-10">
+          <section className="mt-4">
             <p className="mb-6 text-xl font-bold text-brand-black">납입금액</p>
 
             <Input
@@ -144,14 +143,13 @@ export default function PrepaymentDeposit() {
           </section>
         </div>
 
-        <section className="px-5 pt-4 pb-4">
+        <section className="px-5 pt-4">
           <GuideSection />
         </section>
 
         <div className="h-28" />
       </div>
-
-      <div className="shrink-0 bg-[#F6F7F8] px-5 pb-6 pt-3">
+      <div className="fixed bottom-0 left-1/2 z-50 w-full max-w-93.75 -translate-x-1/2 bg-transparent px-5 pb-6 pt-3">
         <Button
           size="L"
           variant={isDisabled ? "disabled" : "active"}
