@@ -15,11 +15,9 @@ export default function TransferResultPage() {
   const transferId = searchParams.get("transferId");
 
   const [data, setData] = useState<TransferExecuteResponse | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!transferId) {
-      setLoading(false);
       return;
     }
 
@@ -32,8 +30,6 @@ export default function TransferResultPage() {
         setData(res.data);
       } catch (error) {
         console.error("송금 결과 조회 실패", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -59,33 +55,32 @@ export default function TransferResultPage() {
     router.push("/");
   };
 
-  if (loading) return <div>로딩 중...</div>;
-  if (!data) return <div>송금 결과를 불러올 수 없습니다.</div>;
+  if (!data) return null;
 
   return (
-    <main className="min-h-screen bg-white flex flex-col">
-      <div className="flex-1 w-full px-6 flex flex-col items-center pt-25 text-center">
+    <main className="min-h-screen flex flex-col bg-white">
+      <div className="flex flex-1 flex-col items-center px-6 pt-25 text-center">
         <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
 
-        <h1 className="text-sm font-medium text-brand-black mt-6">
+        <h1 className="mt-6 text-sm font-medium text-brand-black">
           송금이 완료되었어요!
         </h1>
 
-        <div className="w-full h-[0.8px] bg-grey-5 mt-12" />
+        <div className="mt-12 h-[0.8px] w-full bg-grey-5" />
 
-        <div className="mt-6 w-full flex justify-between text-body-16-m text-grey-6 pb-4">
+        <div className="mt-6 flex w-full justify-between pb-4 text-body-16-m text-grey-6">
           <span>입금 계좌번호</span>
           <span className="text-brand-black">
             {formatAccountNumber(data.toAccountNumber)}
           </span>
         </div>
 
-        <div className="w-full flex justify-between text-body-16-m text-grey-6 pb-4">
+        <div className="flex w-full justify-between pb-4 text-body-16-m text-grey-6">
           <span>송금 금액</span>
           <span className="text-brand-black">{formatAmount(data.amount)}</span>
         </div>
 
-        <div className="w-full flex justify-between text-body-16-m text-grey-6">
+        <div className="flex w-full justify-between text-body-16-m text-grey-6">
           <span>송금일</span>
           <span className="text-brand-black">
             {formatDate(data.transferredAt)}

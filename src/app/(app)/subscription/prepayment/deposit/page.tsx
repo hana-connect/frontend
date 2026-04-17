@@ -82,11 +82,7 @@ export default function PrepaymentDeposit() {
   };
 
   if (isLoading) {
-    return (
-      <main className="flex h-dvh items-center justify-center bg-white">
-        로딩 중...
-      </main>
-    );
+    return null;
   }
 
   if (!paymentInfo) {

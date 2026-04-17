@@ -137,11 +137,7 @@ export default function PaymentDeposit() {
   };
 
   if (isLoading) {
-    return (
-      <main className="flex h-dvh items-center justify-center bg-white">
-        로딩 중...
-      </main>
-    );
+    return null;
   }
 
   if (!paymentInfo) {
@@ -200,7 +196,7 @@ export default function PaymentDeposit() {
 
   return (
     <main className="flex h-dvh flex-col bg-white">
-      <div className="flex-1 overflow-y-auto bg-[#F6F7F8]">
+      <div className="custom-scroll flex-1 overflow-y-auto bg-[#F6F7F8]">
         <div className="bg-white px-5 pt-6 pb-12">
           <Header type="sub" title="청약 납입하기" />
 
@@ -234,6 +230,17 @@ export default function PaymentDeposit() {
           확인
         </Button>
       </div>
+
+      <style jsx>{`
+        .custom-scroll {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </main>
   );
 }
