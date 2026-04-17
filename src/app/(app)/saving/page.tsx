@@ -53,6 +53,7 @@ export default function SavingPage() {
   const [isRecentOpen, setIsRecentOpen] = useState(false);
   const [prepareData, setPrepareData] =
     useState<TransferPrepareResponse | null>(null);
+  const [completedAccountNumber, setCompletedAccountNumber] = useState("");
 
   const isTransferReady = amount > 0 && message.trim().length > 0;
 
@@ -124,12 +125,13 @@ export default function SavingPage() {
         content: message,
       };
 
-      await apiClient.post<ApiResponse<SavingTransferResponse>>(
-        "/api/transfer/savings",
-        payload,
-      );
+      const response = await apiClient.post<
+        ApiResponse<SavingTransferResponse>
+      >("/api/transfer/savings", payload);
 
       setStep("complete");
+      setCompletedAccountNumber(response.data.toAccountNumber);
+
       return true;
     } catch (error) {
       console.error("적금 송금 실패", error);
@@ -201,12 +203,14 @@ export default function SavingPage() {
           <TransferComplete
             amount={amount}
             message={message}
+            accountNumber={completedAccountNumber}
             onConfirm={() => router.push("/")}
           />
         )}
 
         <LimitOverModal
           isOpen={!!limitInfo}
+          targetName={prepareData?.displayName ?? "아이"}
           limitData={limitInfo}
           onClose={() => {
             setLimitInfo(null);

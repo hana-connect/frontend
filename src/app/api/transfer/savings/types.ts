@@ -48,6 +48,7 @@ export type SavingTransferResponse = {
   transactionMoney: number;
   transactionBalance: number;
   message: string;
+  toAccountNumber: string;
 };
 
 /**

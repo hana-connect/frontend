@@ -4,6 +4,7 @@ import Button from "@/common/components/button/Button";
 
 type LimitOverModalProps = {
   isOpen: boolean;
+  targetName: string;
   limitData: {
     currentSaving: number;
     inputAmount: number;
@@ -15,6 +16,7 @@ type LimitOverModalProps = {
 
 export default function LimitOverModal({
   isOpen,
+  targetName,
   limitData,
   onClose,
   onRetry,
@@ -23,6 +25,10 @@ export default function LimitOverModal({
 
   const { currentSaving, inputAmount, savingLimit } = limitData;
   const overAmount = currentSaving + inputAmount - savingLimit;
+
+  const displayName = (
+    targetName.includes("(") ? targetName.split("(")[0] : targetName
+  ).trim();
 
   return (
     <div
@@ -41,7 +47,7 @@ export default function LimitOverModal({
 
         <div className="text-[#1A1C3D] text-lg font-medium leading-7 mb-8">
           <p>
-            이 통장은 가득 찼지만, 덕분에 채현이의
+            이 통장은 가득 찼지만, 덕분에 {displayName}의
             <br />
             꿈은 더 커질 수 있었어요!
           </p>
