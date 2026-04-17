@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ScanLine } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/common/components/button/Button";
+import type { UserRole } from "@/common/types/user";
 import AIAssetAllocation from "./_components/AIAssetAllocation";
 import AllowanceSliderSection from "./_components/AllowanceSliderSection";
 import CurrentAsset from "./_components/CurrentAsset";
@@ -109,15 +110,24 @@ const Header = ({
 export default function AssetManagementClientPage({
   initialData,
   initialAiData,
+  userRole,
 }: {
   initialData: AssetSummary | null;
   initialAiData: AssetAIRecommendation | null;
+  userRole: UserRole;
 }) {
   const router = useRouter();
+
+  useEffect(() => {
+    if (userRole === "KID") {
+      router.replace("/");
+    }
+  }, [userRole, router]);
+
   const [assetSummary] = useState(initialData);
   const [aiRecommendation] = useState(initialAiData);
   const [isLinked] = useState(!!initialData);
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialRatio = initialAiData?.recommendRatio
     ? Number(initialAiData.recommendRatio.split(":")[0])
@@ -128,17 +138,26 @@ export default function AssetManagementClientPage({
     1000000,
   );
 
-  const handleLinkAssets = () => {
+  const handleLinkAssets = async () => {
     try {
-      fetch("/api/assets/summary");
-      fetch("/api/assets/recommendation");
+      setIsLoading(true);
+      await Promise.all([
+        fetch("/api/assets/summary"),
+        fetch("/api/assets/recommendation"),
+      ]);
 
       router.push("/wallet");
     } catch (error) {
       console.error("연동 에러:", error);
       router.push("/wallet");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (userRole === "KID")
+    // 권한이 KID라면 아무것도 렌더링하지 않음
+    return null;
 
   return (
     <div className="w-full max-w-93.75 mx-auto min-h-screen bg-white font-sans flex flex-col shadow-xl overflow-hidden">
