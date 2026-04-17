@@ -207,6 +207,7 @@ export default function SavingPage() {
 
         <LimitOverModal
           isOpen={!!limitInfo}
+          targetName={prepareData?.displayName ?? "아이"}
           limitData={limitInfo}
           onClose={() => {
             setLimitInfo(null);
