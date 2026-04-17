@@ -63,9 +63,7 @@ export default function PrepaymentResult() {
   };
 
   if (loading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-white" />
-    );
+    return null;
   }
 
   if (!result) {

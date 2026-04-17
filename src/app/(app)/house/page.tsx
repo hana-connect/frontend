@@ -30,12 +30,26 @@ async function Page({ searchParams }: PageProps) {
       getHouseHistory(kidId, paidAt),
     ]);
 
-    if (!report || report.level === 0) {
+    if (!report) {
+      return (
+        <main className="flex min-h-[60vh] flex-col items-center justify-center py-10 px-6">
+          <h1 className="text-heading-24-b mb-4">리포트를 찾을 수 없어요</h1>
+          <p className="mb-6 text-center text-body-16-m text-grey-6 break-keep">
+            해당 아이의 청약 리포트를 찾을 수 없습니다. 아이 정보가 올바르게
+            입력되었는지 확인해주세요.
+          </p>
+        </main>
+      );
+    }
+
+    if (report?.level === 0) {
       return (
         <main>
           <Header type="sub" />
           <div className="pt-5 pb-10 px-6">
-            <h1 className="text-heading-24-b mb-3">별돌이의 청약리포트</h1>
+            <h1 className="text-heading-24-b mb-3">
+              {report.kidName}의 청약리포트
+            </h1>
             <ProgressBar level={0} gauge={0} />
             <ReportHouse level={0} season={getCurrentSeason(paidAt)} />
 
@@ -53,7 +67,9 @@ async function Page({ searchParams }: PageProps) {
       <main>
         <Header type="sub" />
         <div className="pt-5 pb-10 px-6">
-          <h1 className="text-heading-24-b mb-3">별돌이의 청약리포트</h1>
+          <h1 className="text-heading-24-b mb-3">
+            {report.kidName}의 청약리포트
+          </h1>
           <ProgressBar level={level} gauge={gauge} />
           <ReportHouse level={level} season={currentSeason} />
 

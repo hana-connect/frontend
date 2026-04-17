@@ -82,7 +82,7 @@ export default function PrepaymentDeposit() {
   };
 
   if (isLoading) {
-    return <main className="flex h-dvh items-center justify-center bg-white" />;
+    return null;
   }
 
   if (!paymentInfo) {

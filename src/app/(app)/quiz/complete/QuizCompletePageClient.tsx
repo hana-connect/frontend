@@ -9,7 +9,7 @@ export default function QuizCompletePageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const childId = searchParams.get("childId");
+  const _childId = searchParams.get("childId");
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[375px] flex-col bg-[#FFFFFF]">
@@ -22,9 +22,7 @@ export default function QuizCompletePageClient() {
           <div className="relative z-10 flex flex-1 flex-col">
             <div className="mt-1">
               <h1 className="text-[20px] font-bold leading-8 text-brand-black">
-                오늘 퀴즈를
-                <br />
-                모두 풀었어요!
+                오늘 퀴즈를 모두 풀었어요!
               </h1>
             </div>
 
@@ -45,7 +43,7 @@ export default function QuizCompletePageClient() {
                 </div>
 
                 <span className="absolute whitespace-nowrap bg-[#FFFFFF] px-3 text-[20px] font-bold leading-8 text-brand-purple-1">
-                  별돌이에게 한발짝 다가갔어요
+                  우리 아이에게 한발짝 다가갔어요
                 </span>
               </div>
             </div>
@@ -74,7 +72,7 @@ export default function QuizCompletePageClient() {
                   sessionStorage.removeItem("quizToday");
                   sessionStorage.removeItem("quizCurrentQuestion");
                   sessionStorage.removeItem("quizAnswerResult");
-                  router.push(childId ? `/quiz?childId=${childId}` : "/");
+                  router.push("/");
                 }}
                 className="h-14 rounded-[20px] text-[20px] font-semibold leading-6"
               >

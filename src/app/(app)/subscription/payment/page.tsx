@@ -137,7 +137,7 @@ export default function PaymentDeposit() {
   };
 
   if (isLoading) {
-    return <main className="flex h-dvh items-center justify-center bg-white" />;
+    return null;
   }
 
   if (!paymentInfo) {
@@ -229,6 +229,17 @@ export default function PaymentDeposit() {
           확인
         </Button>
       </div>
+
+      <style jsx>{`
+        .custom-scroll {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </main>
   );
 }

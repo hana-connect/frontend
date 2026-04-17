@@ -64,9 +64,7 @@ export default function PrepaymentHome() {
   };
 
   if (isLoading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-white" />
-    );
+    return null;
   }
 
   return (

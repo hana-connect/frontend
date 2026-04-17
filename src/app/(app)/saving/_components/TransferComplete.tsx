@@ -8,7 +8,7 @@ type TransferCompleteProps = {
   amount: number;
   message: string;
   onConfirm: () => void;
-  accountNumber?: string;
+  accountNumber: string;
   transferDate?: string;
 };
 
@@ -25,19 +25,12 @@ export default function TransferComplete({
   };
 
   const formatAccountNumber = (value?: string) => {
-    const target = value ?? "11122223333";
-
-    const onlyNumber = target.replace(/[^0-9]/g, "");
-
-    if (onlyNumber.length === 11) {
-      return onlyNumber.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
-    }
-
-    return target;
+    if (!value) return "-";
+    return value.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
   };
 
   const formatTransferDate = (value?: string) => {
-    const target = value ?? "2026-04-07";
+    const target = value ?? new Date().toISOString();
 
     const date = new Date(target);
 

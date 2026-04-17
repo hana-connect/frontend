@@ -3,6 +3,7 @@ import type { ApiResponse } from "../types";
 
 export type HouseStatusResponse = ApiResponse<{
   memberId: number;
+  kidName: string;
   level: number;
   gauge: number;
   totalCount: number | null;
