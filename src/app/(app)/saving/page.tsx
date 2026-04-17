@@ -142,7 +142,7 @@ export default function SavingPage() {
       <main className="w-full max-w-93.75 h-screen bg-white relative flex flex-col font-['Pretendard'] overflow-hidden">
         {step === "input" && (
           <div className="flex flex-col h-full relative">
-            <div className="flex-none border-b border-gray-100">
+            <div className="flex-none">
               <Header type="sub" title="송금하기" />
             </div>
 
