@@ -137,11 +137,7 @@ export default function PaymentDeposit() {
   };
 
   if (isLoading) {
-    return (
-      <main className="flex h-dvh items-center justify-center bg-white">
-        로딩 중...
-      </main>
-    );
+    return <main className="flex h-dvh items-center justify-center bg-white" />;
   }
 
   if (!paymentInfo) {

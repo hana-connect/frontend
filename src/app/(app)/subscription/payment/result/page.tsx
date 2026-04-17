@@ -63,7 +63,7 @@ export default function PaymentResult() {
   };
 
   if (loading) {
-    return <div>로딩 중...</div>;
+    return <div />;
   }
 
   if (!result) {

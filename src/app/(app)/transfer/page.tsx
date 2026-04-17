@@ -61,7 +61,7 @@ export default function TransferPage() {
     router.push("/transfer/password");
   };
 
-  if (loading) return <div>로딩 중...</div>;
+  if (loading) return <div />;
   if (!data) return <div>송금 정보를 불러올 수 없습니다.</div>;
 
   return (

@@ -65,9 +65,7 @@ export default function PrepaymentHome() {
 
   if (isLoading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-white">
-        로딩 중...
-      </main>
+      <main className="flex min-h-screen items-center justify-center bg-white" />
     );
   }
 
