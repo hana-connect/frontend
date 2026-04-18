@@ -95,12 +95,19 @@ export default function PrepaymentDeposit() {
 
   if (showAmountPad) {
     return (
-      <TransferAmount
-        accountHolder={paymentInfo?.displayName ?? "청약 납입"}
-        accountNickname={paymentInfo?.accountNickname ?? "청약 계좌"}
-        balance={paymentInfo?.balance ?? 0}
-        onNext={handleNextStep}
-      />
+      <main className="flex h-dvh flex-col bg-white">
+        <div className="flex-none">
+          <Header type="sub" title="청약 납입하기" />
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <TransferAmount
+            accountHolder={paymentInfo?.displayName ?? "청약 납입"}
+            accountNickname={paymentInfo?.accountNickname ?? "청약 계좌"}
+            balance={paymentInfo?.balance ?? 0}
+            onNext={handleNextStep}
+          />
+        </div>
+      </main>
     );
   }
 

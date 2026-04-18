@@ -147,8 +147,7 @@ export default function SavingPage() {
             <div className="flex-none">
               <Header type="sub" title="송금하기" />
             </div>
-
-            <div className="flex-1 overflow-y-auto pb-40">
+            <div className="flex-1 overflow-hidden">
               <AmountInput
                 amount={amount}
                 onAmountChange={setAmount}
@@ -169,7 +168,7 @@ export default function SavingPage() {
                 recentMessages={recentMessages}
               />
 
-              <div className="mt-20 left-0 w-full px-6 bg-white py-4 z-10">
+              <div className="left-0 w-full px-6 bg-white py-4 z-10">
                 <Button
                   size="L"
                   variant={isTransferReady ? "active" : "disabled"}
