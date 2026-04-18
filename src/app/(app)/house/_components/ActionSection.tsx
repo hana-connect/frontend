@@ -12,7 +12,7 @@ type ActionSectionProps = {
 
 export default function ActionSection({
   isLevelZero,
-  hasAccount,
+  hasAccount = true,
   kid,
 }: ActionSectionProps) {
   const role = useUserRole();
