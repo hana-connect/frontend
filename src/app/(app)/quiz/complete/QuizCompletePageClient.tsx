@@ -60,9 +60,16 @@ export default function QuizCompletePageClient() {
               </div>
             </div>
 
-            <p className="mt-4 text-center text-[20px] font-semibold leading-8 text-[#9C91B0]">
-              내일 다시 만나요!
-            </p>
+            <br />
+
+            <div className="mt-4 rounded-2xl bg-[#FFF2CA] break-keep p-4 text-center text-[20px] font-semibold leading-8">
+              🎉 리워드 14원이
+              <br />
+              리워드 계좌에 지급되었어요!
+              <p className="mt-4 text-center text-[20px] font-semibold leading-8">
+                내일 다시 만나요!
+              </p>
+            </div>
 
             <div className="mt-auto pt-8">
               <Button
