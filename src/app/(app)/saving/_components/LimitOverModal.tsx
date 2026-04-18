@@ -32,7 +32,7 @@ export default function LimitOverModal({
 
   return (
     <div
-      className="fixed inset-0 z-100 flex items-end justify-center bg-black/50 font-['Pretendard']"
+      className="fixed inset-0 z-100 flex items-end justify-center bg-black/50"
       role="dialog"
       aria-modal="true"
       aria-labelledby="limit-modal-title"

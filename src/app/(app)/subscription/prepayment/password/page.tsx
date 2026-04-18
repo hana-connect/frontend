@@ -72,10 +72,12 @@ export default function PrepaymentPassword() {
   };
 
   return (
-    <Password
-      title="아이부자 앱 간편 비밀번호를 입력해 주세요"
-      length={6}
-      onComplete={handlePasswordComplete}
-    />
+    <main className="flex h-dvh flex-col bg-white">
+      <Password
+        title="아이부자 앱 간편비밀번호를 입력해 주세요"
+        length={6}
+        onComplete={handlePasswordComplete}
+      />
+    </main>
   );
 }

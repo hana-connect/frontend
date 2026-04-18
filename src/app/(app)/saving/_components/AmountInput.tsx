@@ -44,7 +44,7 @@ export default function AmountInput({
             onBack={() => setIsKeypadVisible(false)}
           />
         </div>
-        <div className="flex-1 overflow-y-auto pt-10 pb-10">
+        <div className="flex-1 overflow-hidden">
           <TransferAmount
             accountHolder={accountHolder}
             accountNickname={accountNickname}

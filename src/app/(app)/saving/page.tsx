@@ -141,14 +141,13 @@ export default function SavingPage() {
 
   return (
     <div className="min-h-screen bg-white flex justify-center">
-      <main className="w-full max-w-93.75 h-screen bg-white relative flex flex-col font-['Pretendard'] overflow-hidden">
+      <main className="w-full max-w-93.75 h-screen bg-white relative flex flex-col overflow-hidden">
         {step === "input" && (
           <div className="flex flex-col h-full relative">
             <div className="flex-none">
               <Header type="sub" title="송금하기" />
             </div>
-
-            <div className="flex-1 overflow-y-auto pb-40">
+            <div className="flex-1 overflow-hidden">
               <AmountInput
                 amount={amount}
                 onAmountChange={setAmount}
@@ -169,7 +168,7 @@ export default function SavingPage() {
                 recentMessages={recentMessages}
               />
 
-              <div className="mt-20 left-0 w-full px-6 bg-white py-4 z-10">
+              <div className="left-0 w-full px-6 bg-white py-4 z-10">
                 <Button
                   size="L"
                   variant={isTransferReady ? "active" : "disabled"}

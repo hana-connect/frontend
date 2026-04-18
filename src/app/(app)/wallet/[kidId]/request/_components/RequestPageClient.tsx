@@ -163,11 +163,7 @@ const RequestPageClient = ({ initialParents }: RequestPageProps) => {
         />
       </div>
       <div className="fixed bottom-9 left-1/2 -translate-x-1/2 w-full max-w-93.75 px-6">
-        <Button
-          size="L"
-          variant="active"
-          onClick={() => router.push("/wallet")}
-        >
+        <Button size="L" variant="active" onClick={() => router.push("/")}>
           확인
         </Button>
       </div>

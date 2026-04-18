@@ -59,7 +59,7 @@ export default function PrepaymentResult() {
   };
 
   const handleSubmit = () => {
-    router.push("/wallet");
+    router.push("/");
   };
 
   if (loading) {

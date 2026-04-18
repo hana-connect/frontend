@@ -16,7 +16,6 @@ export type RecentRelayMessagesResponse = {
 /**
  * GET /api/transfer/recent
  * 최근 송금 금액 조회
- * 실제 응답 DTO 확인 후 수정 가능
  */
 export type RecentTransfer = {
   transferId: number;

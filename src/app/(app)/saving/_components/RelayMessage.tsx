@@ -46,19 +46,22 @@ export default function RelayMessage({
           최근 메시지 내역
         </h3>
         <div className="bg-[#F9F9F9] rounded-[20px] p-5 space-y-3">
-          {recentMessages.map((item) => (
-            <div
-              key={item.letterId}
-              className="flex justify-between items-center"
-            >
-              <span className="text-neutral-500 text-base font-normal leading-7">
-                {formatDate(item.date)}
-              </span>
-              <span className="text-neutral-900 text-base font-normal leading-7">
-                {item.message}
-              </span>
-            </div>
-          ))}
+          {recentMessages
+            .slice()
+            .reverse()
+            .map((item) => (
+              <div
+                key={item.letterId}
+                className="flex justify-between items-center"
+              >
+                <span className="text-neutral-500 text-base font-normal leading-7">
+                  {formatDate(item.date)}
+                </span>
+                <span className="text-neutral-900 text-base font-normal leading-7">
+                  {item.message}
+                </span>
+              </div>
+            ))}
         </div>
       </div>
 
