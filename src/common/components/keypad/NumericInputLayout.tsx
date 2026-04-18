@@ -11,7 +11,6 @@ export default function NumericInputLayout({
 }) {
   return (
     <main className="mx-auto flex h-full w-full max-w-[375px] flex-col bg-white px-5 pb-10 pt-6">
-      {" "}
       <div className="flex flex-1 flex-col">
         <div className="flex flex-1 flex-col">{top}</div>
         <div className="pb-2">{keypad}</div>
