@@ -70,6 +70,7 @@ export default function AIAssetAllocation({
             }}
           />
           <div
+            className="flex-1"
             style={{
               width: getWidth(assetData?.recommendedPension),
               backgroundColor: ASSET_COLORS.연금,

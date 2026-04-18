@@ -55,6 +55,7 @@ export default function CurrentAsset({ assetData }: CurrentAssetProps) {
             }}
           />
           <div
+            className="flex-1"
             style={{
               width: getWidth(assetData?.pension),
               backgroundColor: ASSET_COLORS.연금,
