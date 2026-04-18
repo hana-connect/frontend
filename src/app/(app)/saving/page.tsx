@@ -141,7 +141,7 @@ export default function SavingPage() {
 
   return (
     <div className="min-h-screen bg-white flex justify-center">
-      <main className="w-full max-w-93.75 h-screen bg-white relative flex flex-col] overflow-hidden">
+      <main className="w-full max-w-93.75 h-screen bg-white relative flex flex-col overflow-hidden">
         {step === "input" && (
           <div className="flex flex-col h-full relative">
             <div className="flex-none">
