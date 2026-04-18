@@ -44,7 +44,7 @@ export default function TransferComplete({
   };
 
   return (
-    <div className="absolute inset-0 bg-white z-80 flex flex-col w-full max-w-93.75 mx-auto animate-in fade-in duration-500 font-['Pretendard'] overflow-y-auto">
+    <div className="absolute inset-0 bg-white z-80 flex flex-col w-full max-w-93.75 mx-auto animate-in fade-in duration-500] overflow-y-auto">
       <div className="flex-1 w-full px-6 flex flex-col items-center pt-25 text-center">
         <Image src="/svg/ic_check.svg" alt="성공" width={72} height={72} />
 
