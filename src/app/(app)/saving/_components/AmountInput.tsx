@@ -45,7 +45,6 @@ export default function AmountInput({
           />
         </div>
         <div className="flex-1 overflow-hidden">
-          {" "}
           <TransferAmount
             accountHolder={accountHolder}
             accountNickname={accountNickname}
