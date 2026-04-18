@@ -193,6 +193,7 @@ async function Page() {
     if (error instanceof SpringApiError && error.status === 401) {
       redirect("/login");
     }
+    console.error("계좌 조회 실패", error);
   }
 
   const pageData = walletPageData[userRole];
