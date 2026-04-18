@@ -184,7 +184,7 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
 
           {parents.length > 0 ? (
             <ul className="flex flex-col">
-              {parents.map((parent, index) => {
+              {parents.map((parent, _index) => {
                 const isOdd = parent.connectMemberId % 2 !== 0;
                 const profileImage = isOdd
                   ? "/svg/ic_mom1.svg"
@@ -213,16 +213,10 @@ const ChildMainView = ({ wallet, parents }: ChildMainProps) => {
                         </p>
                       </div>
                     </div>
-                    {/* 첫 번째 부모 '내역 공유중', 나머지는 '지갑공유' 버튼 */}
-                    {index === 0 ? (
-                      <p className="text-body-16-m text-brand-purple-1">
-                        내역 공유중
-                      </p>
-                    ) : (
-                      <Button size="S" variant="smallGray">
-                        지갑공유
-                      </Button>
-                    )}
+                    {/* '내역 공유중' */}
+                    <p className="text-body-16-m text-brand-purple-1">
+                      내역 공유중
+                    </p>
                   </li>
                 );
               })}

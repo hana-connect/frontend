@@ -5,14 +5,17 @@ import { serverSpringFetch } from "@/common/lib/api/server-spring-fetch";
 import type { ApiResponse } from "@/common/lib/api/types";
 
 type ParentResponseItem = {
-  connectMemberName: string;
+  connectMemberPhoneName: string;
 };
 
 type SharedWallet = {
   id: number;
   name: string;
   statusText: string;
+  image: string;
 };
+
+const profileImages = ["/svg/ic_mom1.svg", "/svg/ic_mom2.svg"];
 
 async function getSharedWallets(): Promise<SharedWallet[]> {
   const result = await serverSpringFetch<ApiResponse<ParentResponseItem[]>>(
@@ -26,9 +29,10 @@ async function getSharedWallets(): Promise<SharedWallet[]> {
   if (!result.data) return [];
 
   return result.data.map((item, index) => ({
-    id: index, // id 필요하니까 index로 대체
-    name: item.connectMemberName,
+    id: index,
+    name: item.connectMemberPhoneName,
     statusText: "잔액과 내역 공유 중",
+    image: profileImages[index % profileImages.length],
   }));
 }
 
@@ -84,7 +88,7 @@ function SharedWalletRow({ wallet }: SharedWalletRowProps) {
       <div className="flex min-w-0 items-center gap-4">
         <div className="relative h-[74px] w-[74px] shrink-0 overflow-hidden rounded-full border border-grey-5">
           <Image
-            src="/svg/ic_mom1.svg"
+            src={wallet.image}
             alt={`${wallet.name} 프로필`}
             fill
             className="object-cover"
