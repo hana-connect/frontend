@@ -32,29 +32,38 @@ async function Page({ searchParams }: PageProps) {
 
     if (!report) {
       return (
-        <main className="flex min-h-[60vh] flex-col items-center justify-center py-10 px-6">
-          <h1 className="text-heading-24-b mb-4">리포트를 찾을 수 없어요</h1>
-          <p className="mb-6 text-center text-body-16-m text-grey-6 break-keep">
-            해당 아이의 청약 리포트를 찾을 수 없습니다. 아이 정보가 올바르게
-            입력되었는지 확인해주세요.
-          </p>
-        </main>
+        <>
+          <Header type="sub" />
+          <main className="flex min-h-[60vh] flex-col items-center justify-center py-10 px-6">
+            <h1 className="text-heading-24-b mb-4">리포트를 찾을 수 없어요</h1>
+            <p className="mb-6 text-center text-body-16-m text-grey-6 break-keep">
+              해당 아이의 청약 리포트를 찾을 수 없습니다. 아이 정보가 올바르게
+              입력되었는지 확인해주세요.
+            </p>
+            <ActionSection hasAccount={false} isLevelZero={true} kid={kidId} />
+          </main>
+        </>
       );
     }
 
     if (report?.level === 0) {
+      const hasLinkedAccount = report.totalCount !== null;
+
       return (
         <main>
           <Header type="sub" />
-          <div className="pt-5 pb-10 px-6">
+          <div className="pb-10 px-6">
             <h1 className="text-heading-24-b mb-3">
               {report.kidName}의 청약리포트
             </h1>
             <ProgressBar level={0} gauge={0} />
             <ReportHouse level={0} season={getCurrentSeason(paidAt)} />
-            <ActionSection isLevelZero={true} />
+            <ActionSection
+              hasAccount={hasLinkedAccount}
+              isLevelZero={true}
+              kid={kidId}
+            />
           </div>
-          <ActionSection isLevelZero={true} kid={kidId} />
         </main>
       );
     }
@@ -66,7 +75,7 @@ async function Page({ searchParams }: PageProps) {
     return (
       <main>
         <Header type="sub" />
-        <div className="pt-5 pb-10 px-6">
+        <div className="pb-10 px-6">
           <h1 className="text-heading-24-b mb-3">
             {report.kidName}의 청약리포트
           </h1>
@@ -92,7 +101,11 @@ async function Page({ searchParams }: PageProps) {
             </div>
           )}
 
-          <ReportHistory histories={histories} kidId={kidId} />
+          <ReportHistory
+            histories={histories}
+            kidId={kidId}
+            totalCount={report.totalCount ?? 0}
+          />
 
           <section className="mb-10 flex justify-center gap-10">
             <div className="flex flex-col items-center gap-3">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CouponBanner from "./CouponBanner";
 
 export interface HistoryItem {
   year: number;
@@ -12,9 +13,10 @@ export interface HistoryItem {
 type ReportHistoryProps = {
   histories: HistoryItem[];
   kidId?: string;
+  totalCount: number;
 };
 
-function ReportHistory({ histories, kidId }: ReportHistoryProps) {
+function ReportHistory({ histories, kidId, totalCount }: ReportHistoryProps) {
   if (histories.length === 0) {
     return null;
   }
@@ -55,6 +57,7 @@ function ReportHistory({ histories, kidId }: ReportHistoryProps) {
           );
         })}
       </div>
+      <CouponBanner totalCount={totalCount} />
     </section>
   );
 }
