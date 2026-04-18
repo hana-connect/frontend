@@ -5,6 +5,8 @@ import { serverSpringFetch } from "@/common/lib/api/server-spring-fetch";
 import type { ApiResponse } from "@/common/lib/api/types";
 
 type ParentResponseItem = {
+  connectMemberId: number;
+  connectMemberName: string;
   connectMemberPhoneName: string;
 };
 
@@ -15,7 +17,10 @@ type SharedWallet = {
   image: string;
 };
 
-const profileImages = ["/svg/ic_mom1.svg", "/svg/ic_mom2.svg"];
+function getParentProfileImage(connectMemberId: number) {
+  const isOdd = connectMemberId % 2 !== 0;
+  return isOdd ? "/svg/ic_mom1.svg" : "/svg/ic_mom2.svg";
+}
 
 async function getSharedWallets(): Promise<SharedWallet[]> {
   const result = await serverSpringFetch<ApiResponse<ParentResponseItem[]>>(
@@ -28,11 +33,11 @@ async function getSharedWallets(): Promise<SharedWallet[]> {
 
   if (!result.data) return [];
 
-  return result.data.map((item, index) => ({
-    id: index,
-    name: item.connectMemberPhoneName,
+  return result.data.map((item) => ({
+    id: item.connectMemberId,
+    name: item.connectMemberPhoneName || item.connectMemberName,
     statusText: "잔액과 내역 공유 중",
-    image: profileImages[index % profileImages.length],
+    image: getParentProfileImage(item.connectMemberId),
   }));
 }
 
