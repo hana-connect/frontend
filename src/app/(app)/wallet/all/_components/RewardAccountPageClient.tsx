@@ -38,14 +38,13 @@ function RewardAccountPageClient({
   const { alert } = useAlert();
 
   const depositAccounts = useMemo(() => {
-    return accounts.filter((account) => account.accountType === "DEPOSIT");
+    return accounts.filter((account) => account.accountType === "FREE");
   }, [accounts]);
 
   const savingAccounts = useMemo(() => {
     return accounts.filter(
       (account) =>
-        account.accountType === "SUBSCRIPTION" ||
-        account.accountType === "SAVINGS",
+        account.accountType === "DEPOSIT" || account.accountType === "SAVINGS",
     );
   }, [accounts]);
 
